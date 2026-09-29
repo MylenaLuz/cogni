@@ -1,0 +1,61 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap');
+@import 'tailwindcss';
+
+@theme {
+  --color-primary: #2C7A7A;
+  --color-primary-light: #3A9090;
+  --color-primary-dark: #1E5A5A;
+  --color-background: #F7F2E9;
+  --color-surface: #FFFFFF;
+  --color-surface-2: #EDE8DF;
+  --color-accent: #52B788;
+  --color-accent-dark: #3D9A6E;
+  --color-text: #1C3333;
+  --color-text-muted: #5C7070;
+  --color-text-light: #8A9E9E;
+  --color-border: #D4CFC5;
+  --color-success: #52B788;
+  --color-error: #D96B6B;
+  --font-sans: 'Nunito', system-ui, sans-serif;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  font-family: 'Nunito', system-ui, sans-serif;
+  background-color: #F7F2E9;
+  color: #1C3333;
+}
+
+* {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+*::-webkit-scrollbar {
+  display: none;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-8px); }
+  40% { transform: translateX(8px); }
+  60% { transform: translateX(-6px); }
+  80% { transform: translateX(6px); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pop {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.08); }
+  100% { transform: scale(1); }
+}
+
+.shake { animation: shake 0.5s ease; }
+.fade-in { animation: fadeIn 0.3s ease; }
+.pop { animation: pop 0.25s ease; }
