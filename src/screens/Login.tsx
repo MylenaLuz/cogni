@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Navigate } from "../App";
-import { mockCaregiver } from "../data";
+import { supabase } from "../supabase";
 
 interface Props { navigate: Navigate; }
 
@@ -11,19 +11,28 @@ export default function Login({ navigate }: Props) {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
-    if (!email || !password) { setError("Preencha e-mail e senha."); return; }
+    
+    if (!email || !password) { 
+      setError("Preencha e-mail e senha."); 
+      return; 
+    }
+    
     setLoading(true);
-    setTimeout(() => {
-      if (email === mockCaregiver.email && password === mockCaregiver.password) {
-        navigate("dashboard");
-      } else {
-        setError("E-mail ou senha incorretos.");
-        setLoading(false);
-      }
-    }, 800);
+
+    const { error } = await supabase.auth.signInWithPassword({
+      email: email,
+      password: password,
+    });
+
+    if (error) {
+      setError("E-mail ou senha incorretos.");
+      setLoading(false);
+    } else {
+      navigate("dashboard");
+    }
   }
 
   return (
@@ -48,7 +57,7 @@ export default function Login({ navigate }: Props) {
               type="email"
               value={email}
               onChange={(e) => { setEmail(e.target.value); setError(""); }}
-              placeholder="cuidador@cogni.app"
+              placeholder="seu@email.com"
               className="w-full h-12 px-4 rounded-xl border-2 border-border bg-surface text-text text-sm font-500 focus:outline-none focus:border-primary transition-colors"
               autoComplete="email"
             />
@@ -95,16 +104,23 @@ export default function Login({ navigate }: Props) {
             ) : "Entrar"}
           </button>
 
-          <button type="button" className="text-primary text-sm font-600 text-right hover:underline">
-            Esqueci minha senha
-          </button>
+          <div className="flex items-center justify-between mt-2">
+            <button 
+              type="button" 
+              onClick={() => navigate("forgot-password" as any)}
+              className="text-primary text-sm font-600 hover:underline"
+            >
+              Esqueci minha senha
+            </button>
+            <button 
+              type="button" 
+              onClick={() => navigate("signup" as any)}
+              className="text-primary text-sm font-600 hover:underline"
+            >
+              Criar uma conta
+            </button>
+          </div>
         </form>
-
-        <div className="bg-primary/8 border border-primary/20 rounded-xl px-4 py-3">
-          <p className="text-xs font-700 text-primary mb-1">Credenciais de teste</p>
-          <p className="text-xs text-text-muted font-500">E-mail: <span className="font-700 text-text select-all">cuidador@cogni.app</span></p>
-          <p className="text-xs text-text-muted font-500 mt-0.5">Senha: <span className="font-700 text-text select-all">cogni123</span></p>
-        </div>
       </div>
     </div>
   );

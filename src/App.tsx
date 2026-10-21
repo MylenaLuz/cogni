@@ -1,5 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { supabase } from "./supabase";
 import Login from "./screens/Login";
+import Signup from "./screens/Signup";
+import ForgotPassword from "./screens/ForgotPassword";
+import ResetPassword from "./screens/ResetPassword";
 import Dashboard from "./screens/Dashboard";
 import Patients from "./screens/Patients";
 import PatientDetail from "./screens/PatientDetail";
@@ -13,6 +17,9 @@ import AIInsights from "./screens/AIInsights";
 
 export type Screen =
   | "login"
+  | "signup"
+  | "forgot-password"
+  | "reset-password"
   | "dashboard"
   | "patients"
   | "patient-detail"
@@ -30,6 +37,25 @@ export default function App() {
   const [screen, setScreen] = useState<Screen>("login");
   const [selectedPatientId, setSelectedPatientId] = useState<string>("p1");
 
+  // Este Hook verifica a URL para ver se estamos voltando de um link de e-mail do Supabase
+  useEffect(() => {
+    const hash = window.location.hash;
+    const path = window.location.pathname;
+    
+    if (path === '/reset-password' || hash.includes('type=recovery')) {
+      setScreen("reset-password");
+    }
+
+    // Escuta eventos automáticos de recuperação disparados pelo Supabase
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
+      if (event === 'PASSWORD_RECOVERY') {
+        setScreen("reset-password");
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
   const navigate: Navigate = (s, patientId) => {
     if (patientId) setSelectedPatientId(patientId);
     setScreen(s);
@@ -39,6 +65,9 @@ export default function App() {
 
   const screens: Record<Screen, React.ReactNode> = {
     login: <Login navigate={navigate} />,
+    signup: <Signup navigate={navigate} />,
+    "forgot-password": <ForgotPassword navigate={navigate} />,
+    "reset-password": <ResetPassword navigate={navigate} />,
     dashboard: <Dashboard {...props} />,
     patients: <Patients {...props} />,
     "patient-detail": <PatientDetail {...props} />,
