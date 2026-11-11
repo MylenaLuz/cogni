@@ -219,34 +219,31 @@ O Cogni **não é apenas um front-end**. O desenvolvimento segue o cronograma da
 
 ## 🗓 Cronograma
 
-Cronograma da disciplina **ESOFT6 – TCC1**:
+Cronograma da disciplina **ESOFT6 – TCC1** (versão atualizada pela instituição):
 
 | Semana | Datas | Etapa | Status |
 | :-: | --- | --- | :-: |
-| 1 | 04–05/ago | Orientação das equipes | ✅ |
+| 1 | 04–05/ago | Primeira semana: orientação das equipes | ✅ |
 | 2 | 11–12/ago | Entrega do cronograma | ✅ |
 | 3 | 18–19/ago | Entrega do tema, integrantes, objetivo e justificativa | ✅ |
 | 4 | 25–26/ago | Pesquisa bibliográfica e pesquisa de mercado | ✅ |
 | 5 | 01–02/set | Lista de requisitos funcionais | ✅ |
-| 6 | 09/set | Definição das tecnologias do projeto | ✅ |
+| 6 | 09/set | Definição das tecnologias do projeto (08/set feriado) | ✅ |
 | 7 | 15–16/set | Protótipo de telas e navegabilidade | ✅ |
-| 8 | 22–23/set | 🎤 Defesa do projeto: apresentação das equipes | ✅ |
-| 9 | 29–30/set | **Implementação das telas** | ✅ |
-| 10 | 06–07/out | Implementação do banco, prevendo suporte à gestão | ⏳ |
-| 11 | 13–14/out | 🎤 Apresentação: login, cadastro de usuários e "esqueci minha senha" | ⏳ |
-| 12 | 20–21/out | Suporte à gestão: relatórios, resultados e justificativas | ⏳ |
-| 13 | 27–28/out | Correções e preparação dos fluxos de processo para os cadastros básicos | ⏳ |
-| 14 | 03–04/nov | Implementação dos cadastros básicos | ⏳ |
-| 15 | 10–11/nov | 🎤 Apresentação: processos do sistema e funcionalidades básicas | ⏳ |
-| 16 | 17–18/nov | Correções e preparação do documento do TCC1 | ⏳ |
-| 17 | 24–25/nov | 🎤 Defesa do projeto: apresentação das equipes | ⏳ |
+| 8 | 22–23/set | 🎤 Semana de provas: defesa do projeto | ✅ |
+| 9 | 29–30/set | Implementação das telas | ✅ |
+| 10 | 06–07/out | Implementação do banco, prevendo suporte à gestão | ✅ |
+| 11 | 14/out | Implementação das telas e do banco (13/out feriado) | ✅ |
+| 12 | 20–21/out | Login, cadastro de usuários e "esqueci minha senha" | ✅ |
+| 13 | 27–28/out | 🎤 Apresentação: fluxo de processos e login funcionando | ✅ |
+| 14 | 03–04/nov | Correções e implementação dos cadastros básicos | 🔄 |
+| 15 | 10–11/nov | Implementação dos cadastros básicos (continuação) | 🔄 |
+| 16 | 17–18/nov | Preparação do documento do TCC1 para entrega | ⏳ |
+| 17 | 24–25/nov | 🎤 Semana de provas: defesa do projeto | ⏳ |
 | 18 | 01–02/dez | Correções e entrega do documento e do código | ⏳ |
 | 19 | 08–09/dez | Reapresentação, caso necessário | ⏳ |
 
-<sub>✅ concluído · ⏳ a fazer · 🎤 apresentação</sub>
-
-Após o TCC1, está prevista a **validação com cuidadores e/ou especialistas**. Como referência de usabilidade, o protótipo MEMO obteve 87,3 pontos na escala SUS (System Usability Scale).
-
+<sub>✅ concluído · 🔄 em andamento · ⏳ a fazer · 🎤 apresentação</sub>
 ---
 
 ## 🚀 Como executar
