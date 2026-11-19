@@ -12,13 +12,13 @@ O objetivo geral, desenvolver uma plataforma de apoio ao cuidador para estimula�
 |---|---|---|
 | a) Revisar a literatura | Revisão de demências, cuidado, intervenções, biomarcadores, acessibilidade, IA, regulação e engenharia de software | 2 |
 | b) Analisar soluções existentes | Comparação com soluções acadêmicas e comerciais; lacuna formulada | 3 |
-| c) Especificar requisitos | 10 casos de uso, 46 RF e 24 RNF; revisão com 13 RF novos e 12 RNF revistos ou novos | 6 |
-| d) Construir a matriz integrada | Matriz com 386 referências validadas automaticamente e 7 decisões resolvidas | 7 |
-| e) Modelar o banco de dados | 17 tabelas, 15 tipos enumerados, 13 índices, 2 visões e segurança por vínculo | 9 |
-| f) Projetar arquitetura portável | Arquitetura soberana com 11 ADRs e plano de continuidade | 8 |
-| g) Implementar o protótipo | Telas, quatro jogos, autenticação real e auditoria técnica | 10 |
-| h) Propor e avaliar o motor de métricas | Baseline pessoal e CUSUM avaliados em 3.600 pacientes sintéticos | 11 e 12 |
-| i) Planejar verificação, campo e evolução | Estratégia de testes, protocolo de três estudos de campo e plano com 106 itens | 5, 12 e 15 |
+| c) Especificar requisitos | 10 casos de uso, 46 RF e 24 RNF; revisão com 13 RF novos e 12 RNF revistos ou novos | 5 |
+| d) Construir a matriz integrada | Matriz com 386 referências validadas automaticamente e 7 decisões resolvidas | 6 |
+| e) Modelar o banco de dados | 17 tabelas, 15 tipos enumerados, 13 índices, 2 visões e segurança por vínculo | 8 |
+| f) Projetar arquitetura portável | Arquitetura soberana com 11 ADRs e plano de continuidade | 7 |
+| g) Implementar o protótipo | Telas, quatro jogos, autenticação real e auditoria técnica | 9 |
+| h) Propor e avaliar o motor de métricas | Baseline pessoal e CUSUM avaliados em 3.600 pacientes sintéticos | 10 e 11 |
+| i) Planejar verificação, validação e evolução | Estratégia de testes, características de qualidade e plano com 106 itens | 11 e 14 |
 
 @@FONTE|Elaborado pelos autores (2026).
 
@@ -36,7 +36,7 @@ Na **frente ética e regulatória**, sistematiza os cuidados de privacidade, de 
 
 ## LIMITAÇÕES
 
-As limitações do trabalho foram registradas ao longo dos capítulos e são retomadas aqui. A pesquisa de campo ainda não foi realizada, e por isso a aceitação das funcionalidades pelos cuidadores não foi verificada empiricamente. O motor de métricas foi avaliado apenas em dados simulados, cujos parâmetros não foram estimados a partir de pessoas reais. A arquitetura proposta foi projetada e documentada, mas a migração completa ainda não foi concluída. A matriz integrada foi avaliada pela própria equipe. O sistema não foi validado clinicamente e não pode ser usado para fins diagnósticos.
+As limitações do trabalho foram registradas ao longo dos capítulos e são retomadas aqui. Não houve, nesta etapa, estudo sistemático com usuários, e por isso a aceitação das funcionalidades pelos cuidadores não foi verificada empiricamente. O motor de métricas foi avaliado apenas em dados simulados, cujos parâmetros não foram estimados a partir de pessoas reais. A arquitetura proposta foi projetada e documentada, mas a migração completa ainda não foi concluída. A matriz integrada foi avaliada pela própria equipe. O sistema não foi validado clinicamente e não pode ser usado para fins diagnósticos.
 
 ## TRABALHOS FUTUROS
 
@@ -46,7 +46,7 @@ a) concluir a migração para a arquitetura proposta e a correção de todos os 
 
 b) implementar o modo dedicado à pessoa idosa, com acessibilidade de nível AAA;
 
-c) realizar a pesquisa de campo e o teste de usabilidade com cuidadores, mediante os trâmites éticos;
+c) realizar estudos de aceitação e de usabilidade com cuidadores e entrevistas com profissionais de saúde, mediante os trâmites éticos;
 
 d) colocar o motor de métricas em produção e calibrar seus parâmetros com dados reais consentidos;
 

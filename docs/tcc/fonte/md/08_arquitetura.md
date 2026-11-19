@@ -78,7 +78,7 @@ Cada decisão relevante foi registrada como ADR, com contexto, decisão, alterna
 
 ### A escolha do banco de dados e a questão do SQLite
 
-A decisão D3 merece detalhamento, porque a pergunta "o SQLite é escalável?" surgiu durante o projeto. O SQLite é um banco embutido, excelente em leitura e amplamente usado em aplicações locais. Suas limitações para este caso são estruturais: aceita **um escritor por vez**, o que enfileira gravações simultâneas de muitas sessões; é **um arquivo no disco** do servidor, o que impede múltiplas instâncias da API e é incompatível com hospedagens efêmeras; e não oferece usuários, permissões nem segurança em nível de linha no próprio banco, recursos relevantes para dados de saúde. O PostgreSQL, por sua vez, é um sistema de código aberto com mais de três décadas de desenvolvimento, é o mesmo dialeto já usado no modelo de dados (Capítulo 9) e torna a migração essencialmente uma troca de onde o banco é executado. O SQLite permanece útil nos testes automatizados, pela rapidez de criação de bancos temporários.
+A decisão D3 merece detalhamento, porque a pergunta "o SQLite é escalável?" surgiu durante o projeto. O SQLite é um banco embutido, excelente em leitura e amplamente usado em aplicações locais. Suas limitações para este caso são estruturais: aceita **um escritor por vez**, o que enfileira gravações simultâneas de muitas sessões; é **um arquivo no disco** do servidor, o que impede múltiplas instâncias da API e é incompatível com hospedagens efêmeras; e não oferece usuários, permissões nem segurança em nível de linha no próprio banco, recursos relevantes para dados de saúde. O PostgreSQL, por sua vez, é um sistema de código aberto com mais de três décadas de desenvolvimento, é o mesmo dialeto já usado no modelo de dados (Capítulo 8) e torna a migração essencialmente uma troca de onde o banco é executado. O SQLite permanece útil nos testes automatizados, pela rapidez de criação de bancos temporários.
 
 ### A escolha do Python
 
@@ -139,9 +139,9 @@ c) a recuperação de senha sempre responde com sucesso, sem revelar se o e-mail
 
 d) o *login* e a recuperação têm limite de tentativas por endereço e por conta;
 
-e) o **cadastro ocorre em uma única transação**: usuário, perfil do cuidador e, opcionalmente, pessoa idosa são gravados juntos ou nada é gravado. Essa decisão corrige um defeito do protótipo atual, discutido no Capítulo 13.
+e) o **cadastro ocorre em uma única transação**: usuário, perfil do cuidador e, opcionalmente, pessoa idosa são gravados juntos ou nada é gravado. Essa decisão corrige um defeito do protótipo atual, discutido no Capítulo 12.
 
-A **autorização** substitui a segurança em nível de linha do BaaS. Toda consulta a dados de pacientes é filtrada pelo vínculo entre o cuidador autenticado e o paciente, por meio de uma dependência única da API que carrega o recurso já verificando o vínculo. O critério é o mesmo da função `fn_tem_acesso_paciente` do modelo de dados (Capítulo 9), mas aplicado na camada de serviço. Um teste automatizado específico verifica que um cuidador que tenta acessar o paciente de outro cuidador recebe a resposta "não encontrado", e não "proibido", para não revelar a existência do registro.
+A **autorização** substitui a segurança em nível de linha do BaaS. Toda consulta a dados de pacientes é filtrada pelo vínculo entre o cuidador autenticado e o paciente, por meio de uma dependência única da API que carrega o recurso já verificando o vínculo. O critério é o mesmo da função `fn_tem_acesso_paciente` do modelo de dados (Capítulo 8), mas aplicado na camada de serviço. Um teste automatizado específico verifica que um cuidador que tenta acessar o paciente de outro cuidador recebe a resposta "não encontrado", e não "proibido", para não revelar a existência do registro.
 
 ## PRIVACIDADE POR ARQUITETURA
 
@@ -151,7 +151,7 @@ a) **nenhuma requisição externa na interface**: a fonte tipográfica, hoje car
 
 b) **processamento local de dados sensíveis**: a transcrição de voz e a extração de marcadores de fala ocorrem no servidor da aplicação, sem envio a serviços externos (D10);
 
-c) **minimização**: o modelo de dados não armazena documento de identificação, endereço, dados financeiros nem prontuário (Capítulo 9);
+c) **minimização**: o modelo de dados não armazena documento de identificação, endereço, dados financeiros nem prontuário (Capítulo 8);
 
 d) **retenção mínima de áudio**: o áudio bruto é apagado após a extração dos marcadores, mantendo-se apenas a transcrição e as métricas, salvo consentimento explícito em contrário.
 

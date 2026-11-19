@@ -89,7 +89,7 @@ O dicionário de dados completo descreve todos os atributos das dezessete tabela
 
 @@FONTE|Adaptado de Valle, Vaz e Alves (2026d).
 
-A existência da tabela `sessao_evento` no modelo é um acerto importante da modelagem: ela já prevê o registro de cada interação com seu tempo de resposta, base para a variabilidade intraindividual discutida no Capítulo 2. O protótipo atual, porém, ainda não grava esses eventos, lacuna tratada no Capítulo 13.
+A existência da tabela `sessao_evento` no modelo é um acerto importante da modelagem: ela já prevê o registro de cada interação com seu tempo de resposta, base para a variabilidade intraindividual discutida no Capítulo 2. O protótipo atual, porém, ainda não grava esses eventos, lacuna tratada no Capítulo 12.
 
 ## RESTRIÇÕES DE INTEGRIDADE
 
@@ -107,7 +107,7 @@ As regras de negócio verificáveis em uma única linha foram implementadas como
 
 Cinco rotinas em PL/pgSQL automatizam comportamentos que, de outro modo, dependeriam da disciplina da aplicação: atualização automática da data de alteração; cálculo da duração da sessão; criação automática do vínculo entre o cuidador e o paciente que ele cadastra; consolidação do índice cognitivo semanal a partir das sessões concluídas; e verificação de acesso, base de todas as políticas de segurança.
 
-A rotina de consolidação, `fn_consolidar_indice`, calcula a média semanal das pontuações e classifica a tendência com **limiar de 5%** sobre o índice do período anterior: variação positiva igual ou superior a 5% caracteriza melhora, variação negativa de mesma magnitude caracteriza declínio e os demais casos, estabilidade. Essa regra, a primeira formalização concreta da decisão DEC-001, foi avaliada quantitativamente no Capítulo 12, com resultado que motivou a proposta do motor de métricas.
+A rotina de consolidação, `fn_consolidar_indice`, calcula a média semanal das pontuações e classifica a tendência com **limiar de 5%** sobre o índice do período anterior: variação positiva igual ou superior a 5% caracteriza melhora, variação negativa de mesma magnitude caracteriza declínio e os demais casos, estabilidade. Essa regra, a primeira formalização concreta da decisão DEC-001, foi avaliada quantitativamente no Capítulo 11, com resultado que motivou a proposta do motor de métricas.
 
 Treze índices atendem aos padrões de consulta dos casos de uso, incluindo um índice de trigramas para a busca por nome em tempo real (RF10), índices compostos por paciente e data decrescente para as listagens e índices parciais para sessões em andamento e *insights* não lidos. Duas visões encapsulam as consultas mais complexas: `vw_paciente_resumo`, que reúne índice mais recente, tendência, última sessão e total de sessões (RF07, RF11 e RF12), e `vw_dashboard_totais`, que calcula os totais do painel por cuidador (RF05 e RF06). O esquema foi verificado em uma instância PostgreSQL 16, com inserção de dados de teste e validação das restrições, dos gatilhos e das visões.
 
@@ -119,7 +119,7 @@ O princípio da minimização orientou a escolha dos atributos: o esquema não a
 
 ## ADAPTAÇÕES PARA A ARQUITETURA PROPOSTA
 
-A migração para a arquitetura do Capítulo 8 preserva quase todo o modelo, porque ele já foi escrito em PostgreSQL padrão. As adaptações necessárias estão no {{qua:adaptacoes}}.
+A migração para a arquitetura do Capítulo 7 preserva quase todo o modelo, porque ele já foi escrito em PostgreSQL padrão. As adaptações necessárias estão no {{qua:adaptacoes}}.
 
 @@QUADRO|adaptacoes|Adaptações do modelo de dados para a arquitetura proposta
 

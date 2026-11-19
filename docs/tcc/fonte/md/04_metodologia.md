@@ -1,6 +1,6 @@
 # METODOLOGIA
 
-Este capítulo descreve a classificação da pesquisa, as etapas percorridas, o processo de desenvolvimento adotado, os procedimentos de revisão da literatura, as ferramentas utilizadas e os cuidados éticos. A pesquisa de campo, por sua extensão, é detalhada no Capítulo 5.
+Este capítulo descreve a classificação da pesquisa, as etapas percorridas, o processo de desenvolvimento adotado, os procedimentos de revisão da literatura, as ferramentas utilizadas e os cuidados éticos.
 
 ## CLASSIFICAÇÃO DA PESQUISA
 
@@ -12,7 +12,7 @@ b) **exploratória e descritiva** quanto aos objetivos. É exploratória porque 
 
 c) **mista** quanto à abordagem, combinando análise qualitativa (revisão da literatura, especificação de requisitos, relato de experiência sobre a matriz integrada e análise das decisões de projeto) e análise quantitativa (avaliação do motor de métricas em coorte sintética e métricas da matriz integrada);
 
-d) quanto aos procedimentos, combina **pesquisa bibliográfica**, **pesquisa documental** (normas, legislação e documentação técnica), **desenvolvimento tecnológico**, **estudo de simulação** e **pesquisa de campo**, esta última em nível de protocolo nesta etapa.
+d) quanto aos procedimentos, combina **pesquisa bibliográfica**, **pesquisa documental** (normas, legislação e documentação técnica), **desenvolvimento tecnológico** e **estudo de simulação**.
 
 O desenvolvimento tecnológico segue a lógica da **pesquisa em ciência do design** (*design science research*), em que o conhecimento é produzido pela construção e avaliação de um artefato que resolve um problema relevante. Hevner *et al.* (2004) propõem diretrizes para esse tipo de pesquisa: o artefato deve ser viável, o problema deve ser relevante, a avaliação deve ser rigorosa, as contribuições devem ser verificáveis e o processo deve ser comunicado a públicos técnicos e não técnicos. Neste trabalho, os artefatos são o protótipo do Cogni, a matriz integrada automatizada, o modelo de dados, a arquitetura proposta e o motor de métricas.
 
@@ -70,7 +70,7 @@ Notícias e comunicados de empresas foram usados apenas para registrar eventos r
 
 ## AVALIAÇÃO POR SIMULAÇÃO
 
-Como não é ético nem viável, nesta etapa, coletar dados longitudinais de pessoas com demência, o motor de métricas foi avaliado em uma **coorte sintética**: pacientes simulados com parâmetros conhecidos, alguns estáveis e outros com declínio de início e intensidade conhecidos. Essa abordagem permite medir sensibilidade, falsos alarmes, precisão e atraso de detecção com exatidão, porque a "verdade" é conhecida por construção. O desenho da simulação, seus parâmetros e seus resultados estão no Capítulo 12, e o código-fonte completo, no Apêndice F. A limitação dessa abordagem, discutida no mesmo capítulo, é que a validade dos resultados depende do realismo do modelo gerador.
+Como não é ético nem viável, nesta etapa, coletar dados longitudinais de pessoas com demência, o motor de métricas foi avaliado em uma **coorte sintética**: pacientes simulados com parâmetros conhecidos, alguns estáveis e outros com declínio de início e intensidade conhecidos. Essa abordagem permite medir sensibilidade, falsos alarmes, precisão e atraso de detecção com exatidão, porque a "verdade" é conhecida por construção. O desenho da simulação, seus parâmetros e seus resultados estão no Capítulo 11, e o código-fonte completo, no Apêndice C. A limitação dessa abordagem, discutida no mesmo capítulo, é que a validade dos resultados depende do realismo do modelo gerador.
 
 ## FERRAMENTAS UTILIZADAS
 
@@ -84,7 +84,7 @@ O {{qua:ferramentas}} apresenta as ferramentas utilizadas e sua finalidade.
 | Prototipação | Figma Make | Geração inicial do protótipo navegável de alta fidelidade |
 | Front-end | React 19, TypeScript 5, Vite 8, Tailwind CSS 4 | Implementação da interface |
 | Backend atual | Supabase (PostgreSQL, Auth) | Autenticação e persistência na versão atual do protótipo |
-| Backend proposto | Python 3.12, FastAPI, SQLAlchemy 2, Alembic, PostgreSQL 16 | Arquitetura soberana proposta (Capítulo 8) |
+| Backend proposto | Python 3.12, FastAPI, SQLAlchemy 2, Alembic, PostgreSQL 16 | Arquitetura soberana proposta (Capítulo 7) |
 | Infraestrutura | Docker, Docker Compose, Caddy | Empacotamento e implantação portável |
 | Automação | Python, openpyxl | Geração e validação da matriz integrada |
 | Análise | Python, NumPy, Matplotlib | Simulação da coorte sintética e gráficos |
@@ -96,8 +96,8 @@ O {{qua:ferramentas}} apresenta as ferramentas utilizadas e sua finalidade.
 
 ## USO DE INTELIGÊNCIA ARTIFICIAL GENERATIVA NO PROCESSO
 
-Por transparência, registra-se que ferramentas de IA generativa foram usadas como apoio em tarefas de engenharia e de pesquisa: revisão do código do protótipo, sugestão de estrutura para documentos, busca e conferência de referências e revisão textual. Três regras foram observadas, as mesmas definidas na aba de *prompts* da matriz integrada (Capítulo 7): a IA responde apenas com base nos registros fornecidos; toda resposta é tratada como sugestão e conferida por uma pessoa antes de qualquer decisão; e nenhum dado real de pessoa foi fornecido a essas ferramentas. A responsabilidade pelo conteúdo, pelas decisões e pelas referências é integralmente dos autores.
+Por transparência, registra-se que ferramentas de IA generativa foram usadas como apoio em tarefas de engenharia e de pesquisa: revisão do código do protótipo, sugestão de estrutura para documentos, busca e conferência de referências e revisão textual. Três regras foram observadas, as mesmas definidas na aba de *prompts* da matriz integrada (Capítulo 6): a IA responde apenas com base nos registros fornecidos; toda resposta é tratada como sugestão e conferida por uma pessoa antes de qualquer decisão; e nenhum dado real de pessoa foi fornecido a essas ferramentas. A responsabilidade pelo conteúdo, pelas decisões e pelas referências é integralmente dos autores.
 
 ## ASPECTOS ÉTICOS
 
-Nenhum dado de pessoa real foi coletado ou utilizado nas análises deste documento. As telas do protótipo utilizam pessoas fictícias. A avaliação quantitativa utiliza dados sintéticos. As etapas que envolverão participantes humanos (questionário com cuidadores, entrevistas com profissionais e teste de usabilidade) estão descritas em nível de protocolo no Capítulo 5, com a indicação do enquadramento ético de cada uma segundo as Resoluções CNS nº 466/2012 e nº 510/2016 (BRASIL, 2012; BRASIL, 2016). A coleta só ocorrerá após a confirmação do enquadramento pelo Comitê de Ética em Pesquisa da instituição e, quando exigido, após aprovação do protocolo.
+Nenhum dado de pessoa real foi coletado ou utilizado nas análises deste documento. As telas do protótipo utilizam pessoas fictícias. A avaliação quantitativa utiliza dados sintéticos. Os estudos com participantes humanos previstos para a segunda etapa (questionário com cuidadores, entrevistas com profissionais e teste de usabilidade) só ocorrerão após a confirmação do enquadramento ético pelo Comitê de Ética em Pesquisa da instituição, segundo as Resoluções CNS nº 466/2012 e nº 510/2016 (BRASIL, 2012; BRASIL, 2016), e, quando exigido, após aprovação do protocolo.

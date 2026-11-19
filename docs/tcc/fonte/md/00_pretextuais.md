@@ -99,8 +99,6 @@ SQL – *Structured Query Language*
 
 SUS – Sistema Único de Saúde (ou *System Usability Scale*, conforme o contexto)
 
-TCLE – Termo de Consentimento Livre e Esclarecido
-
 TR – Tempo de reação
 
 UC – Caso de uso (*use case*)

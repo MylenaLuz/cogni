@@ -29,8 +29,6 @@ BRASIL. Ministério da Saúde. **Relatório nacional sobre a demência no Brasil
 
 BRASIL. **Lei nº 14.878, de 4 de junho de 2024**. Institui a Política Nacional de Cuidado Integral às Pessoas com Doença de Alzheimer e Outras Demências. Brasília, DF: Presidência da República, 2024b. Disponível em: https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2024/lei/L14878.htm. Acesso em: 18 nov. 2026.
 
-BRAUN, V.; CLARKE, V. Using thematic analysis in psychology. **Qualitative Research in Psychology**, [*s. l.*], v. 3, n. 2, p. 77-101, 2006.
-
 BROOKE, J. SUS: a quick and dirty usability scale. *In*: JORDAN, P. W. *et al.* (ed.). **Usability evaluation in industry**. London: Taylor & Francis, 1996. p. 189-194.
 
 BROWN, S. **The C4 model for visualising software architecture**. [*S. l.*]: Leanpub, 2018. Disponível em: https://c4model.com. Acesso em: 18 nov. 2026.

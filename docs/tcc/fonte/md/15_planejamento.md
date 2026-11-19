@@ -43,14 +43,14 @@ O trabalho restante foi organizado em cinco marcos, apresentados no {{qua:marcos
 | M1 – Defesa do TCC I | 24–25/nov./2026 | Correções dos defeitos de alta gravidade; sessões gravadas de fato; arquitetura e evidências apresentadas |
 | M2 – Entrega do TCC I | 01–02/dez./2026 | *Backend* próprio com autenticação; interface sem dependência de BaaS; jogos gravando eventos; integração contínua |
 | M3 – Base sólida | Início do TCC II | Modo da pessoa idosa, acessibilidade, LGPD completa, implantação em VPS com backup testado |
-| M4 – Inteligência | Meio do TCC II | Baseline pessoal, detecção de mudança e dificuldade adaptativa em produção; pesquisa de campo realizada |
+| M4 – Inteligência | Meio do TCC II | Baseline pessoal, detecção de mudança e dificuldade adaptativa em produção; estudos de usabilidade e aceitação com cuidadores |
 | M5 – Diferencial | Fim do TCC II | Fala, reminiscência conversacional, ciclo fechado de intervenção, relatórios em PDF e FHIR |
 
 @@FONTE|Elaborado pelos autores (2026).
 
 ## PLANO DE EXECUÇÃO
 
-O trabalho foi detalhado em um plano de execução versionado no repositório, com 106 itens distribuídos em 18 fases. Cada item tem identificador fixo, contexto, arquivos envolvidos, dependências e critério objetivo de conclusão. O {{qua:fases}} resume as fases. O plano completo é um documento vivo e está reproduzido de forma resumida no Apêndice E.
+O trabalho foi detalhado em um plano de execução versionado no repositório, com 106 itens distribuídos em 18 fases. Cada item tem identificador fixo, contexto, arquivos envolvidos, dependências e critério objetivo de conclusão. O {{qua:fases}} resume as fases. O plano completo é um documento vivo, mantido no repositório do projeto.
 
 @@QUADRO|fases|Fases do plano de execução
 
@@ -77,4 +77,4 @@ O trabalho foi detalhado em um plano de execução versionado no repositório, c
 
 @@FONTE|Elaborado pelos autores (2026).
 
-O plano adota regras de trabalho explícitas: um item por vez; respeito às dependências; marcação do item como concluído no mesmo *commit* da alteração; registro de cada conclusão em um histórico de progresso; e registro de decisões arquiteturais como ADR. Dois princípios transversais também estão no plano: nenhum dado real de paciente antes da aprovação ética, e linguagem não diagnóstica em toda a interface. Parte da fase F10 já foi antecipada neste trabalho, com a simulação apresentada no Capítulo 12.
+O plano adota regras de trabalho explícitas: um item por vez; respeito às dependências; marcação do item como concluído no mesmo *commit* da alteração; registro de cada conclusão em um histórico de progresso; e registro de decisões arquiteturais como ADR. Dois princípios transversais também estão no plano: nenhum dado real de paciente antes da aprovação ética, e linguagem não diagnóstica em toda a interface. Parte da fase F10 já foi antecipada neste trabalho, com a simulação apresentada no Capítulo 11.

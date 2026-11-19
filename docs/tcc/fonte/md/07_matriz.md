@@ -92,11 +92,11 @@ Preencher uma estrutura com relações obrigatórias funcionou como uma revisão
 
 | ID | Questão | Encaminhamento proposto na matriz | Resolução neste trabalho |
 |---|---|---|---|
-| DEC-001 | Como calcular a tendência do paciente | Comparar médias de quatro semanas | Baseline pessoal robusto e CUSUM, avaliados em coorte sintética (Capítulos 11 e 12) |
-| DEC-002 | Pontuação por jogo, índice geral e nível | Documentar por jogo e alinhar com o orientador | Métricas padronizadas e versionadas calculadas a partir de eventos brutos (Capítulo 11) |
+| DEC-001 | Como calcular a tendência do paciente | Comparar médias de quatro semanas | Baseline pessoal robusto e CUSUM, avaliados em coorte sintética (Capítulos 10 e 11) |
+| DEC-002 | Pontuação por jogo, índice geral e nível | Documentar por jogo e alinhar com o orientador | Métricas padronizadas e versionadas calculadas a partir de eventos brutos (Capítulo 10) |
 | DEC-003 | Catálogo de jogos divergente | Unificar a documentação e a carga da tabela de jogos | Catálogo do protótipo adotado como oficial; jogos dos casos de uso mantidos como planejados |
-| DEC-004 | LGPD: consentimento, retenção, exclusão e multicuidador | Definir antes dos cadastros básicos | Tabela de vínculos N:N com papéis, consentimento versionado, exportação e exclusão (Capítulo 9) |
-| DEC-005 | *Insights* por regras fixas ou por LLM | Regras determinísticas no TCC I; LLM depois | Mantido: regras determinísticas; LLM opcional apenas para redação (Capítulo 11) |
+| DEC-004 | LGPD: consentimento, retenção, exclusão e multicuidador | Definir antes dos cadastros básicos | Tabela de vínculos N:N com papéis, consentimento versionado, exportação e exclusão (Capítulo 8) |
+| DEC-005 | *Insights* por regras fixas ou por LLM | Regras determinísticas no TCC I; LLM depois | Mantido: regras determinísticas; LLM opcional apenas para redação (Capítulo 10) |
 | DEC-006 | Exportar relatório sem bibliotecas pesadas | Impressão nativa do navegador | PDF gerado no servidor na arquitetura proposta |
 | DEC-007 | Fuso horário de sessões e semanas | Guardar em UTC e exibir no fuso de São Paulo | Mantido; campos `TIMESTAMPTZ` no banco |
 

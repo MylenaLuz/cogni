@@ -1,6 +1,6 @@
 # REQUISITOS E MODELAGEM DO SISTEMA
 
-Este capítulo apresenta os atores, os requisitos funcionais e não funcionais, os casos de uso, as regras de negócio e os diagramas comportamentais do Cogni. Também registra a revisão dos requisitos motivada pela evolução do projeto. A lista completa dos requisitos funcionais está no Apêndice D.
+Este capítulo apresenta os atores, os requisitos funcionais e não funcionais, os casos de uso, as regras de negócio e os diagramas comportamentais do Cogni. Também registra a revisão dos requisitos motivada pela evolução do projeto. A lista completa dos requisitos funcionais está no Apêndice A.
 
 ## ATORES E PARTES INTERESSADAS
 
@@ -76,7 +76,7 @@ Os 24 requisitos não funcionais foram organizados em seis grupos, conforme o {{
 
 ## REGRAS DE NEGÓCIO
 
-As regras de negócio dos casos de uso foram consolidadas na matriz integrada (Capítulo 7) e acrescidas de regras de segurança e de proteção de dados. O {{qua:regras}} apresenta as treze regras e a situação de cada uma na última revisão.
+As regras de negócio dos casos de uso foram consolidadas na matriz integrada (Capítulo 6) e acrescidas de regras de segurança e de proteção de dados. O {{qua:regras}} apresenta as treze regras e a situação de cada uma na última revisão.
 
 @@QUADRO|regras|Regras de negócio consolidadas
 
@@ -104,7 +104,7 @@ A modelagem comportamental foi realizada na ferramenta Miro, escolhida por ser g
 
 @@FIG|uc|Diagrama de casos de uso do núcleo do sistema|img/uc_miro.png|Elaborado pelos autores (2026) na ferramenta Miro.|15
 
-O caso de uso de realização da atividade **inclui** obrigatoriamente o registro do resultado (acertos, erros e tempo de resposta), porque o painel do cuidador depende dessas informações. O alerta de mudança de padrão é uma **extensão** condicional, disparada apenas quando o desempenho se desvia de forma significativa. Essa relação de extensão é, como se verá no Capítulo 11, o ponto em que o motor de métricas proposto atua.
+O caso de uso de realização da atividade **inclui** obrigatoriamente o registro do resultado (acertos, erros e tempo de resposta), porque o painel do cuidador depende dessas informações. O alerta de mudança de padrão é uma **extensão** condicional, disparada apenas quando o desempenho se desvia de forma significativa. Essa relação de extensão é, como se verá no Capítulo 10, o ponto em que o motor de métricas proposto atua.
 
 As figuras a seguir detalham o fluxo. A {{fig:atividades}} apresenta o diagrama de atividades, a {{fig:sequencia}} apresenta o diagrama de sequência e a {{fig:raias}} reorganiza o fluxo em raias, evidenciando o responsável por cada etapa.
 
@@ -132,7 +132,7 @@ Além disso, o desenvolvimento do motor de métricas, da arquitetura proposta e 
 |---|---|---|
 | RF47 | Registrar cada evento das sessões (estímulo, toque, acerto, erro e omissão) com carimbo de tempo em milissegundos | Variabilidade intraindividual (Capítulo 2) |
 | RF48 | Calcular métricas padronizadas por jogo a partir dos eventos, com versão da fórmula registrada | DEC-002 |
-| RF49 | Estimar o padrão pessoal (baseline) de cada métrica e detectar mudança sustentada | DEC-001; Capítulo 11 |
+| RF49 | Estimar o padrão pessoal (baseline) de cada métrica e detectar mudança sustentada | DEC-001; Capítulo 10 |
 | RF50 | Ajustar a dificuldade dos jogos de forma adaptativa | README, item 6; REG-007 |
 | RF51 | Oferecer modo dedicado à pessoa idosa, em tela cheia, com saída protegida | Especificação original do protótipo |
 | RF52 | Cadastrar memórias afetivas (fotos, pessoas, lugares e histórias) | Casos de uso do diagrama UML |

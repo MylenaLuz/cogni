@@ -1,6 +1,6 @@
 # IMPLEMENTAÇÃO DO PROTÓTIPO
 
-Este capítulo descreve o protótipo funcional do Cogni no estado em que se encontrava ao fechamento deste documento: organização do código, sistema visual, telas, jogos cognitivos e autenticação. Também apresenta os resultados da auditoria técnica realizada sobre o código, cujos achados alimentam o Capítulo 13.
+Este capítulo descreve o protótipo funcional do Cogni no estado em que se encontrava ao fechamento deste documento: organização do código, sistema visual, telas, jogos cognitivos e autenticação. Também apresenta os resultados da auditoria técnica realizada sobre o código, cujos achados alimentam o Capítulo 12.
 
 ## ORGANIZAÇÃO DO CÓDIGO
 
@@ -20,7 +20,7 @@ src/
   screens/games/        AttentionSpeed, MemoryPairs, Categories
 ```
 
-A navegação é controlada por um estado no componente raiz, que guarda a tela atual e o paciente selecionado e repassa a cada tela uma função de navegação. Os tipos do domínio (`Patient`, `Session`, `CognitiveMetrics` e `AIInsight`), definidos em `data.ts`, serviram de base para o modelo de dados do Capítulo 9. A compilação TypeScript ocorre sem erros, em conformidade com o RNF17.
+A navegação é controlada por um estado no componente raiz, que guarda a tela atual e o paciente selecionado e repassa a cada tela uma função de navegação. Os tipos do domínio (`Patient`, `Session`, `CognitiveMetrics` e `AIInsight`), definidos em `data.ts`, serviram de base para o modelo de dados do Capítulo 8. A compilação TypeScript ocorre sem erros, em conformidade com o RNF17.
 
 ## SISTEMA VISUAL
 
@@ -67,7 +67,7 @@ O catálogo implementado contém quatro jogos jogáveis, cada um com três níve
 
 @@FONTE|Elaborado pelos autores (2026).
 
-A pontuação vai de 0 a 100 e usa mensagens encorajadoras ("Excelente!", "Muito bem!", "Continue tentando!"). A última coluna do quadro evidencia um problema que a matriz integrada já havia apontado (DEC-002): **cada jogo usa uma fórmula própria e arbitrária**, e as pontuações não são comparáveis entre jogos nem ao longo do tempo. Esse problema é tratado no Capítulo 11.
+A pontuação vai de 0 a 100 e usa mensagens encorajadoras ("Excelente!", "Muito bem!", "Continue tentando!"). A última coluna do quadro evidencia um problema que a matriz integrada já havia apontado (DEC-002): **cada jogo usa uma fórmula própria e arbitrária**, e as pontuações não são comparáveis entre jogos nem ao longo do tempo. Esse problema é tratado no Capítulo 10.
 
 ## AUTENTICAÇÃO E PERSISTÊNCIA
 

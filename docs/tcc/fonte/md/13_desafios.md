@@ -10,18 +10,18 @@ O {{qua:desafios}} apresenta os desafios em ordem aproximada de impacto.
 
 | # | Desafio | Causa | Solução |
 |---|---|---|---|
-| 1 | Continuidade: "se o serviço sumir, o software some junto?" | Código acoplado à API de um provedor BaaS | Arquitetura soberana: API própria, PostgreSQL e contêineres portáveis (Capítulo 8) |
-| 2 | Regra de tendência gera alertas a cada três ou quatro semanas | Comparação semanal com limiar fixo de 5%, sensível ao ruído | Baseline pessoal robusto e CUSUM, avaliados em coorte sintética (Capítulos 11 e 12) |
-| 3 | Pontuações arbitrárias e incomparáveis | Cada jogo com fórmula própria, calculada na interface | Eventos brutos e pontuação padronizada e versionada no servidor (Capítulo 11) |
+| 1 | Continuidade: "se o serviço sumir, o software some junto?" | Código acoplado à API de um provedor BaaS | Arquitetura soberana: API própria, PostgreSQL e contêineres portáveis (Capítulo 7) |
+| 2 | Regra de tendência gera alertas a cada três ou quatro semanas | Comparação semanal com limiar fixo de 5%, sensível ao ruído | Baseline pessoal robusto e CUSUM, avaliados em coorte sintética (Capítulos 10 e 11) |
+| 3 | Pontuações arbitrárias e incomparáveis | Cada jogo com fórmula própria, calculada na interface | Eventos brutos e pontuação padronizada e versionada no servidor (Capítulo 10) |
 | 4 | Principal sinal cognitivo não era coletado | Jogos registravam apenas o resultado final | Registro de cada evento com tempo em milissegundos (RF47) |
-| 5 | Documentos contraditórios | Artefatos produzidos em disciplinas e momentos diferentes | Matriz integrada automatizada e reconciliação explícita (Capítulos 6 e 7) |
+| 5 | Documentos contraditórios | Artefatos produzidos em disciplinas e momentos diferentes | Matriz integrada automatizada e reconciliação explícita (Capítulos 5 e 6) |
 | 6 | Interface à frente das regras e dos dados | Prototipação rápida antes da modelagem | Regras pendentes tratadas como condição para implementar o banco |
-| 7 | Defeitos que comprometeriam a demonstração | Protótipo gerado rapidamente e integrado aos poucos | Auditoria técnica e fase de correções prioritárias no plano de execução (Capítulo 10) |
-| 8 | Linguagem com aparência diagnóstica | Textos simulados escritos sem critério regulatório | Linguagem não diagnóstica como requisito (RNF31) e guia de formulações (Capítulo 11) |
+| 7 | Defeitos que comprometeriam a demonstração | Protótipo gerado rapidamente e integrado aos poucos | Auditoria técnica e fase de correções prioritárias no plano de execução (Capítulo 9) |
+| 8 | Linguagem com aparência diagnóstica | Textos simulados escritos sem critério regulatório | Linguagem não diagnóstica como requisito (RNF31) e guia de formulações (Capítulo 10) |
 | 9 | Lacunas de LGPD (exclusão, consentimento, multicuidador) | Proteção de dados tratada como tema posterior | Consentimento versionado, exportação, exclusão, auditoria e vínculos N:N (RF53–RF56) |
 | 10 | Acessibilidade aquém do público idoso | Interface única para cuidador e idoso; texto pequeno; contraste insuficiente | Modo dedicado à pessoa idosa, revisão de cores e de alvos de toque (RF51, RNF09, RNF30) |
-| 11 | Impossibilidade de usar dados reais | Exigências éticas para pesquisa com seres humanos | Dados sintéticos para avaliação e protocolo de pesquisa de campo com enquadramento ético (Capítulos 5 e 12) |
-| 12 | Sustentabilidade da IA | Custo recorrente, privacidade e dependência de fornecedor | IA opcional atrás de interface, modelo aberto local e funcionamento sem IA (Capítulo 8) |
+| 11 | Impossibilidade de usar dados reais | Exigências éticas para pesquisa com seres humanos | Dados sintéticos para avaliação; estudos com usuários planejados para a etapa seguinte, após trâmite ético (Capítulo 11) |
+| 12 | Sustentabilidade da IA | Custo recorrente, privacidade e dependência de fornecedor | IA opcional atrás de interface, modelo aberto local e funcionamento sem IA (Capítulo 7) |
 | 13 | Equipe pequena e prazo curto | Contexto acadêmico | Plano de execução versionado, ADRs e automação da documentação |
 
 @@FONTE|Elaborado pelos autores (2026).
@@ -60,4 +60,4 @@ d) **A documentação útil é a que se mantém sozinha**: o que pode ser gerado
 
 e) **Em saúde, as palavras são parte do produto**: a linguagem determina o enquadramento regulatório e a forma como o cuidador reage ao que vê.
 
-f) **Honestidade técnica é um ativo**: registrar o que ainda não foi feito, como a pesquisa de campo e a validação clínica, fortalece o trabalho em vez de enfraquecê-lo.
+f) **Honestidade técnica é um ativo**: registrar o que ainda não foi feito, como os estudos com usuários e a validação clínica, fortalece o trabalho em vez de enfraquecê-lo.

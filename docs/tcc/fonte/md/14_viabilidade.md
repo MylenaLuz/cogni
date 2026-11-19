@@ -64,7 +64,7 @@ Três observações qualificam esse modelo. Primeiro, para operadoras de planos 
 
 A evolução do Cogni de projeto acadêmico para produto passa por etapas que não podem ser abreviadas:
 
-a) **estudo de usabilidade e aceitação** com cuidadores (Capítulo 5);
+a) **estudo de usabilidade e aceitação** com cuidadores;
 
 b) **estudo observacional de viabilidade**, com aprovação ética, para calibrar os parâmetros do motor com dados reais e medir a adesão;
 

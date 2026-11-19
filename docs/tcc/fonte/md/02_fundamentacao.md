@@ -1,6 +1,6 @@
 # FUNDAMENTAÇÃO TEÓRICA
 
-Este capítulo reúne os conceitos e as evidências que sustentam as decisões do projeto. Ele percorre três territórios: o da saúde (demências, cuidado e intervenções), o da tecnologia aplicada à saúde (biomarcadores digitais, acessibilidade, inteligência artificial e regulação) e o da engenharia de software (processos, requisitos, rastreabilidade, arquitetura, qualidade e segurança). Ao final, apresentam-se os fundamentos estatísticos do motor de métricas proposto no Capítulo 11.
+Este capítulo reúne os conceitos e as evidências que sustentam as decisões do projeto. Ele percorre três territórios: o da saúde (demências, cuidado e intervenções), o da tecnologia aplicada à saúde (biomarcadores digitais, acessibilidade, inteligência artificial e regulação) e o da engenharia de software (processos, requisitos, rastreabilidade, arquitetura, qualidade e segurança). Ao final, apresentam-se os fundamentos estatísticos do motor de métricas proposto no Capítulo 10.
 
 ## ENVELHECIMENTO POPULACIONAL E DEMÊNCIAS
 
@@ -129,7 +129,7 @@ O envelhecimento traz alterações visuais, auditivas, motoras e cognitivas que 
 
 Na dimensão da usabilidade, Nielsen (1993) define cinco atributos: facilidade de aprendizado, eficiência, facilidade de memorização, baixa taxa de erros e satisfação. Para medir a usabilidade percebida, a *System Usability Scale* (SUS) é um questionário de dez itens amplamente utilizado (BROOKE, 1996), e sua interpretação por faixas de pontuação foi proposta por Bangor, Kortum e Miller (2009). Recomendações nacionais sobre interfaces de celular para idosos reforçam pontos aplicáveis ao projeto, como ícones e botões grandes, espaçamento generoso, alto contraste e navegação simplificada (RECOMENDAÇÕES..., [20--]).
 
-O Cogni atende dois públicos com necessidades distintas. O cuidador precisa de densidade de informação e eficiência. A pessoa idosa precisa de simplicidade extrema, poucos elementos por tela e nenhuma possibilidade de "se perder". Essa diferença motiva a proposta de dois modos de interface, discutida nos Capítulos 10 e 13.
+O Cogni atende dois públicos com necessidades distintas. O cuidador precisa de densidade de informação e eficiência. A pessoa idosa precisa de simplicidade extrema, poucos elementos por tela e nenhuma possibilidade de "se perder". Essa diferença motiva a proposta de dois modos de interface, discutida nos Capítulos 9 e 12.
 
 ## INTELIGÊNCIA ARTIFICIAL EM SAÚDE
 
@@ -161,7 +161,7 @@ A finalidade declarada é o fator determinante do enquadramento. Um software que
 
 ### Ética em pesquisa com seres humanos
 
-A pesquisa com seres humanos no Brasil é regida pela Resolução CNS nº 466/2012 e, nas ciências humanas e sociais, pela Resolução CNS nº 510/2016 (BRASIL, 2012; BRASIL, 2016). A Resolução nº 510/2016 dispensa de registro e avaliação pelo sistema CEP/CONEP as pesquisas de opinião pública com participantes não identificados (art. 1º, parágrafo único), entendidas como consulta pontual em que o participante expressa preferência ou avaliação, sem possibilidade de identificação (art. 2º, XIV). A orientação da CONEP é de interpretação restritiva: a dispensa vale apenas quando todos os procedimentos do protocolo se enquadram na hipótese. Coletas que envolvam pessoas identificáveis, dados de saúde, gravação de voz ou testes de usabilidade com idosos exigem submissão ao Comitê de Ética em Pesquisa. Essa distinção orienta o desenho da pesquisa de campo apresentado no Capítulo 5.
+A pesquisa com seres humanos no Brasil é regida pela Resolução CNS nº 466/2012 e, nas ciências humanas e sociais, pela Resolução CNS nº 510/2016 (BRASIL, 2012; BRASIL, 2016). A Resolução nº 510/2016 dispensa de registro e avaliação pelo sistema CEP/CONEP as pesquisas de opinião pública com participantes não identificados (art. 1º, parágrafo único), entendidas como consulta pontual em que o participante expressa preferência ou avaliação, sem possibilidade de identificação (art. 2º, XIV). A orientação da CONEP é de interpretação restritiva: a dispensa vale apenas quando todos os procedimentos do protocolo se enquadram na hipótese. Coletas que envolvam pessoas identificáveis, dados de saúde, gravação de voz ou testes de usabilidade com idosos exigem submissão ao Comitê de Ética em Pesquisa. Essa distinção orienta o planejamento dos estudos com usuários previstos para a segunda etapa do trabalho.
 
 ## FUNDAMENTOS DE ENGENHARIA DE SOFTWARE
 
@@ -169,7 +169,7 @@ A pesquisa com seres humanos no Brasil é regida pela Resolução CNS nº 466/20
 
 Um processo de software é o conjunto de atividades que leva à produção de um sistema: especificação, projeto e implementação, validação e evolução (SOMMERVILLE, 2019). A norma ISO/IEC/IEEE 12207 organiza os processos do ciclo de vida do software em grupos de acordo, organizacionais, de gestão técnica e técnicos (ISO; IEC; IEEE, 2017). Fuggetta (2000) observa que a qualidade do produto está ligada à qualidade do processo, mas que processos precisam ser adequados ao contexto da equipe. Em equipes pequenas e com prazos curtos, como em um trabalho de conclusão de curso, processos iterativos e incrementais, com entregas frequentes e documentação enxuta, tendem a ser mais adequados (PRESSMAN; MAXIM, 2021).
 
-Além do processo de software, o trabalho lida com **processos de negócio**, entendidos como o encadeamento de atividades que o sistema apoia, com responsáveis, regras e resultados (DUMAS *et al.*, 2018). Ligar cada atividade de negócio aos dados que ela manipula une a visão do processo à visão dos dados, ideia central da matriz integrada descrita no Capítulo 7.
+Além do processo de software, o trabalho lida com **processos de negócio**, entendidos como o encadeamento de atividades que o sistema apoia, com responsáveis, regras e resultados (DUMAS *et al.*, 2018). Ligar cada atividade de negócio aos dados que ela manipula une a visão do processo à visão dos dados, ideia central da matriz integrada descrita no Capítulo 6.
 
 ### Requisitos e casos de uso
 
@@ -193,7 +193,7 @@ c) o **monólito modular** como ponto de partida: Fowler (2015) argumenta que si
 
 ### Qualidade de software
 
-A norma ISO/IEC 25010 define um modelo de qualidade de produto com características como adequação funcional, eficiência de desempenho, compatibilidade, capacidade de interação (que inclui usabilidade e acessibilidade), confiabilidade, segurança, manutenibilidade, flexibilidade (que inclui portabilidade) e proteção (*safety*) (ISO; IEC, 2023). Essas características orientaram a definição dos requisitos não funcionais e das métricas de qualidade apresentadas no Capítulo 12. Em um software de saúde, segurança da informação, confiabilidade e portabilidade têm peso especial, porque falhas nessas dimensões afetam pessoas vulneráveis e a continuidade do cuidado.
+A norma ISO/IEC 25010 define um modelo de qualidade de produto com características como adequação funcional, eficiência de desempenho, compatibilidade, capacidade de interação (que inclui usabilidade e acessibilidade), confiabilidade, segurança, manutenibilidade, flexibilidade (que inclui portabilidade) e proteção (*safety*) (ISO; IEC, 2023). Essas características orientaram a definição dos requisitos não funcionais e das métricas de qualidade apresentadas no Capítulo 11. Em um software de saúde, segurança da informação, confiabilidade e portabilidade têm peso especial, porque falhas nessas dimensões afetam pessoas vulneráveis e a continuidade do cuidado.
 
 ### Integração e entrega contínuas
 
@@ -205,7 +205,7 @@ O padrão de verificação de segurança de aplicações da OWASP (*Application 
 
 ## FUNDAMENTOS ESTATÍSTICOS PARA DETECÇÃO DE MUDANÇA
 
-O motor de métricas proposto no Capítulo 11 se apoia em quatro conceitos estatísticos.
+O motor de métricas proposto no Capítulo 10 se apoia em quatro conceitos estatísticos.
 
 **Estatística robusta.** A média e o desvio-padrão são sensíveis a valores extremos, como uma sessão realizada em um dia de cansaço. A mediana e o desvio absoluto mediano (*Median Absolute Deviation*, MAD) são alternativas robustas. Leys *et al.* (2013) recomendam o MAD multiplicado pela constante 1,4826, que o torna comparável ao desvio-padrão em distribuições normais, como medida de dispersão para detecção de valores atípicos. Com esses dois valores calcula-se o **escore z robusto** de uma observação $x$:
 
@@ -219,4 +219,4 @@ O parâmetro $k$ define a magnitude mínima de mudança de interesse, e $h$ cont
 
 **Procedimentos adaptativos de dificuldade.** Métodos de escada (*staircase*), como os procedimentos transformados de subida e descida de Levitt (1971), ajustam a dificuldade de uma tarefa conforme as respostas para manter a taxa de acerto em um nível-alvo. Sistemas de classificação inspirados no método Elo, originalmente criado para o xadrez, têm sido aplicados em sistemas educacionais adaptativos para estimar simultaneamente a habilidade do usuário e a dificuldade dos itens (PELÁNEK, 2016).
 
-**Avaliação de detectores.** Um detector de mudança é avaliado por sua **sensibilidade** (proporção de mudanças reais detectadas), pela **taxa de falsos alarmes** (alarmes sem mudança real por unidade de tempo), pela **precisão** (proporção de alarmes que correspondem a mudanças reais) e pelo **atraso de detecção** (tempo entre o início da mudança e o alarme). Essas métricas são utilizadas na avaliação em coorte sintética apresentada no Capítulo 12.
+**Avaliação de detectores.** Um detector de mudança é avaliado por sua **sensibilidade** (proporção de mudanças reais detectadas), pela **taxa de falsos alarmes** (alarmes sem mudança real por unidade de tempo), pela **precisão** (proporção de alarmes que correspondem a mudanças reais) e pelo **atraso de detecção** (tempo entre o início da mudança e o alarme). Essas métricas são utilizadas na avaliação em coorte sintética apresentada no Capítulo 11.

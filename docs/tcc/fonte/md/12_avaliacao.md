@@ -20,7 +20,7 @@ A estratégia segue a ideia de pirâmide: muitos testes rápidos e isolados na b
 
 @@FONTE|Elaborado pelos autores (2026).
 
-Os módulos de pontuação e de detecção de mudança recebem atenção especial (RNF32): um erro neles se transforma em alerta incorreto para o cuidador, o que pode causar preocupação indevida ou falsa tranquilidade. A matriz integrada já havia indicado esses módulos como os de maior impacto (Capítulo 7).
+Os módulos de pontuação e de detecção de mudança recebem atenção especial (RNF32): um erro neles se transforma em alerta incorreto para o cuidador, o que pode causar preocupação indevida ou falsa tranquilidade. A matriz integrada já havia indicado esses módulos como os de maior impacto (Capítulo 6).
 
 ## CARACTERÍSTICAS DE QUALIDADE
 
@@ -33,7 +33,7 @@ O {{qua:iso25010}} relaciona as características de qualidade da ISO/IEC 25010 (
 | Adequação funcional | RF01–RF59 | Testes por caso de uso; rastreabilidade na matriz |
 | Eficiência de desempenho | RNF01–RNF03 | Tamanho do pacote na compilação; medição de quadros por segundo |
 | Compatibilidade | Contrato OpenAPI; FHIR (RF58) | Testes de contrato; validador FHIR |
-| Capacidade de interação | RNF04–RNF10, RNF30 | SUS (Estudo C); auditoria WCAG |
+| Capacidade de interação | RNF04–RNF10, RNF30 | SUS em teste de usabilidade (TCC II); auditoria WCAG |
 | Confiabilidade | RNF27 | Teste de restauração do backup; monitoramento de disponibilidade |
 | Segurança | RNF29; RF53–RF55 | Testes de autorização; verificação OWASP ASVS |
 | Manutenibilidade | RNF17; RNF32 | Análise estática; cobertura de testes; ADRs |
@@ -48,13 +48,13 @@ Nesta etapa, foram realizadas as seguintes verificações sobre o protótipo e o
 
 a) **compilação TypeScript**: sem erros (RNF17 atendido);
 
-b) **tamanho do pacote**: 519,8 KB de JavaScript, 137,0 KB compactado (RNF01 atendido apenas na medida compactada e com margem reduzida; ver Capítulo 10);
+b) **tamanho do pacote**: 519,8 KB de JavaScript, 137,0 KB compactado (RNF01 atendido apenas na medida compactada e com margem reduzida; ver Capítulo 9);
 
-c) **matriz integrada**: 386 referências cruzadas verificadas, sem erros, e teste de falha bem-sucedido com referência inválida deliberada (Capítulo 7);
+c) **matriz integrada**: 386 referências cruzadas verificadas, sem erros, e teste de falha bem-sucedido com referência inválida deliberada (Capítulo 6);
 
-d) **modelo de dados**: *script* executado em PostgreSQL 16, com inserção de dados de teste e validação das restrições, dos gatilhos e das visões (Capítulo 9);
+d) **modelo de dados**: *script* executado em PostgreSQL 16, com inserção de dados de teste e validação das restrições, dos gatilhos e das visões (Capítulo 8);
 
-e) **auditoria de código**: quinze achados classificados por gravidade (Capítulo 10);
+e) **auditoria de código**: quinze achados classificados por gravidade (Capítulo 9);
 
 f) **contraste da paleta**: cálculo da razão de contraste de todas as combinações de cor do tema, apresentado a seguir.
 
@@ -106,7 +106,7 @@ Cada paciente sintético foi modelado com as características do {{qua:sim_param
 
 @@FONTE|Elaborado pelos autores (2026).
 
-Foram simulados nove cenários (três frequências × três intensidades de declínio), com 400 pacientes cada (200 estáveis e 200 com declínio), totalizando 3.600 pacientes e cerca de 374 mil sessões. Uma coorte adicional de 400 pacientes, com duas sessões semanais e declínio moderado, foi usada para traçar a curva de compromisso do CUSUM. A simulação usa semente fixa, o que torna os resultados reprodutíveis. O código completo está no Apêndice F.
+Foram simulados nove cenários (três frequências × três intensidades de declínio), com 400 pacientes cada (200 estáveis e 200 com declínio), totalizando 3.600 pacientes e cerca de 374 mil sessões. Uma coorte adicional de 400 pacientes, com duas sessões semanais e declínio moderado, foi usada para traçar a curva de compromisso do CUSUM. A simulação usa semente fixa, o que torna os resultados reprodutíveis. O código completo está no Apêndice C.
 
 ### Métricas de avaliação
 
@@ -136,7 +136,7 @@ A {{tab:sim_resultados}} apresenta os resultados dos nove cenários.
 | 3 | 0,10 | 12,9 | 0,22 | 0,96 | 0,85 | 0,43 | 9,5 |
 | 3 | 0,20 | 12,7 | 0,24 | 1,00 | 0,81 | 0,54 | 6,0 |
 
-@@FONTE|Elaborada pelos autores (2026), a partir da simulação descrita no Apêndice F.
+@@FONTE|Elaborada pelos autores (2026), a partir da simulação descrita no Apêndice C.
 
 A regra de 5% atingiu sensibilidade de 100% em todos os cenários, com atraso de uma a duas semanas. Esse resultado, porém, é um **artefato**: a regra dispara entre 12 e 17 alarmes por paciente-ano, inclusive em pacientes estáveis, e sua precisão fica em torno de 0,22, valor próximo do que se obteria com alarmes ao acaso. Em termos práticos, um cuidador receberia em média **um alerta de declínio a cada três ou quatro semanas, mesmo que nada tivesse mudado**. Com essa frequência, os alertas perdem credibilidade e passam a ser ignorados, fenômeno conhecido como fadiga de alarmes.
 
@@ -146,13 +146,13 @@ A frequência de uso mostrou um compromisso claro: mais sessões aumentam a sens
 
 A {{fig:compromisso}} apresenta a curva de compromisso do CUSUM ao variar o limiar $h$, no cenário de duas sessões semanais e declínio moderado, com a regra de 5% como referência.
 
-@@FIG|compromisso|Compromisso entre sensibilidade e falsos alarmes do CUSUM, com a regra de 5% como referência|img/fig_compromisso.png|Elaborada pelos autores (2026), a partir da simulação descrita no Apêndice F.|14
+@@FIG|compromisso|Compromisso entre sensibilidade e falsos alarmes do CUSUM, com a regra de 5% como referência|img/fig_compromisso.png|Elaborada pelos autores (2026), a partir da simulação descrita no Apêndice C.|14
 
 Ao longo de toda a curva, o CUSUM domina a regra de 5%: para qualquer nível de sensibilidade, produz menos falsos alarmes. Com $h = 8$, valor adotado como padrão, obtiveram-se 94% de sensibilidade e 0,52 falso alarme por paciente-ano. Com $h = 15$, os falsos alarmes caem para 0,15 por paciente-ano, com sensibilidade de 79%. A escolha do limiar é, portanto, uma decisão de projeto que deve envolver profissionais de saúde e os próprios cuidadores, e que pode ser oferecida como configuração com valores padrão conservadores.
 
 A {{fig:trajetoria}} ilustra o comportamento dos dois detectores em um paciente simulado com declínio moderado iniciado na semana 24.
 
-@@FIG|trajetoria|Trajetória simulada de um paciente com declínio iniciado na semana 24|img/fig_trajetoria.png|Elaborada pelos autores (2026), a partir da simulação descrita no Apêndice F.|16
+@@FIG|trajetoria|Trajetória simulada de um paciente com declínio iniciado na semana 24|img/fig_trajetoria.png|Elaborada pelos autores (2026), a partir da simulação descrita no Apêndice C.|16
 
 A figura mostra o efeito de aprendizado nas primeiras sessões, os dias ruins isolados, a faixa pessoal estimada (mediana ± 2 MAD) e os alarmes. A regra de 5% dispara repetidamente desde a semana 5, muito antes de qualquer declínio, reagindo a cada oscilação. O CUSUM permanece em silêncio diante dos dias ruins isolados e dispara apenas quando o acúmulo de sessões acima da faixa se torna consistente.
 

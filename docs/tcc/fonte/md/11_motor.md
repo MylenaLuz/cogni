@@ -36,7 +36,7 @@ As métricas deixam de ser calculadas no navegador, com fórmulas arbitrárias, 
 
 @@FONTE|Elaborado pelos autores (2026).
 
-Cada sessão guarda a versão da fórmula utilizada. Se a fórmula mudar, um *script* recalcula todo o histórico a partir dos eventos, sem perda de dados, propriedade que o modelo de dados já previa ao separar eventos brutos e indicadores consolidados (Capítulo 9). O índice de 0 a 100 exibido ao cuidador é mantido apenas para comunicação e sempre acompanhado das métricas brutas. A {{fig:pipeline}} apresenta o fluxo completo dos dados.
+Cada sessão guarda a versão da fórmula utilizada. Se a fórmula mudar, um *script* recalcula todo o histórico a partir dos eventos, sem perda de dados, propriedade que o modelo de dados já previa ao separar eventos brutos e indicadores consolidados (Capítulo 8). O índice de 0 a 100 exibido ao cuidador é mantido apenas para comunicação e sempre acompanhado das métricas brutas. A {{fig:pipeline}} apresenta o fluxo completo dos dados.
 
 @@FIG|pipeline|Fluxo de dados do registro de eventos ao painel do cuidador|img/06_pipeline.png|Elaborado pelos autores (2026).|16
 
@@ -54,7 +54,7 @@ A cada nova sessão, calcula-se o escore z robusto em relação ao padrão (Cap�
 
 ## DETECÇÃO DE MUDANÇA SUSTENTADA
 
-O detector precisa distinguir **um dia ruim** de **uma tendência sustentada**. A regra atualmente implementada no banco (Capítulo 9) compara a média de uma semana com a da semana anterior e classifica como declínio qualquer piora de 5% ou mais. Como mostra o Capítulo 12, essa regra reage ao ruído natural do desempenho e dispara alertas com muita frequência.
+O detector precisa distinguir **um dia ruim** de **uma tendência sustentada**. A regra atualmente implementada no banco (Capítulo 8) compara a média de uma semana com a da semana anterior e classifica como declínio qualquer piora de 5% ou mais. Como mostra o Capítulo 11, essa regra reage ao ruído natural do desempenho e dispara alertas com muita frequência.
 
 O detector proposto aplica a soma cumulativa unilateral (PAGE, 1954) sobre os escores z robustos:
 
@@ -66,7 +66,7 @@ a) o escore de cada sessão é **limitado a 4**, para que um único valor extrem
 
 b) o parâmetro $k = 0{,}5$ define que desvios menores que meio desvio robusto não acumulam;
 
-c) o limiar $h$ controla o compromisso entre sensibilidade e falsos alarmes. O valor padrão adotado, $h = 8$, foi escolhido a partir da curva de compromisso obtida na simulação (Capítulo 12). Após um alarme, a soma é reiniciada.
+c) o limiar $h$ controla o compromisso entre sensibilidade e falsos alarmes. O valor padrão adotado, $h = 8$, foi escolhido a partir da curva de compromisso obtida na simulação (Capítulo 11). Após um alarme, a soma é reiniciada.
 
 O detector é aplicado a cada métrica separadamente, e um alerta ao cuidador exige mudança sustentada em pelo menos uma métrica principal. Na segunda etapa, o contexto informado pelo cuidador (sono ruim, troca de medicação, doença aguda) será usado para anotar ou suprimir alertas com explicação óbvia.
 
@@ -128,7 +128,7 @@ e) **retenção mínima**: o áudio bruto é apagado após a extração.
 
 A fonte de fala mais natural para a pessoa idosa não é um teste, e sim uma conversa sobre a própria vida. Propõe-se uma **sessão de reminiscência conversacional**: o sistema exibe uma fotografia cadastrada pela família e conduz, por voz, uma conversa com perguntas abertas e acolhedoras ("Quem está nessa foto com você?", "Onde vocês estavam?"). A conversa cumpre três funções ao mesmo tempo: é estímulo de reminiscência, com o benefício de personalização indicado pela literatura (WOODS *et al.*, 2018; DIGITAL..., 2025); gera amostras de fala para os marcadores; e fortalece o vínculo com a memória familiar.
 
-Os limites de comportamento (*guardrails*) são definidos como requisitos: a conversa nunca corrige a pessoa de forma brusca nem cobra acertos; nunca menciona diagnóstico ou doença; encerra-se com gentileza diante de sinais de angústia; e usa apenas memórias revisadas pelo cuidador. O modelo de linguagem, se usado, roda localmente por meio da interface descrita no Capítulo 8, e a sessão continua possível sem ele, com perguntas pré-definidas.
+Os limites de comportamento (*guardrails*) são definidos como requisitos: a conversa nunca corrige a pessoa de forma brusca nem cobra acertos; nunca menciona diagnóstico ou doença; encerra-se com gentileza diante de sinais de angústia; e usa apenas memórias revisadas pelo cuidador. O modelo de linguagem, se usado, roda localmente por meio da interface descrita no Capítulo 7, e a sessão continua possível sem ele, com perguntas pré-definidas.
 
 ## CICLO FECHADO DE INTERVENÇÃO
 
