@@ -1,0 +1,22 @@
+sequenceDiagram
+  autonumber
+  actor U as Cuidador
+  participant F as Front-end
+  participant A as API (FastAPI)
+  participant D as PostgreSQL
+  U->>F: e-mail e senha
+  F->>A: POST /auth/login
+  A->>D: busca usuário por e-mail
+  D-->>A: hash Argon2id
+  A->>A: verifica senha · aplica limite de tentativas
+  A->>D: grava hash do refresh token
+  A-->>F: access token (15 min) no corpo<br/>refresh token em cookie httpOnly
+  Note over F: access token fica só em memória
+  F->>A: GET /idosos (Authorization: Bearer)
+  A->>A: valida JWT · identifica cuidador
+  A->>D: SELECT ... WHERE vínculo = cuidador
+  D-->>A: somente pacientes vinculados
+  A-->>F: 200 JSON
+  F->>A: (token expirado) POST /auth/refresh com cookie
+  A->>D: valida e rotaciona refresh token
+  A-->>F: novo access token

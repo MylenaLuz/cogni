@@ -1,0 +1,21 @@
+flowchart LR
+  FUN["Funcionalidades<br/>FUN-001 a 011"] -- "implementada por" --> PROC["Processos<br/>PROC-001 a 006"]
+  PROC -- "decomposto em" --> ATV["Atividades<br/>ATV-001 a 023"]
+  ATV -- "sujeita a" --> REG["Regras<br/>REG-001 a 013"]
+  ATV -- "lê / cria / atualiza" --> REL["Atividade–Dados<br/>REL-001 a 021"]
+  REL --> TAB["Tabelas<br/>TAB-001 a 007"]
+  TAB -- "contém" --> CAM["Campos<br/>CAM-001 a 050"]
+  subgraph GER["Gerado e validado pelo script"]
+    TR["Rastreabilidade<br/>TR-001 a 057"]
+    VAL["Validação e Resumo<br/>386 referências"]
+  end
+  subgraph APOIO["Apoio"]
+    DEC["Decisões e Dúvidas<br/>DEC-001 a 007"]
+    IA["IA–Prompts<br/>6 usos orientados"]
+  end
+  FUN & PROC & ATV & REG & REL --> TR
+  TR --> VAL
+  classDef a fill:#2C7A7A,color:#fff,stroke:#1E5A5A
+  classDef b fill:#F7F2E9,stroke:#8A9E9E,color:#1C3333
+  class FUN,PROC,ATV,REG,REL,TAB,CAM a
+  class TR,VAL,DEC,IA b

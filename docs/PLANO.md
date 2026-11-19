@@ -686,6 +686,7 @@ Cada decisão abaixo vira uma ADR em F1.6.
 | Data | Item | Commit | Observação |
 | --- | --- | --- | --- |
 | 19/11/2026 | — | — | Plano criado a partir da análise do repositório e da pesquisa de 2026. |
+| 19/11/2026 | F10.1, F10.2 (antecipados) | — | Documento do TCC I gerado em `docs/tcc/`, incluindo simulação da coorte sintética (`docs/tcc/fonte/simulacao/`). Pesquisa de campo ainda pendente. |
 
 ---
 

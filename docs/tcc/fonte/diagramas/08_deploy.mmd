@@ -1,0 +1,12 @@
+flowchart LR
+  subgraph VPS1["VPS atual (qualquer provedor)"]
+    C1["docker compose up -d"] --> S1["caddy · api · postgres"]
+  end
+  subgraph EXT["Armazenamento externo"]
+    BK[("backups diários<br/>rotação 7 + 4")]
+  end
+  subgraph VPS2["Nova VPS (outro provedor)"]
+    C2["1. instalar Docker<br/>2. copiar compose + .env<br/>3. restore.sh<br/>4. docker compose up -d<br/>5. apontar DNS"]
+  end
+  S1 -- "pg_dump diário" --> BK
+  BK -- "restauração" --> C2

@@ -1,0 +1,12 @@
+flowchart LR
+  M["<b>Medir</b><br/>eventos de cada jogo<br/>e marcadores de fala"] --> B["<b>Comparar</b><br/>com o baseline pessoal<br/>(mediana e MAD)"]
+  B --> D{"<b>Mudança<br/>sustentada?</b><br/>CUSUM"}
+  D -- "não" --> P["<b>Personalizar</b><br/>dificuldade adaptativa<br/>plano semanal com reforços"]
+  D -- "sim" --> A["<b>Alertar o cuidador</b><br/>explicação + sugestão de<br/>conversar com profissional"]
+  A --> P
+  P --> R["<b>Intervir</b><br/>atividades, reminiscência,<br/>fatores de risco"]
+  R --> M
+  classDef n fill:#2C7A7A,color:#fff,stroke:#1E5A5A
+  classDef w fill:#F7F2E9,stroke:#D96B6B,color:#1C3333
+  class M,B,P,R n
+  class A w
