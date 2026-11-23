@@ -10,7 +10,7 @@ interface Props { navigate: Navigate; selectedPatientId: string; }
 const hoje = new Intl.DateTimeFormat("pt-BR", { day: "numeric", month: "long", year: "numeric" }).format(new Date());
 
 export default function Dashboard({ navigate }: Props) {
-  const { sair } = useAuth();
+  const { sair, usuario } = useAuth();
   const { carregando, erro, nomeCuidador, patients, recentSessions, sessionsToday, recarregar } = useData();
   const comAlerta = patients.filter((p) => p.alert);
   const recentes = recentSessions.slice(0, 5);
@@ -23,6 +23,11 @@ export default function Dashboard({ navigate }: Props) {
             <p className="text-white/80 text-sm font-500">Olá,</p>
             <h1 className="text-white text-xl font-800 truncate">{nomeCuidador || "…"}</h1>
             <p className="text-white/80 text-sm font-500 mt-0.5">{hoje}</p>
+            {usuario?.instituicao && (
+              <button onClick={() => navigate("institution")} className="mt-2 text-sm font-700 text-white bg-white/20 rounded-full px-3 py-1 hover:bg-white/30">
+                {usuario.instituicao.papel === "gestor" ? "Gestor" : "Equipe"} · {usuario.instituicao.nome}
+              </button>
+            )}
           </div>
           <div className="flex items-center gap-3">
             {nomeCuidador && (

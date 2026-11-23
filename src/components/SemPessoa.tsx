@@ -5,7 +5,9 @@ import type { Patient } from "../data";
 /** Pessoa escolhida para a sessão de jogo (ou undefined, se nenhuma). */
 export function usePessoaDoJogo(id: string): { pessoa: Patient | undefined; carregando: boolean } {
   const { patients, carregando } = useData();
-  return { pessoa: patients.find((p) => p.id === id), carregando };
+  // acompanhantes só visualizam: para eles, o jogo pede outra pessoa
+  const pessoa = patients.find((p) => p.id === id);
+  return { pessoa: pessoa && pessoa.role !== "acompanhante" ? pessoa : undefined, carregando };
 }
 
 /** Tela mostrada quando um jogo é aberto sem uma pessoa escolhida. */

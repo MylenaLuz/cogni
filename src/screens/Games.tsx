@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import type { Navigate, Screen } from "../App";
 import { useData } from "../state/DataContext";
+import { podeJogar } from "../data";
 import Avatar from "../components/Avatar";
 import NavBar from "../components/NavBar";
 
@@ -67,7 +68,8 @@ const games: { id: Screen; name: string; category: string; description: string; 
 
 export default function Games({ navigate, selectedPatientId }: Props) {
   const { patients } = useData();
-  const patient = patients.find((p) => p.id === selectedPatientId);
+  const escolhida = patients.find((p) => p.id === selectedPatientId);
+  const patient = escolhida && podeJogar(escolhida) ? escolhida : undefined;
 
   return (
     <div className="min-h-full bg-background flex flex-col">
@@ -83,6 +85,7 @@ export default function Games({ navigate, selectedPatientId }: Props) {
             <div className="flex-1 min-w-0">
               <p className="text-white/80 text-sm font-500">Sessão para</p>
               <p className="text-white text-base font-700 truncate">{patient?.name ?? "Nenhuma pessoa escolhida"}</p>
+              {escolhida && !patient && <p className="text-white/90 text-sm">Você só acompanha {escolhida.name}; escolha outra pessoa.</p>}
             </div>
             <button
               onClick={() => navigate("patients")}

@@ -1,6 +1,6 @@
 // Tipos usados pelas telas e conversão dos dados da API para eles.
 
-import type { Insight, Jogo, PacienteResumo, SessaoSaida } from "./api/tipos";
+import type { Insight, Jogo, PacienteResumo, PapelEfetivo, SessaoSaida } from "./api/tipos";
 
 /** Pontuação de 0 a 100 por domínio; null quando nenhum jogo daquele domínio foi jogado. */
 export interface CognitiveMetrics {
@@ -26,6 +26,12 @@ export interface Patient {
   learning: { jogo: Jogo; faltam: number }[];
   alert?: string;
   notes?: string;
+  /** Papel do cuidador logado sobre esta pessoa. */
+  role: PapelEfetivo;
+  institution: string | null;
+  condition: string | null;
+  birthDate: string | null;
+  techLevel: string | null;
 }
 
 export interface Session {
@@ -101,6 +107,11 @@ export function paraPatient(p: PacienteResumo): Patient {
     learning: p.por_jogo.filter((j) => j.estado === "aprendendo").map((j) => ({ jogo: j.jogo, faltam: j.faltam })),
     alert: p.alerta ?? undefined,
     notes: p.observacoes ?? undefined,
+    role: p.meu_papel,
+    institution: p.instituicao,
+    condition: p.condicao,
+    birthDate: p.data_nascimento,
+    techLevel: p.nivel_tecnologia,
   };
 }
 
@@ -153,3 +164,14 @@ export function rotuloEstado(estado: Patient["state"]): { label: string; cls: st
 }
 
 export const corIndice = (v: number) => (v >= 65 ? "text-accent-dark" : v >= 50 ? "text-primary" : "text-error");
+
+/** Nome e explicação de cada papel, como aparecem para o cuidador. */
+export const PAPEIS: Record<PapelEfetivo, { nome: string; descricao: string }> = {
+  responsavel: { nome: "Responsável", descricao: "Edita o cadastro, convida e remove cuidadores, joga e vê tudo." },
+  cuidador: { nome: "Cuidador", descricao: "Joga, registra observações e vê tudo; não edita o cadastro." },
+  acompanhante: { nome: "Acompanhante", descricao: "Só acompanha: vê perfil, relatórios e análises." },
+  gestor: { nome: "Gestor", descricao: "Gestor da instituição: administra a pessoa e a equipe." },
+};
+
+export const podeJogar = (p: Patient) => p.role !== "acompanhante";
+export const podeGerenciar = (p: Patient) => p.role === "responsavel" || p.role === "gestor";

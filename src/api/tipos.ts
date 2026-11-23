@@ -11,6 +11,7 @@ export interface Usuario {
   nome_instituicao: string | null;
   versao_termo: string | null;
   termo_aceito_em: string | null;
+  instituicao: { id: string; nome: string; papel: PapelInstituicao } | null;
 }
 
 export interface TokenSaida {
@@ -53,6 +54,10 @@ export interface PacienteResumo {
   dominios: Record<"memoria" | "atencao" | "linguagem" | "executiva" | "visuoespacial", number | null>;
   historico: { semana: string; media: number | null; sessoes: number }[];
   por_jogo: { jogo: Jogo; estado: string; sessoes: number; faltam: number }[];
+  meu_papel: PapelEfetivo;
+  instituicao: string | null;
+  nivel_tecnologia: string | null;
+  data_nascimento: string | null;
 }
 
 export interface SessaoSaida {
@@ -105,4 +110,46 @@ export interface SessaoEntrada {
   eventos: EventoSessao[];
   contexto?: Record<string, unknown>;
   observacoes?: string | null;
+}
+
+// --- papéis, convites e instituição ---
+
+export type PapelVinculo = "responsavel" | "cuidador" | "acompanhante";
+export type PapelEfetivo = PapelVinculo | "gestor";
+export type PapelInstituicao = "gestor" | "profissional";
+
+export interface Vinculo {
+  cuidador_id: string;
+  nome: string;
+  papel: PapelVinculo;
+  voce: boolean;
+}
+
+export interface Convite {
+  codigo: string;
+  papel: string;
+  expira_em: string;
+}
+
+export interface ConviteAceito {
+  tipo: "pessoa" | "instituicao";
+  nome: string;
+  papel: string;
+  paciente_id: string | null;
+}
+
+export interface Membro {
+  cuidador_id: string;
+  nome: string;
+  email: string;
+  papel: PapelInstituicao;
+  voce: boolean;
+}
+
+export interface InstituicaoDetalhe {
+  id: string;
+  nome: string;
+  meu_papel: PapelInstituicao;
+  membros: Membro[];
+  pessoas: { id: string; nome: string; cuidadores: Vinculo[] }[];
 }

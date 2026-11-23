@@ -4,6 +4,7 @@ import { api } from "../api/client";
 import TERMO from "../legal/termo.json";
 import { useAuth } from "../state/AuthContext";
 import Avatar from "../components/Avatar";
+import AccountTeam from "../components/AccountTeam";
 
 interface Props { navigate: Navigate; selectedPatientId: string; }
 
@@ -77,6 +78,8 @@ export default function Account({ navigate }: Props) {
               {usuario.tipo_vinculo && <p className="text-sm text-text-muted">{usuario.tipo_vinculo}</p>}
             </div>
           </section>
+
+          {termoAtual && <AccountTeam navigate={navigate} />}
 
           <section className="bg-surface rounded-2xl border border-border shadow-sm p-4">
             <h2 className="text-base font-700 text-text">Termo de uso e privacidade</h2>

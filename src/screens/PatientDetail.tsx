@@ -1,8 +1,9 @@
 import type { Navigate } from "../App";
-import { corIndice, NOMES_JOGOS, primeiroNome, rotuloEstado, type CognitiveMetrics } from "../data";
+import { corIndice, NOMES_JOGOS, PAPEIS, podeGerenciar, podeJogar, primeiroNome, rotuloEstado, type CognitiveMetrics } from "../data";
 import { useData, useSessoes } from "../state/DataContext";
 import Avatar from "../components/Avatar";
 import NavBar from "../components/NavBar";
+import CareTeam from "../components/CareTeam";
 
 interface Props { navigate: Navigate; selectedPatientId: string; }
 
@@ -90,7 +91,7 @@ const metricTextColor = (v: number) =>
   v >= 65 ? "text-accent-dark" : v >= 45 ? "text-primary" : "text-error";
 
 export default function PatientDetail({ navigate, selectedPatientId }: Props) {
-  const { patients, carregando } = useData();
+  const { patients, carregando, recarregar } = useData();
   const patient = patients.find((p) => p.id === selectedPatientId);
   const sessions = useSessoes(patient?.id, patient?.sessionCount ?? 0) ?? [];
 
@@ -121,13 +122,27 @@ export default function PatientDetail({ navigate, selectedPatientId }: Props) {
               <h1 className="text-white text-lg font-800 truncate">{patient.name}</h1>
               <p className="text-white/80 text-sm">{patient.diagnosis}{patient.age !== null ? ` · ${patient.age} anos` : ""}</p>
             </div>
-            <button
-              onClick={() => navigate("games", patient.id)}
-              className="flex-shrink-0 h-10 px-4 bg-white text-primary rounded-full text-sm font-700 hover:bg-white/90 active:scale-[0.97] transition-all shadow-sm"
-            >
-              + Sessão
-            </button>
+            {podeGerenciar(patient) && (
+              <button
+                onClick={() => navigate("patient-edit", patient.id)}
+                className="flex-shrink-0 h-10 px-4 bg-white/20 text-white rounded-full text-sm font-700 hover:bg-white/30 transition-all"
+              >
+                Editar
+              </button>
+            )}
+            {podeJogar(patient) && (
+              <button
+                onClick={() => navigate("games", patient.id)}
+                className="flex-shrink-0 h-10 px-4 bg-white text-primary rounded-full text-sm font-700 hover:bg-white/90 active:scale-[0.97] transition-all shadow-sm"
+              >
+                + Sessão
+              </button>
+            )}
           </div>
+          <p className="mt-2 text-white/90 text-sm">
+            Você é <strong>{PAPEIS[patient.role].nome.toLowerCase()}</strong>
+            {patient.institution ? ` · ${patient.institution}` : ""}
+          </p>
           {patient.alert && (
             <div className="mt-3 bg-error/20 border border-error/30 rounded-xl px-3 py-2 flex items-center gap-2">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -245,13 +260,25 @@ export default function PatientDetail({ navigate, selectedPatientId }: Props) {
             )}
           </div>
 
+          <CareTeam
+            patient={patient}
+            onSaiu={() => {
+              void recarregar();
+              navigate("patients");
+            }}
+          />
+
           <div className="pb-4">
-            <button
-              onClick={() => navigate("games", patient.id)}
-              className="w-full h-12 bg-primary text-white rounded-2xl text-base font-700 hover:bg-primary-light active:scale-[0.98] transition-all shadow-md"
-            >
-              Iniciar nova sessão com {primeiroNome(patient.name)}
-            </button>
+            {podeJogar(patient) ? (
+              <button
+                onClick={() => navigate("games", patient.id)}
+                className="w-full h-12 bg-primary text-white rounded-2xl text-base font-700 hover:bg-primary-light active:scale-[0.98] transition-all shadow-md"
+              >
+                Iniciar nova sessão com {primeiroNome(patient.name)}
+              </button>
+            ) : (
+              <p className="text-sm text-text-muted text-center">Como acompanhante, você vê o progresso, mas não inicia sessões.</p>
+            )}
           </div>
         </div>
       </div>

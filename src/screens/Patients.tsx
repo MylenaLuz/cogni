@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { Navigate } from "../App";
-import { corIndice, rotuloEstado } from "../data";
+import { corIndice, PAPEIS, rotuloEstado } from "../data";
 import { useData } from "../state/DataContext";
 import Avatar from "../components/Avatar";
 import NavBar from "../components/NavBar";
@@ -80,6 +80,10 @@ export default function Patients({ navigate }: Props) {
                       </span>
                     </div>
                     <p className="text-sm text-text-muted mt-0.5">{p.diagnosis}{p.age !== null ? ` · ${p.age} anos` : ""}</p>
+                    <p className="text-xs text-text-muted mt-0.5">
+                      Você: {PAPEIS[p.role].nome.toLowerCase()}
+                      {p.institution ? ` · ${p.institution}` : ""}
+                    </p>
                     <div className="flex items-center gap-3 mt-3">
                       <div className="flex-1">
                         <div className="flex items-center justify-between mb-1">

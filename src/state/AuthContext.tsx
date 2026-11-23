@@ -11,6 +11,8 @@ interface Auth {
   /** Registra o aceite da versão atual do termo e atualiza o usuário. */
   aceitarTermo: (versao: string) => Promise<void>;
   excluirConta: () => Promise<void>;
+  /** Busca de novo os dados do usuário (após editar perfil, entrar ou sair de instituição). */
+  recarregarUsuario: () => Promise<void>;
 }
 
 const AuthCtx = createContext<Auth | null>(null);
@@ -66,8 +68,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUsuario(null);
   }, []);
 
+  const recarregarUsuario = useCallback(async () => {
+    setUsuario(await api<Usuario>("/auth/eu"));
+  }, []);
+
   return (
-    <AuthCtx.Provider value={{ usuario, carregando, entrar, cadastrar, sair, aceitarTermo, excluirConta }}>
+    <AuthCtx.Provider value={{ usuario, carregando, entrar, cadastrar, sair, aceitarTermo, excluirConta, recarregarUsuario }}>
       {children}
     </AuthCtx.Provider>
   );

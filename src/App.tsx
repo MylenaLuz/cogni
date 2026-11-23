@@ -20,6 +20,8 @@ import Categories from "./screens/games/Categories";
 import Reports from "./screens/Reports";
 import AIInsights from "./screens/AIInsights";
 import Account from "./screens/Account";
+import Institution from "./screens/Institution";
+import PatientEdit from "./screens/PatientEdit";
 import Terms from "./screens/Terms";
 import NewTermsAcceptance from "./screens/NewTermsAcceptance";
 
@@ -40,6 +42,8 @@ export type Screen =
   | "reports"
   | "ai-insights"
   | "account"
+  | "patient-edit"
+  | "institution"
   | "terms";
 
 export type Navigate = (screen: Screen, patientId?: string) => void;
@@ -61,6 +65,8 @@ const CAMINHOS: Record<Screen, string> = {
   reports: "/relatorios",
   "ai-insights": "/insights",
   account: "/conta",
+  "patient-edit": "/pessoas",
+  institution: "/instituicao",
   terms: "/termos",
 };
 
@@ -96,6 +102,7 @@ function useNavegar(): Navigate {
     (tela, id) => {
       if (id) setPessoa(id);
       if (tela === "patient-detail") nav(`/pessoas/${id ?? pessoa}`);
+      else if (tela === "patient-edit") nav(`/pessoas/${id ?? pessoa}/editar`);
       else nav(CAMINHOS[tela]);
     },
     [nav, pessoa, setPessoa],
@@ -163,6 +170,8 @@ export default function App() {
                   <Route path="/pessoas" element={<Tela C={Patients} />} />
                   <Route path="/pessoas/nova" element={<Tela C={PatientNew} />} />
                   <Route path="/pessoas/:id" element={<Tela C={PatientDetail} />} />
+                  <Route path="/pessoas/:id/editar" element={<Tela C={PatientEdit} />} />
+                  <Route path="/instituicao" element={<Tela C={Institution} />} />
                   <Route path="/jogos" element={<Tela C={Games} />} />
                   <Route path="/jogos/imagens" element={<Tela C={GameSession} />} />
                   <Route path="/jogos/atencao" element={<Tela C={AttentionSpeed} />} />
