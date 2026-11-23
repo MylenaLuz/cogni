@@ -1,0 +1,23 @@
+{$DOMINIO} {
+	encode zstd gzip
+
+	# API: /api/* vai para o FastAPI sem o prefixo
+	handle_path /api/* {
+		reverse_proxy api:8000
+	}
+
+	# Front-end: arquivos estáticos, com fallback para o index (rotas do React Router)
+	handle {
+		root * /srv
+		try_files {path} /index.html
+		file_server
+	}
+
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		Permissions-Policy "camera=(), geolocation=(), microphone=(self)"
+		Content-Security-Policy "default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; font-src 'self'; connect-src 'self'; frame-ancestors 'none'"
+	}
+}
