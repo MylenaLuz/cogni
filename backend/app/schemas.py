@@ -52,6 +52,12 @@ class UsuarioSaida(BaseModel):
     telefone: str | None
     tipo_vinculo: str | None
     nome_instituicao: str | None
+    versao_termo: str | None = None
+    termo_aceito_em: datetime | None = None
+
+
+class AceiteEntrada(BaseModel):
+    versao_termo: str = Field(min_length=1, max_length=20)
 
 
 class TokenSaida(BaseModel):

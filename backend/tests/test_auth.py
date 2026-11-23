@@ -129,3 +129,23 @@ def test_recuperacao_de_senha(client):
     assert r.status_code == 400  # uso único
     r = client.post("/auth/login", json={"email": "ana@exemplo.com", "senha": "nova senha segura"})
     assert r.status_code == 200
+
+
+def test_versao_do_termo_aceito_e_novo_aceite(client):
+    token = cadastrar(client)
+    eu = client.get("/auth/eu", headers={"Authorization": f"Bearer {token}"}).json()
+    assert eu["versao_termo"] == "2026-11"
+    r = client.post("/conta/aceite", json={"versao_termo": "2027-01"}, headers={"Authorization": f"Bearer {token}"})
+    assert r.status_code == 204
+    eu = client.get("/auth/eu", headers={"Authorization": f"Bearer {token}"}).json()
+    assert eu["versao_termo"] == "2027-01"
+
+
+def test_versao_do_termo_igual_no_app_e_na_api():
+    import json
+    from pathlib import Path
+
+    from app.schemas import CadastroEntrada
+
+    termo = json.loads((Path(__file__).resolve().parents[2] / "src" / "legal" / "termo.json").read_text("utf-8"))
+    assert CadastroEntrada.model_fields["versao_termo"].default == termo["versao"]

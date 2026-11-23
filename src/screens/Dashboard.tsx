@@ -25,7 +25,11 @@ export default function Dashboard({ navigate }: Props) {
             <p className="text-white/80 text-sm font-500 mt-0.5">{hoje}</p>
           </div>
           <div className="flex items-center gap-3">
-            {nomeCuidador && <Avatar name={nomeCuidador} size="sm" light />}
+            {nomeCuidador && (
+              <button onClick={() => navigate("account")} aria-label="Minha conta" className="rounded-full">
+                <Avatar name={nomeCuidador} size="sm" light />
+              </button>
+            )}
             <button
               onClick={() => void sair()}
               className="h-10 px-4 rounded-full bg-white/20 text-white text-sm font-700 hover:bg-white/30 transition-colors"

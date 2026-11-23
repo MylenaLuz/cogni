@@ -9,6 +9,8 @@ export interface Usuario {
   telefone: string | null;
   tipo_vinculo: string | null;
   nome_instituicao: string | null;
+  versao_termo: string | null;
+  termo_aceito_em: string | null;
 }
 
 export interface TokenSaida {
@@ -32,6 +34,7 @@ export interface CadastroEntrada {
   tipo_vinculo?: string | null;
   nome_instituicao?: string | null;
   aceite_termo: boolean;
+  versao_termo?: string;
   idoso?: IdosoEntrada | null;
 }
 

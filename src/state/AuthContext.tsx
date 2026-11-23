@@ -8,6 +8,9 @@ interface Auth {
   entrar: (email: string, senha: string) => Promise<void>;
   cadastrar: (dados: CadastroEntrada) => Promise<void>;
   sair: () => Promise<void>;
+  /** Registra o aceite da versão atual do termo e atualiza o usuário. */
+  aceitarTermo: (versao: string) => Promise<void>;
+  excluirConta: () => Promise<void>;
 }
 
 const AuthCtx = createContext<Auth | null>(null);
@@ -52,7 +55,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  return <AuthCtx.Provider value={{ usuario, carregando, entrar, cadastrar, sair }}>{children}</AuthCtx.Provider>;
+  const aceitarTermo = useCallback(async (versao: string) => {
+    await api("/conta/aceite", json({ versao_termo: versao }));
+    setUsuario(await api<Usuario>("/auth/eu"));
+  }, []);
+
+  const excluirConta = useCallback(async () => {
+    await api("/conta", { method: "DELETE" });
+    definirToken(null);
+    setUsuario(null);
+  }, []);
+
+  return (
+    <AuthCtx.Provider value={{ usuario, carregando, entrar, cadastrar, sair, aceitarTermo, excluirConta }}>
+      {children}
+    </AuthCtx.Provider>
+  );
 }
 
 export function useAuth(): Auth {

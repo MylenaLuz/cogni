@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import TERMO from "../legal/termo.json";
 import { Navigate } from "../App";
 import { useAuth } from "../state/AuthContext";
 
@@ -49,6 +50,7 @@ export default function Signup({ navigate }: Props) {
         tipo_vinculo: tipoVinculo || null,
         nome_instituicao: tipoVinculo === "Instituição" ? nomeInstituicao : null,
         aceite_termo: aceite,
+        versao_termo: TERMO.versao,
         idoso:
           !skipIdoso && nomeIdoso.trim()
             ? {
@@ -207,8 +209,12 @@ export default function Signup({ navigate }: Props) {
                   className="mt-0.5 w-5 h-5 accent-primary flex-shrink-0"
                 />
                 <span>
-                  Li e aceito o termo de uso e privacidade. Os dados de saúde são tratados como dados sensíveis (LGPD),
-                  usados só para o acompanhamento, e posso exportá-los ou excluí-los quando quiser.
+                  Li e aceito o{" "}
+                  <a href="/termos" target="_blank" rel="noopener" className="text-primary font-700 underline">
+                    termo de uso e política de privacidade
+                  </a>
+                  . Os dados de saúde são tratados como dados sensíveis (LGPD), usados só para o acompanhamento, e posso
+                  exportá-los ou excluí-los quando quiser.
                 </span>
               </label>
             </>

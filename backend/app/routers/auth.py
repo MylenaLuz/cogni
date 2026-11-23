@@ -46,7 +46,17 @@ COOKIE = "cogni_refresh"
 _falhas: dict[str, deque[float]] = defaultdict(deque)
 
 
-def _usuario_saida(c: Cuidador) -> UsuarioSaida:
+def ultimo_aceite(db: Session, usuario_id) -> Consentimento | None:
+    return (
+        db.query(Consentimento)
+        .filter(Consentimento.usuario_id == usuario_id, Consentimento.finalidade == "uso_do_servico")
+        .order_by(Consentimento.aceito_em.desc())
+        .first()
+    )
+
+
+def _usuario_saida(c: Cuidador, db: Session | None = None) -> UsuarioSaida:
+    aceite = ultimo_aceite(db, c.id) if db is not None else None
     return UsuarioSaida(
         id=c.id,
         email=c.usuario.email,
@@ -54,6 +64,8 @@ def _usuario_saida(c: Cuidador) -> UsuarioSaida:
         telefone=c.telefone,
         tipo_vinculo=c.tipo_vinculo,
         nome_instituicao=c.nome_instituicao,
+        versao_termo=aceite.versao_termo if aceite else None,
+        termo_aceito_em=aceite.aceito_em if aceite else None,
     )
 
 
@@ -77,7 +89,7 @@ def _emitir(db: Session, response: Response, cuidador: Cuidador) -> TokenSaida:
         max_age=s.refresh_token_dias * 86400,
         path=s.cookie_path,
     )
-    return TokenSaida(access_token=criar_access_token(cuidador.id), usuario=_usuario_saida(cuidador))
+    return TokenSaida(access_token=criar_access_token(cuidador.id), usuario=_usuario_saida(cuidador, db))
 
 
 def _limite(chave: str) -> None:
@@ -161,8 +173,8 @@ def logout(request: Request, response: Response, db: Session = Depends(get_db)) 
 
 
 @router.get("/eu", response_model=UsuarioSaida)
-def eu(cuidador: Cuidador = Depends(cuidador_atual)) -> UsuarioSaida:
-    return _usuario_saida(cuidador)
+def eu(cuidador: Cuidador = Depends(cuidador_atual), db: Session = Depends(get_db)) -> UsuarioSaida:
+    return _usuario_saida(cuidador, db)
 
 
 @router.post("/esqueci-senha", status_code=202)

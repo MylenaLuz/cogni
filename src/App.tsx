@@ -1,5 +1,6 @@
 import { createContext, useCallback, useContext, useState, type ComponentType, type ReactNode } from "react";
-import { BrowserRouter, Navigate as Redirect, Outlet, Route, Routes, useNavigate, useParams } from "react-router-dom";
+import { BrowserRouter, Navigate as Redirect, Outlet, Route, Routes, useLocation, useNavigate, useParams } from "react-router-dom";
+import TERMO from "./legal/termo.json";
 import { AuthProvider, useAuth } from "./state/AuthContext";
 import { DataProvider } from "./state/DataContext";
 import ErrorBoundary from "./components/ErrorBoundary";
@@ -18,6 +19,9 @@ import MemoryPairs from "./screens/games/MemoryPairs";
 import Categories from "./screens/games/Categories";
 import Reports from "./screens/Reports";
 import AIInsights from "./screens/AIInsights";
+import Account from "./screens/Account";
+import Terms from "./screens/Terms";
+import NewTermsAcceptance from "./screens/NewTermsAcceptance";
 
 export type Screen =
   | "login"
@@ -34,7 +38,9 @@ export type Screen =
   | "game-pairs"
   | "game-categories"
   | "reports"
-  | "ai-insights";
+  | "ai-insights"
+  | "account"
+  | "terms";
 
 export type Navigate = (screen: Screen, patientId?: string) => void;
 
@@ -54,6 +60,8 @@ const CAMINHOS: Record<Screen, string> = {
   "game-categories": "/jogos/categorias",
   reports: "/relatorios",
   "ai-insights": "/insights",
+  account: "/conta",
+  terms: "/termos",
 };
 
 // Pessoa ativa: escolhida no perfil ou no catálogo de jogos; lembrada neste navegador.
@@ -116,8 +124,11 @@ function Carregando() {
 
 function Privado() {
   const { usuario, carregando } = useAuth();
+  const { pathname } = useLocation();
   if (carregando) return <Carregando />;
   if (!usuario) return <Redirect to="/entrar" replace />;
+  // Termo mudou desde o último aceite: pede o novo aceite antes de continuar (Minha conta continua acessível).
+  if (usuario.versao_termo !== TERMO.versao && pathname !== "/conta") return <NewTermsAcceptance />;
   return (
     <DataProvider>
       <Outlet />
@@ -146,6 +157,7 @@ export default function App() {
                   <Route path="/esqueci-senha" element={<Tela C={ForgotPassword} />} />
                 </Route>
                 <Route path="/redefinir-senha" element={<Tela C={ResetPassword} />} />
+                <Route path="/termos" element={<Terms />} />
                 <Route element={<Privado />}>
                   <Route path="/" element={<Tela C={Dashboard} />} />
                   <Route path="/pessoas" element={<Tela C={Patients} />} />
@@ -158,6 +170,7 @@ export default function App() {
                   <Route path="/jogos/categorias" element={<Tela C={Categories} />} />
                   <Route path="/relatorios" element={<Tela C={Reports} />} />
                   <Route path="/insights" element={<Tela C={AIInsights} />} />
+                  <Route path="/conta" element={<Tela C={Account} />} />
                 </Route>
                 <Route path="*" element={<Redirect to="/" replace />} />
               </Routes>

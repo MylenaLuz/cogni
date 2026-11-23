@@ -6,7 +6,8 @@ from sqlalchemy.orm import Session
 from ..config import get_settings
 from ..db import get_db
 from ..deps import cuidador_atual, pacientes_do_cuidador
-from ..models import Cuidador, CuidadorPaciente, LogAcesso
+from ..models import Consentimento, Cuidador, CuidadorPaciente, LogAcesso
+from ..schemas import AceiteEntrada
 
 router = APIRouter(prefix="/conta", tags=["conta"])
 
@@ -71,3 +72,10 @@ def excluir(response: Response, db: Session = Depends(get_db), c: Cuidador = Dep
     db.delete(c.usuario)
     db.commit()
     response.delete_cookie("cogni_refresh", path=get_settings().cookie_path)
+
+
+@router.post("/aceite", status_code=204)
+def aceitar_termo(dados: AceiteEntrada, db: Session = Depends(get_db), c: Cuidador = Depends(cuidador_atual)) -> None:
+    """Registra o aceite de uma nova versão do termo de uso e privacidade."""
+    db.add(Consentimento(usuario_id=c.id, finalidade="uso_do_servico", versao_termo=dados.versao_termo))
+    db.commit()
