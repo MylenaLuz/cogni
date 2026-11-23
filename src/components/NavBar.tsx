@@ -69,7 +69,7 @@ export default function NavBar({ active, navigate }: Props) {
           <button
             key={tab.screen}
             onClick={() => navigate(tab.screen)}
-            className={`flex-1 flex flex-col items-center justify-center gap-1 py-2.5 text-[11px] font-700 transition-colors ${
+            className={`flex-1 flex flex-col items-center justify-center gap-1 py-2.5 text-xs font-700 transition-colors ${
               isActive ? "text-primary" : "text-text-muted hover:text-text"
             }`}
           >

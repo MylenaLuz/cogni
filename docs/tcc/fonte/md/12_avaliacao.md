@@ -4,18 +4,18 @@ Verificação responde à pergunta "estamos construindo o produto corretamente?"
 
 ## ESTRATÉGIA DE TESTES
 
-A estratégia segue a ideia de pirâmide: muitos testes rápidos e isolados na base, menos testes integrados no meio e poucos testes de ponta a ponta no topo. O {{qua:testes}} detalha os níveis previstos.
+A estratégia segue a ideia de pirâmide: muitos testes rápidos e isolados na base, menos testes integrados no meio e poucos testes de ponta a ponta no topo. O {{qua:testes}} detalha os níveis de teste e a situação de cada um na versão final.
 
-@@QUADRO|testes|Níveis de teste previstos
+@@QUADRO|testes|Níveis de teste e situação na versão final
 
-| Nível | Ferramenta | O que verifica | Exemplos |
+| Nível | Ferramenta | O que verifica | Situação na versão final |
 |---|---|---|---|
-| Unitário (*front-end*) | Vitest | Funções puras e componentes isolados | Embaralhamento uniforme; formatação de tempo; componentes de resultado |
-| Unitário (*back-end*) | pytest | Regras de negócio sem servidor | Métricas a partir de eventos conhecidos; baseline; CUSUM com séries sintéticas; política de senha |
-| Integração | pytest + httpx + PostgreSQL temporário | API e banco juntos | Cadastro transacional (falha forçada não deixa registro); cuidador A não acessa paciente de B; renovação e revogação de *tokens* |
-| Contrato | Tipos gerados do OpenAPI | Coerência entre *front-end* e API | Alteração de esquema quebra a verificação de tipos do *front-end* |
-| Ponta a ponta | Playwright | Fluxos completos no navegador | Cadastro, sessão de cada jogo, relatório |
-| Acessibilidade | axe, Lighthouse | Critérios WCAG automatizáveis | Rótulos, contraste, foco, alvos de toque |
+| Unitário (*front-end*) | Vitest | Funções puras | Implementado: embaralhamento uniforme e prévia da pontuação (6 testes) |
+| Unitário (*back-end*) | pytest | Regras de negócio sem servidor | Implementado: pontuação a partir de eventos conhecidos, linha de base, CUSUM com séries sintéticas, textos não diagnósticos, política de senha |
+| Integração | pytest + httpx + PostgreSQL | API e banco juntos | Implementado: cadastro atômico, isolamento entre cuidadores, renovação e revogação de *tokens*, recuperação de senha, exportação e exclusão da conta (25 testes da API no total) |
+| Contrato | Tipos do *front-end* alinhados ao esquema da API | Coerência entre *front-end* e API | Parcial: tipos escritos à mão em `src/api/tipos.ts`; geração automática a partir do OpenAPI fica para o TCC II |
+| Ponta a ponta | Playwright | Fluxos completos no navegador | Executado manualmente: entrar, jogar, salvar sessão com observação, conferir e sair; automação no CI fica para o TCC II |
+| Acessibilidade | Cálculo de contraste; axe e Lighthouse | Critérios WCAG | Contraste verificado em toda a paleta; varredura automatizada fica para o TCC II |
 | Rastreabilidade | `gerar_matriz.py` | Coerência da matriz integrada | 386 referências sem erro |
 
 @@FONTE|Elaborado pelos autores (2026).
@@ -44,42 +44,48 @@ O {{qua:iso25010}} relaciona as características de qualidade da ISO/IEC 25010 (
 
 ## VERIFICAÇÕES REALIZADAS
 
-Nesta etapa, foram realizadas as seguintes verificações sobre o protótipo e os artefatos:
+Na versão final, foram realizadas as seguintes verificações:
 
 a) **compilação TypeScript**: sem erros (RNF17 atendido);
 
-b) **tamanho do pacote**: 519,8 KB de JavaScript, 137,0 KB compactado (RNF01 atendido apenas na medida compactada e com margem reduzida; ver Capítulo 9);
+b) **tamanho do pacote**: 354,2 KB de JavaScript, 99,6 KB compactado com gzip. Com a saída da biblioteca do provedor BaaS, o pacote compactado ficou 27% menor que na versão intermediária (137,0 KB), atendendo ao RNF01;
 
-c) **matriz integrada**: 386 referências cruzadas verificadas, sem erros, e teste de falha bem-sucedido com referência inválida deliberada (Capítulo 6);
+c) **testes automatizados**: 25 testes da API, executados em SQLite e em PostgreSQL 16, e 6 testes do *front-end*, todos aprovados e executados a cada envio pelo GitHub Actions;
 
-d) **modelo de dados**: *script* executado em PostgreSQL 16, com inserção de dados de teste e validação das restrições, dos gatilhos e das visões (Capítulo 8);
+d) **migrações**: aplicação e reversão completas do esquema em PostgreSQL 16, também no CI;
 
-e) **auditoria de código**: quinze achados classificados por gravidade (Capítulo 9);
+e) **subida em ambiente limpo**: o sistema completo (banco, API e *front-end*) foi iniciado com Docker Compose a partir do repositório, seguindo apenas o guia de execução, com dados de demonstração;
 
-f) **contraste da paleta**: cálculo da razão de contraste de todas as combinações de cor do tema, apresentado a seguir.
+f) **fluxo ponta a ponta**: entrar, abrir o perfil, jogar, salvar a sessão com observação, verificar a gravação no banco e sair, no navegador;
+
+g) **matriz integrada**: 386 referências cruzadas verificadas, sem erros (Capítulo 6);
+
+h) **auditoria de código**: os quinze achados da auditoria do protótipo inicial foram corrigidos (Capítulo 9);
+
+i) **contraste da paleta**: todas as combinações de texto e fundo da versão final, apresentadas a seguir.
 
 ## ANÁLISE DE CONTRASTE
 
-A razão de contraste foi calculada pela fórmula de luminância relativa das WCAG (W3C, 2023) para as combinações de texto e fundo usadas na interface. A {{tab:contraste}} apresenta os resultados.
+A razão de contraste foi calculada pela fórmula de luminância relativa das WCAG (W3C, 2023) para as combinações de texto e fundo usadas na interface. A primeira medição, feita sobre a paleta do protótipo, reprovou o texto claro (`#8A9E9E`, 2,52:1 sobre areia), o branco sobre o verde de destaque (`#52B788`, 2,47:1) e deixou o vermelho de erro (`#D96B6B`, 3,35:1) e o verde escuro (`#3D9A6E`, 3,47:1) aptos apenas para texto grande. Os *tokens* de cor foram ajustados, e a {{tab:contraste}} apresenta a paleta final.
 
-@@TABELA|contraste|Razão de contraste das combinações de cor da interface
+@@TABELA|contraste|Razão de contraste das combinações de cor da versão final
 
 | Texto | Fundo | Razão | Nível atingido |
 |---|---|---|---|
 | Texto principal `#1C3333` | Areia `#F7F2E9` | 11,99:1 | AAA |
-| Texto secundário `#5C7070` | Branco `#FFFFFF` | 5,24:1 | AA |
-| Texto secundário `#5C7070` | Areia `#F7F2E9` | 4,70:1 | AA |
+| Texto secundário `#4F6363` | Areia `#F7F2E9` | 5,71:1 | AA |
+| Texto secundário `#4F6363` | Superfície `#EDE8DF` | 5,22:1 | AA |
+| Texto claro `#5F7272` | Branco `#FFFFFF` | 5,08:1 | AA |
+| Texto claro `#5F7272` | Areia `#F7F2E9` | 4,55:1 | AA |
 | Branco | Primária `#2C7A7A` | 5,03:1 | AA |
+| Branco | Destaque escuro `#2B7A55` | 5,23:1 | AA |
+| Erro `#B84444` | Branco `#FFFFFF` | 5,32:1 | AA |
+| Erro `#B84444` | Areia `#F7F2E9` | 4,77:1 | AA |
 | Primária `#2C7A7A` | Areia `#F7F2E9` | 4,51:1 | AA (no limite) |
-| Destaque escuro `#3D9A6E` | Branco | 3,47:1 | Apenas texto grande |
-| Erro `#D96B6B` | Branco | 3,35:1 | Apenas texto grande |
-| Texto claro `#8A9E9E` | Branco | 2,81:1 | Reprovado |
-| Texto claro `#8A9E9E` | Areia `#F7F2E9` | 2,52:1 | Reprovado |
-| Branco | Destaque `#52B788` | 2,47:1 | Reprovado |
 
 @@FONTE|Elaborada pelos autores (2026).
 
-O texto principal tem contraste excelente. Porém, três combinações reprovam inclusive no nível AA, entre elas o texto branco sobre o verde de destaque, usado nos selos de "Novo" do catálogo de jogos, e o tom de texto claro, usado em legendas. Esses resultados contradizem o RNF08 e motivam o ajuste dos *tokens* de cor, especialmente para o modo da pessoa idosa, em que se busca o nível AAA (RNF30).
+Todas as combinações usadas para texto atingem o nível AA (RNF08). O verde claro `#52B788` continua na paleta apenas para preenchimentos, como barras e indicadores, que exigem 3:1 com o fundo. O nível AAA, buscado para o modo da pessoa idosa (RNF30), ainda não é atingido pelos textos secundários e fica como meta do TCC II.
 
 ## AVALIAÇÃO DO MOTOR DE MÉTRICAS EM COORTE SINTÉTICA
 

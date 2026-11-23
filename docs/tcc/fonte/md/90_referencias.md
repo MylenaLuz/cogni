@@ -103,6 +103,8 @@ ISO – INTERNATIONAL ORGANIZATION FOR STANDARDIZATION; IEC – INTERNATIONAL EL
 
 JONES, M.; BRADLEY, J.; SAKIMURA, N. **RFC 7519**: JSON Web Token (JWT). [*S. l.*]: Internet Engineering Task Force, 2015. Disponível em: https://www.rfc-editor.org/rfc/rfc7519. Acesso em: 18 nov. 2026.
 
+KNUTH, D. E. **The art of computer programming**: volume 2: seminumerical algorithms. 3. ed. Reading: Addison-Wesley, 1997.
+
 KÖNIG, A. *et al.* Speech-based digital cognitive assessment for clinical trials: detecting cognitive impairment stages and AD biomarker relations across European cohorts. **Alzheimer's & Dementia**, [*s. l.*], 2026. DOI: 10.1002/alz.71462.
 
 LEVITT, H. Transformed up-down methods in psychoacoustics. **The Journal of the Acoustical Society of America**, New York, v. 49, n. 2B, p. 467-477, 1971.

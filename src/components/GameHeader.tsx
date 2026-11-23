@@ -36,13 +36,13 @@ export default function GameHeader({
           {leftStat && (
             <div className="text-center flex-shrink-0">
               <div className="text-white text-xl font-800 leading-none">{leftStat.value}</div>
-              <div className="text-white/60 text-[10px] font-600 mt-0.5">{leftStat.label}</div>
+              <div className="text-white/60 text-xs font-600 mt-0.5">{leftStat.label}</div>
             </div>
           )}
           {rightStat && (
             <div className="text-center flex-shrink-0 ml-3 pl-3 border-l border-white/20">
               <div className="text-white text-xl font-800 leading-none">{rightStat.value}</div>
-              <div className="text-white/60 text-[10px] font-600 mt-0.5">{rightStat.label}</div>
+              <div className="text-white/60 text-xs font-600 mt-0.5">{rightStat.label}</div>
             </div>
           )}
         </div>

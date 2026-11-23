@@ -64,7 +64,7 @@ export default function GameResult({
             ].map((s) => (
               <div key={s.label} className="bg-background rounded-xl p-3 text-center">
                 <div className={`text-2xl font-800 ${s.color}`}>{s.value}</div>
-                <div className="text-[10px] text-text-muted mt-0.5 font-600">{s.label}</div>
+                <div className="text-xs text-text-muted mt-0.5 font-600">{s.label}</div>
               </div>
             ))}
           </div>
@@ -74,7 +74,7 @@ export default function GameResult({
               {extraStats.map((s) => (
                 <div key={s.label} className="bg-background rounded-xl p-2.5 text-center">
                   <div className="text-base font-800 text-primary">{s.value}</div>
-                  <div className="text-[10px] text-text-muted font-600">{s.label}</div>
+                  <div className="text-xs text-text-muted font-600">{s.label}</div>
                 </div>
               ))}
             </div>

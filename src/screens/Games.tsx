@@ -111,7 +111,7 @@ export default function Games({ navigate, selectedPatientId }: Props) {
                     <div className="flex items-center gap-2 min-w-0">
                       <h3 className="text-base font-700 text-text truncate">{game.name}</h3>
                       {game.badge && (
-                        <span className="text-[9px] font-800 text-white bg-accent px-1.5 py-0.5 rounded-full flex-shrink-0 tracking-wide">{game.badge}</span>
+                        <span className="text-xs font-800 text-white bg-accent px-1.5 py-0.5 rounded-full flex-shrink-0 tracking-wide">{game.badge}</span>
                       )}
                     </div>
                     <span className="text-xs font-600 text-text-muted bg-surface-2 px-2 py-0.5 rounded-full flex-shrink-0">{game.duration}</span>

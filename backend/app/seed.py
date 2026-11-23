@@ -22,6 +22,13 @@ from .services import pontuacao
 EMAIL = "demo@cogni.app"
 SENHA = "cuidar-com-dados"
 
+# Observações fictícias nas sessões mais recentes de cada pessoa (da mais antiga para a mais nova).
+NOTAS = {
+    "estavel": ["Fez com tranquilidade, conversou sobre as frutas da feira.", "Animada hoje, quis jogar de novo."],
+    "melhora": ["Dormiu bem; respondeu rápido e com segurança.", "Pediu para aumentar o nível na próxima vez."],
+    "declinio": ["Pareceu cansado depois do almoço.", "Demorou para começar; perguntou duas vezes o que fazer."],
+}
+
 PESSOAS = [
     {
         "nome": "Maria Silva",
@@ -170,10 +177,12 @@ def popular() -> None:
             sessao.add(p)
             sessao.flush()
             sessao.add(CuidadorPaciente(cuidador_id=cuidador.id, paciente_id=p.id))
-            for jogo, nivel, quando, eventos, contexto in _gerar(rng, pessoa["perfil"]):
+            geradas = _gerar(rng, pessoa["perfil"])
+            notas = dict(zip(range(len(geradas) - 1, -1, -3), reversed(NOTAS[pessoa["perfil"]]), strict=False))
+            for k, (jogo, nivel, quando, eventos, contexto) in enumerate(geradas):
                 objs = [pontuacao.Evento(**e) for e in eventos]
                 nota, metricas = pontuacao.calcular(jogo, objs, contexto)
-                fim = quando + timedelta(milliseconds=max(e["t"] for e in eventos) + 500)
+                fim = quando + timedelta(milliseconds=max((e["t"] for e in eventos), default=0) + 500)
                 s = Sessao(
                     paciente_id=p.id,
                     cuidador_id=cuidador.id,
@@ -186,6 +195,7 @@ def popular() -> None:
                     metricas=metricas,
                     versao_pontuacao=pontuacao.VERSAO,
                     contexto=contexto,
+                    observacoes=notas.get(k),
                 )
                 s.eventos = [
                     SessaoEvento(

@@ -16,7 +16,7 @@ O {{qua:desafios}} apresenta os desafios em ordem aproximada de impacto.
 | 4 | Principal sinal cognitivo não era coletado | Jogos registravam apenas o resultado final | Registro de cada evento com tempo em milissegundos (RF47) |
 | 5 | Documentos contraditórios | Artefatos produzidos em disciplinas e momentos diferentes | Matriz integrada automatizada e reconciliação explícita (Capítulos 5 e 6) |
 | 6 | Interface à frente das regras e dos dados | Prototipação rápida antes da modelagem | Regras pendentes tratadas como condição para implementar o banco |
-| 7 | Defeitos que comprometeriam a demonstração | Protótipo gerado rapidamente e integrado aos poucos | Auditoria técnica e fase de correções prioritárias no plano de execução (Capítulo 9) |
+| 7 | Defeitos que comprometeriam a demonstração | Protótipo gerado rapidamente e integrado aos poucos | Auditoria técnica e correção dos quinze achados antes de novas funcionalidades (Capítulo 9) |
 | 8 | Linguagem com aparência diagnóstica | Textos simulados escritos sem critério regulatório | Linguagem não diagnóstica como requisito (RNF31) e guia de formulações (Capítulo 10) |
 | 9 | Lacunas de LGPD (exclusão, consentimento, multicuidador) | Proteção de dados tratada como tema posterior | Consentimento versionado, exportação, exclusão, auditoria e vínculos N:N (RF53–RF56) |
 | 10 | Acessibilidade aquém do público idoso | Interface única para cuidador e idoso; texto pequeno; contraste insuficiente | Modo dedicado à pessoa idosa, revisão de cores e de alvos de toque (RF51, RNF09, RNF30) |
@@ -42,7 +42,7 @@ O projeto produziu documentos de qualidade em várias disciplinas, mas cada um e
 
 ### Do protótipo convincente ao protótipo verdadeiro
 
-A auditoria do código revelou defeitos que uma demonstração rápida não mostraria, como o botão de salvar sessão que não salva e o nível de dificuldade que não altera o jogo. Um protótipo que parece funcionar, mas não registra dados, é perigoso em uma defesa: a primeira pergunta sobre "onde esse dado foi parar" o desmonta. A lição foi tratar a verificação como atividade contínua e priorizar a correção desses defeitos antes de qualquer nova funcionalidade.
+A auditoria do código revelou defeitos que uma demonstração rápida não mostraria, como o botão de salvar sessão que não salva e o nível de dificuldade que não altera o jogo. Um protótipo que parece funcionar, mas não registra dados, é perigoso em uma defesa: a primeira pergunta sobre "onde esse dado foi parar" o desmonta. A lição foi tratar a verificação como atividade contínua e priorizar a correção desses defeitos antes de qualquer nova funcionalidade. Todos os achados foram corrigidos na versão final, e os testes de uso seguintes ainda revelaram problemas novos, como observações gravadas que nenhuma tela exibia e falsos avisos em jogos de pontuação discreta (Capítulo 9).
 
 ### Da interface ao requisito regulatório
 

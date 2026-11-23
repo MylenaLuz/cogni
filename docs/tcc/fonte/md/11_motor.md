@@ -6,6 +6,8 @@ Este capítulo apresenta a proposta que diferencia o Cogni das soluções analis
 
 O ciclo responde à lacuna identificada na fundamentação. Os ensaios clínicos mostram que intervenções sustentadas e estruturadas funcionam (COE *et al.*, 2026; BAKER *et al.*, 2025), mas a estrutura depende de profissionais. A literatura sobre biomarcadores digitais mostra que o desempenho em tarefas carrega sinal cognitivo, mas falta acompanhamento longitudinal (HAYNES; BAUERMEISTER; BUNCE, 2017). O Cogni propõe unir as duas frentes no ambiente doméstico, com o cuidador como facilitador apoiado pelo sistema.
 
+O Capítulo 9 indica, item a item, quais componentes deste capítulo já estão implementados na versão final e onde a implementação difere da proposta.
+
 Os componentes deste capítulo são **determinísticos, testáveis e auditáveis**. Nenhum deles depende de modelo de linguagem. A IA generativa, quando presente, apenas redige textos a partir dos resultados já calculados.
 
 ## REGISTRO DE EVENTOS BRUTOS
@@ -85,7 +87,7 @@ O alerta é o ponto de contato mais sensível do sistema. Ele precisa ser **comp
 
 @@FONTE|Elaborado pelos autores (2026).
 
-A coluna da esquerda reproduz, em parte, os textos simulados do protótipo atual. A substituição é tratada como requisito (RNF31), pelos motivos regulatórios discutidos no Capítulo 2.
+A coluna da esquerda reproduz, em parte, os textos simulados do protótipo inicial. Na versão final, todos os textos exibidos ao cuidador são gerados pelo motor no formato da coluna da direita (RNF31), pelos motivos regulatórios discutidos no Capítulo 2, e um teste automatizado verifica a ausência de termos diagnósticos.
 
 ## DIFICULDADE ADAPTATIVA
 
@@ -95,7 +97,7 @@ A dificuldade adaptativa tem uma consequência para a medição: se a dificuldad
 
 ## DOMÍNIOS COGNITIVOS DERIVADOS
 
-O gráfico radar dos cinco domínios cognitivos, que no protótipo exibe valores fixos, passa a ser calculado. A tabela `jogo_dominio` do modelo de dados já associa cada jogo aos domínios que estimula, com pesos. O valor de cada domínio é a média ponderada dos escores normalizados das métricas dos jogos que o estimulam, considerando apenas sessões recentes. O mapeamento e seus pesos são documentados e versionados, para que qualquer profissional possa entender de onde vem cada número.
+O gráfico radar dos cinco domínios cognitivos, que no protótipo inicial exibia valores fixos, passa a ser calculado. Na versão final, foi implementada uma forma simplificada, descrita no Capítulo 9: a média das pontuações recentes de cada jogo, ponderada por domínio. A tabela `jogo_dominio` do modelo de dados já associa cada jogo aos domínios que estimula, com pesos. O valor de cada domínio é a média ponderada dos escores normalizados das métricas dos jogos que o estimulam, considerando apenas sessões recentes. O mapeamento e seus pesos são documentados e versionados, para que qualquer profissional possa entender de onde vem cada número.
 
 ## BIOMARCADORES DE FALA
 
