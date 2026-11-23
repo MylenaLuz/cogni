@@ -14,12 +14,12 @@ O {{qua:numeros}} resume a versão final em números.
 
 | Item | Valor |
 |---|---|
-| *Front-end* | React 19, TypeScript, Vite, Tailwind CSS 4, React Router 7; cerca de 4.200 linhas em 12 telas, 3 jogos em telas próprias e 6 componentes |
-| API | FastAPI, SQLAlchemy 2, Alembic, Pydantic; cerca de 1.700 linhas em Python |
+| *Front-end* | React 19, TypeScript, Vite, Tailwind CSS 4, React Router 7; cerca de 4.500 linhas em 15 telas, 3 jogos em telas próprias e 6 componentes |
+| API | FastAPI, SQLAlchemy 2, Alembic, Pydantic; cerca de 1.750 linhas em Python |
 | Banco de dados | PostgreSQL 16, com esquema versionado por migrações |
-| Testes automatizados | 25 testes da API (executados em SQLite e em PostgreSQL) e 6 testes do *front-end* |
+| Testes automatizados | 27 testes da API (executados em SQLite e em PostgreSQL) e 6 testes do *front-end* |
 | Integração contínua | GitHub Actions: verificação de tipos, testes e compilação do *front-end*; análise estática, migrações e testes da API com PostgreSQL |
-| Pacote de produção | 354,2 KB de JavaScript (99,6 KB compactado com gzip) e 38,1 KB de CSS |
+| Pacote de produção | 373,1 KB de JavaScript (105,4 KB compactado com gzip) e 38,5 KB de CSS |
 | Implantação | Docker Compose; em produção, Caddy com HTTPS automático, *scripts* de *backup* e restauração |
 
 @@FONTE|Elaborado pelos autores (2026).
@@ -94,7 +94,7 @@ A {{fig:telas_acesso}} apresenta as telas de entrada e as três etapas do cadast
 |---|---|---|
 | Entrar | E-mail e senha. Em caso de erro, a mensagem é sempre a mesma, sem revelar se o e-mail existe. Após 5 tentativas erradas em 15 minutos, o acesso é bloqueado temporariamente | OWASP ASVS (OWASP FOUNDATION, 2025) |
 | Etapa 1: credenciais | Nome, e-mail, senha e confirmação. A senha precisa ter de 8 a 128 caracteres e não pode estar numa lista de senhas muito comuns. Não há exigência de maiúscula, número ou símbolo | NIST SP 800-63B-4: regras de composição levam a senhas previsíveis; comprimento e bloqueio de senhas comuns são mais eficazes (NATIONAL INSTITUTE OF STANDARDS AND TECHNOLOGY, 2025) |
-| Aceite do termo | Caixa obrigatória com o resumo do tratamento dos dados. O aceite é gravado com data e versão do termo | LGPD, art. 11: dado de saúde exige consentimento específico e destacado (BRASIL, 2018) |
+| Aceite do termo | Caixa obrigatória com o resumo do tratamento dos dados e *link* para o termo de uso e política de privacidade completo, que abre em outra aba sem perder o que já foi preenchido. O aceite é gravado com data e versão do termo | LGPD, art. 11: dado de saúde exige consentimento específico e destacado (BRASIL, 2018); texto integral no Apêndice D |
 | Etapa 2: perfil do cuidador | Telefone e tipo de vínculo: familiar, cuidador profissional ou instituição de repouso. Para instituição, pede-se também o nome do local | Decisão de projeto. Nesta versão, o tipo de vínculo é apenas informativo: não muda permissões nem telas |
 | Etapa 3: pessoa acompanhada | Nome, data de nascimento, condição informada e familiaridade com tecnologia. A etapa é opcional e pode ser feita depois em "Nova pessoa" | Minimização de dados (LGPD, art. 6º, III): só o nome é obrigatório |
 | Recuperar senha | O cuidador informa o e-mail e recebe um *link* válido por 30 minutos e de uso único. A resposta é sempre a mesma, exista ou não a conta | OWASP ASVS (OWASP FOUNDATION, 2025) |
@@ -256,12 +256,38 @@ O {{qua:seguranca}} resume como a versão final trata identidade, acesso e dados
 | Recarregar a página | A sessão é restaurada pelo *cookie* de renovação; as telas internas exigem usuário autenticado | — |
 | Autorização | Toda leitura ou escrita sobre uma pessoa verifica o vínculo com o cuidador. Para quem não tem vínculo, a API responde como se a pessoa não existisse (404) | Evita revelar a existência de registros de terceiros |
 | Auditoria | Cada leitura, alteração, inserção, arquivamento e exportação de dados de uma pessoa gera um registro com usuário, pessoa, ação e horário | LGPD, art. 37 (BRASIL, 2018) |
-| Consentimento | Aceite gravado com finalidade, versão do termo e data | LGPD, art. 11 |
-| Direitos do titular | Exportação completa em JSON e CSV; exclusão da conta | LGPD, art. 18 |
+| Consentimento | Aceite gravado com finalidade, versão do termo e data; novo aceite obrigatório quando o termo muda de versão | LGPD, art. 8º e art. 11 |
+| Direitos do titular | Tela "Minha conta": exportação completa em JSON e exclusão da conta com confirmação; CSV por pessoa nos relatórios | LGPD, art. 18 |
 | Terceiros | Nenhuma fonte, imagem ou biblioteca carregada de outros domínios; fotos substituídas por iniciais | Privacidade por padrão (LGPD, art. 46) |
 | Cabeçalhos em produção | HTTPS obrigatório, HSTS e política de segurança de conteúdo (CSP) no Caddy | OWASP ASVS |
 
 @@FONTE|Elaborado pelos autores (2026).
+
+### Termo de uso e política de privacidade
+
+O termo de uso e a política de privacidade foram reunidos num único documento, exibido na íntegra no Apêndice D. A {{fig:telas_termo}} mostra como ele aparece no sistema, junto com a tela "Minha conta" e o pedido de novo aceite.
+
+@@FIG|telas_termo|Termo de uso, Minha conta e pedido de novo aceite|img/telas_termo.png|Elaborado pelos autores (2026), captura do sistema com dados fictícios.|15
+
+O documento foi escrito **a partir do comportamento real do sistema**, e não de um modelo genérico. Cada promessa feita ao cuidador corresponde a algo implementado e verificado, como mostra o {{qua:termo}}. A regra seguida foi simples: se o sistema não faz, o termo não promete. Onde algo ainda depende da implantação, como a designação do encarregado, o termo diz isso abertamente.
+
+@@QUADRO|termo|Cláusulas do termo e implementação correspondente
+
+| Cláusula do termo | Implementação no sistema | Verificação |
+|---|---|---|
+| O Cogni não faz diagnóstico (seção 2) | Textos gerados pelo motor em linguagem não diagnóstica | Teste automatizado procura termos diagnósticos nos textos |
+| Dados tratados (seção 4) | Exatamente os campos do modelo de dados: cuidador, pessoa, sessões, eventos, registros de acesso e de aceite | Conferência com o esquema do banco (Capítulo 8) |
+| Não usamos os dados para outras finalidades nem os enviamos a terceiros pelo navegador (seções 5 e 7) | Nenhuma ferramenta de análise, anúncio, fonte ou imagem de outros domínios | Inspeção das requisições do navegador; CSP no servidor |
+| Medidas de segurança (seção 8) | Argon2id, HTTPS, sessão de 15 minutos, *cookie* protegido, bloqueio de tentativas, autorização por vínculo, registro de acessos | Testes automatizados de senha, bloqueio, *tokens* e isolamento entre cuidadores |
+| Exclusão imediata e cópias de segurança de até 7 dias (seção 9) | Exclusão em cascata no banco; *script* de *backup* mantém as 7 cópias mais recentes | Teste automatizado de exclusão; leitura do *script* de *backup* |
+| Registros de acesso mantidos sem identificação após a exclusão (seção 9) | Chaves estrangeiras do registro de acesso com `ON DELETE SET NULL` | Esquema do banco |
+| Exportar e excluir em "Minha conta" (seção 10) | Tela "Minha conta" com exportação JSON e exclusão confirmada pela palavra EXCLUIR | Teste no navegador: exportação, exclusão e recusa do login da conta excluída |
+| Um único *cookie*, essencial (seção 11) | *Cookie* de renovação `httpOnly`; a pessoa ativa fica apenas no armazenamento local do navegador | Inspeção do navegador |
+| Novo aceite quando o termo mudar (seção 14) | A API informa a versão aceita; se for diferente da atual, o sistema exibe o termo resumido e só continua após o novo aceite, que fica registrado | Teste automatizado do novo aceite; teste no navegador com versão antiga |
+
+@@FONTE|Elaborado pelos autores (2026), com base em Brasil (2018).
+
+Três decisões merecem destaque. Primeiro, o texto do termo fica num **único arquivo do código-fonte** (`src/legal/termo.json`), do qual são gerados a tela do sistema e o Apêndice D; um teste automatizado garante que a versão do termo é a mesma no *front-end* e na API. Assim, o documento do TCC, o sistema e o registro de consentimento não podem divergir. Segundo, o termo começa por um **resumo em quatro frases**, porque o cuidador lê o termo no celular e, muitas vezes, com pressa. Terceiro, o termo trata do **cadastro de outra pessoa**: o cuidador declara ser responsável legal pela pessoa acompanhada ou ter a autorização dela, ou de quem a represente legalmente, situação comum quando a pessoa tem uma doença neurodegenerativa.
 
 ## QUALIDADE: TESTES E INTEGRAÇÃO CONTÍNUA
 
@@ -291,9 +317,9 @@ Antes da migração de arquitetura, o protótipo inicial passou por uma auditori
 | Média | Textos de 10 e 12 px e poucos atributos de acessibilidade | Mínimo de 12 px, textos principais de 14 a 16 px, rótulos e foco visível |
 | Média | Barra de rolagem oculta | Barra de rolagem visível |
 | Média | Fonte carregada de serviço externo | Fonte servida pelo próprio aplicativo |
-| Baixa | Sem botão de sair | Botão "Sair" no painel |
+| Baixa | Sem botão de sair | Botão "Sair" no painel e em "Minha conta" |
 | Baixa | Dois arquivos de bloqueio de dependências | Apenas o do pnpm |
-| Baixa | Sem testes nem integração contínua | 31 testes automatizados e CI |
+| Baixa | Sem testes nem integração contínua | 33 testes automatizados e CI |
 
 @@FONTE|Elaborado pelos autores (2026).
 
@@ -343,7 +369,7 @@ A versão final deve ser lida com as seguintes limitações:
 
 a) **nenhum número tem validação clínica**. Pontuações, pesos dos domínios e limiares do motor foram escolhidos pelos autores e avaliados apenas em dados simulados (Capítulo 11). Por isso todo texto é não diagnóstico;
 
-b) **o termo de uso e privacidade ainda é apenas o resumo exibido no cadastro**. O documento completo, com finalidades, prazos de retenção e contato do encarregado, precisa ser redigido antes de qualquer uso com pessoas reais;
+b) **o termo de uso e privacidade ainda não passou por revisão jurídica, e o encarregado pelo tratamento de dados ainda não foi designado**. As duas providências são obrigatórias antes de qualquer uso com pessoas reais. Além disso, a correção de dados já cadastrados ainda não tem tela própria: a API permite editar os dados da pessoa acompanhada, mas o pedido de correção, previsto no termo, é feito pelo canal do encarregado;
 
 c) **o tipo de vínculo do cuidador é só informativo**. Permissões diferentes para instituições e o convite de outros cuidadores para a mesma pessoa estão previstos, mas não implementados;
 

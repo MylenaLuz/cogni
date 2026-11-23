@@ -12,9 +12,9 @@ A estratégia segue a ideia de pirâmide: muitos testes rápidos e isolados na b
 |---|---|---|---|
 | Unitário (*front-end*) | Vitest | Funções puras | Implementado: embaralhamento uniforme e prévia da pontuação (6 testes) |
 | Unitário (*back-end*) | pytest | Regras de negócio sem servidor | Implementado: pontuação a partir de eventos conhecidos, linha de base, CUSUM com séries sintéticas, textos não diagnósticos, política de senha |
-| Integração | pytest + httpx + PostgreSQL | API e banco juntos | Implementado: cadastro atômico, isolamento entre cuidadores, renovação e revogação de *tokens*, recuperação de senha, exportação e exclusão da conta (25 testes da API no total) |
+| Integração | pytest + httpx + PostgreSQL | API e banco juntos | Implementado: cadastro atômico, isolamento entre cuidadores, renovação e revogação de *tokens*, recuperação de senha, exportação e exclusão da conta, versão do termo aceito e novo aceite (27 testes da API no total) |
 | Contrato | Tipos do *front-end* alinhados ao esquema da API | Coerência entre *front-end* e API | Parcial: tipos escritos à mão em `src/api/tipos.ts`; geração automática a partir do OpenAPI fica para o TCC II |
-| Ponta a ponta | Playwright | Fluxos completos no navegador | Executado manualmente: entrar, jogar, salvar sessão com observação, conferir e sair; automação no CI fica para o TCC II |
+| Ponta a ponta | Playwright | Fluxos completos no navegador | Executado com Playwright fora do CI: entrar, jogar, salvar sessão com observação, conferir e sair; cadastro com termo, exportação, novo aceite e exclusão da conta. Automação no CI fica para o TCC II |
 | Acessibilidade | Cálculo de contraste; axe e Lighthouse | Critérios WCAG | Contraste verificado em toda a paleta; varredura automatizada fica para o TCC II |
 | Rastreabilidade | `gerar_matriz.py` | Coerência da matriz integrada | 386 referências sem erro |
 
@@ -48,15 +48,15 @@ Na versão final, foram realizadas as seguintes verificações:
 
 a) **compilação TypeScript**: sem erros (RNF17 atendido);
 
-b) **tamanho do pacote**: 354,2 KB de JavaScript, 99,6 KB compactado com gzip. Com a saída da biblioteca do provedor BaaS, o pacote compactado ficou 27% menor que na versão intermediária (137,0 KB), atendendo ao RNF01;
+b) **tamanho do pacote**: 373,1 KB de JavaScript, 105,4 KB compactado com gzip. Mesmo com as telas novas e o texto integral do termo de uso, o pacote compactado ficou 23% menor que na versão intermediária com a biblioteca do provedor BaaS (137,0 KB), atendendo ao RNF01;
 
-c) **testes automatizados**: 25 testes da API, executados em SQLite e em PostgreSQL 16, e 6 testes do *front-end*, todos aprovados e executados a cada envio pelo GitHub Actions;
+c) **testes automatizados**: 27 testes da API, executados em SQLite e em PostgreSQL 16, e 6 testes do *front-end*, todos aprovados e executados a cada envio pelo GitHub Actions;
 
 d) **migrações**: aplicação e reversão completas do esquema em PostgreSQL 16, também no CI;
 
 e) **subida em ambiente limpo**: o sistema completo (banco, API e *front-end*) foi iniciado com Docker Compose a partir do repositório, seguindo apenas o guia de execução, com dados de demonstração;
 
-f) **fluxo ponta a ponta**: entrar, abrir o perfil, jogar, salvar a sessão com observação, verificar a gravação no banco e sair, no navegador;
+f) **fluxos ponta a ponta**: entrar, abrir o perfil, jogar, salvar a sessão com observação, verificar a gravação no banco e sair; e criar conta abrindo o termo, exportar os dados, aceitar uma nova versão do termo e excluir a conta, conferindo que o login da conta excluída é recusado;
 
 g) **matriz integrada**: 386 referências cruzadas verificadas, sem erros (Capítulo 6);
 
