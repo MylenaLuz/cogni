@@ -54,6 +54,18 @@ class UsuarioSaida(BaseModel):
     nome_instituicao: str | None
     versao_termo: str | None = None
     termo_aceito_em: datetime | None = None
+    instituicao: InstituicaoDoUsuario | None = None
+
+
+class InstituicaoDoUsuario(BaseModel):
+    id: uuid.UUID
+    nome: str
+    papel: Literal["gestor", "profissional"]
+
+
+class CuidadorAtualizar(BaseModel):
+    nome_completo: str | None = Field(default=None, min_length=2, max_length=120)
+    telefone: str | None = Field(default=None, max_length=20)
 
 
 class AceiteEntrada(BaseModel):
@@ -96,6 +108,10 @@ class PacienteResumo(BaseModel):
     dominios: dict[str, float | None]
     historico: list[dict]
     por_jogo: list[AnaliseJogoSaida]
+    meu_papel: Literal["responsavel", "cuidador", "acompanhante", "gestor"]
+    instituicao: str | None = None
+    nivel_tecnologia: str | None = None
+    data_nascimento: date | None = None
 
 
 class EventoEntrada(BaseModel):
@@ -153,3 +169,76 @@ class Painel(BaseModel):
     alertas: int
     pacientes: list[PacienteResumo]
     sessoes_recentes: list[SessaoRecente]
+
+
+# --- papéis, convites e instituição ---------------------------------------------------------
+
+PapelVinculo = Literal["responsavel", "cuidador", "acompanhante"]
+PapelInstituicao = Literal["gestor", "profissional"]
+
+
+class VinculoSaida(BaseModel):
+    cuidador_id: uuid.UUID
+    nome: str
+    papel: PapelVinculo
+    voce: bool
+
+
+class ConvitePessoaEntrada(BaseModel):
+    papel: PapelVinculo = "cuidador"
+
+
+class ConviteInstituicaoEntrada(BaseModel):
+    papel: PapelInstituicao = "profissional"
+
+
+class ConviteSaida(BaseModel):
+    codigo: str
+    papel: str
+    expira_em: datetime
+
+
+class AceitarConviteEntrada(BaseModel):
+    codigo: str = Field(min_length=4, max_length=20)
+
+
+class ConviteAceito(BaseModel):
+    tipo: Literal["pessoa", "instituicao"]
+    nome: str
+    papel: str
+    paciente_id: uuid.UUID | None = None
+
+
+class PapelEntrada(BaseModel):
+    papel: PapelVinculo
+
+
+class AtribuirEntrada(BaseModel):
+    cuidador_id: uuid.UUID
+    papel: PapelVinculo = "cuidador"
+
+
+class InstituicaoEntrada(BaseModel):
+    nome: str = Field(min_length=2, max_length=120)
+
+
+class MembroSaida(BaseModel):
+    cuidador_id: uuid.UUID
+    nome: str
+    email: str
+    papel: PapelInstituicao
+    voce: bool
+
+
+class PessoaDaInstituicao(BaseModel):
+    id: uuid.UUID
+    nome: str
+    cuidadores: list[VinculoSaida]
+
+
+class InstituicaoSaida(BaseModel):
+    id: uuid.UUID
+    nome: str
+    meu_papel: PapelInstituicao
+    membros: list[MembroSaida]
+    pessoas: list[PessoaDaInstituicao]

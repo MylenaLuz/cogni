@@ -10,7 +10,15 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from ..db import get_db
-from ..deps import carregar_paciente, cuidador_atual, pacientes_do_cuidador
+from ..deps import (
+    PODE_GERENCIAR,
+    PODE_JOGAR,
+    carregar_paciente,
+    cuidador_atual,
+    gestor_de,
+    pacientes_do_cuidador,
+    papel_sobre,
+)
 from ..models import Cuidador, CuidadorPaciente, Paciente, Sessao, SessaoEvento
 from ..schemas import (
     AnaliseJogoSaida,
@@ -39,7 +47,7 @@ def _pontos(p: Paciente) -> list[motor.Ponto]:
     return [motor.Ponto(s.iniciada_em, s.jogo, s.pontuacao, s.metricas or {}) for s in p.sessoes]
 
 
-def resumo(p: Paciente) -> PacienteResumo:
+def resumo(p: Paciente, papel: str) -> PacienteResumo:
     analise = motor.analisar_paciente(_pontos(p))
     insights = motor.textos_insight(p.nome_completo, analise)
     alerta = next((i["mensagem"] for i in insights if i["tipo"] == "alerta"), None)
@@ -61,30 +69,39 @@ def resumo(p: Paciente) -> PacienteResumo:
         por_jogo=[
             AnaliseJogoSaida(jogo=a.jogo, estado=a.estado, sessoes=a.sessoes, faltam=a.faltam) for a in analise.por_jogo
         ],
+        meu_papel=papel,
+        instituicao=p.instituicao.nome if p.instituicao else None,
+        nivel_tecnologia=p.nivel_tecnologia,
+        data_nascimento=p.data_nascimento,
     )
+
+
+def _resumos(db: Session, c: Cuidador, pacientes: list[Paciente]) -> list[PacienteResumo]:
+    return [resumo(p, papel_sobre(db, c, p) or "acompanhante") for p in pacientes]
 
 
 @router.get("/pacientes", response_model=list[PacienteResumo])
 def listar(db: Session = Depends(get_db), c: Cuidador = Depends(cuidador_atual)) -> list[PacienteResumo]:
-    return [resumo(p) for p in pacientes_do_cuidador(db, c)]
+    return _resumos(db, c, pacientes_do_cuidador(db, c))
 
 
 @router.post("/pacientes", response_model=PacienteResumo, status_code=201)
 def criar(dados: IdosoEntrada, db: Session = Depends(get_db), c: Cuidador = Depends(cuidador_atual)) -> PacienteResumo:
-    p = Paciente(**dados.model_dump())
+    # cadastrada por um gestor, a pessoa passa a pertencer à instituição
+    p = Paciente(**dados.model_dump(), instituicao_id=gestor_de(c))
     db.add(p)
     db.flush()
-    db.add(CuidadorPaciente(cuidador_id=c.id, paciente_id=p.id, papel="principal"))
+    db.add(CuidadorPaciente(cuidador_id=c.id, paciente_id=p.id, papel="responsavel"))
     db.commit()
     db.refresh(p)
-    return resumo(p)
+    return resumo(p, papel_sobre(db, c, p))
 
 
 @router.get("/pacientes/{paciente_id}", response_model=PacienteResumo)
 def detalhar(paciente_id: uuid.UUID, db: Session = Depends(get_db), c: Cuidador = Depends(cuidador_atual)):
     p = carregar_paciente(db, c, paciente_id)
     db.commit()
-    return resumo(p)
+    return resumo(p, papel_sobre(db, c, p))
 
 
 @router.patch("/pacientes/{paciente_id}", response_model=PacienteResumo)
@@ -94,16 +111,16 @@ def atualizar(
     db: Session = Depends(get_db),
     c: Cuidador = Depends(cuidador_atual),
 ) -> PacienteResumo:
-    p = carregar_paciente(db, c, paciente_id, acao="alteracao")
+    p = carregar_paciente(db, c, paciente_id, acao="alteracao", exigir=PODE_GERENCIAR)
     for campo, valor in dados.model_dump(exclude_unset=True).items():
         setattr(p, campo, valor)
     db.commit()
-    return resumo(p)
+    return resumo(p, papel_sobre(db, c, p))
 
 
 @router.delete("/pacientes/{paciente_id}", status_code=204)
 def arquivar(paciente_id: uuid.UUID, db: Session = Depends(get_db), c: Cuidador = Depends(cuidador_atual)) -> None:
-    p = carregar_paciente(db, c, paciente_id, acao="exclusao")
+    p = carregar_paciente(db, c, paciente_id, acao="exclusao", exigir=PODE_GERENCIAR)
     p.ativo = False
     db.commit()
 
@@ -119,7 +136,7 @@ def listar_sessoes(paciente_id: uuid.UUID, db: Session = Depends(get_db), c: Cui
 def registrar_sessao(
     paciente_id: uuid.UUID, dados: SessaoEntrada, db: Session = Depends(get_db), c: Cuidador = Depends(cuidador_atual)
 ) -> Sessao:
-    p = carregar_paciente(db, c, paciente_id, acao="insercao")
+    p = carregar_paciente(db, c, paciente_id, acao="insercao", exigir=PODE_JOGAR)
     if dados.finalizada_em < dados.iniciada_em:
         raise HTTPException(422, "A sessão termina antes de começar.")
     eventos = [pontuacao.Evento(**e.model_dump()) for e in dados.eventos]
@@ -166,7 +183,7 @@ def _recentes(db: Session, pacientes: list[Paciente], limite: int = 10) -> list[
 @router.get("/painel", response_model=Painel)
 def painel(db: Session = Depends(get_db), c: Cuidador = Depends(cuidador_atual)) -> Painel:
     pacientes = pacientes_do_cuidador(db, c)
-    resumos = [resumo(p) for p in pacientes]
+    resumos = _resumos(db, c, pacientes)
     hoje = datetime.now(UTC).date()
     sessoes_hoje = sum(1 for p in pacientes for s in p.sessoes if _aware(s.iniciada_em).date() == hoje)
     return Painel(

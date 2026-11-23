@@ -5,8 +5,8 @@ from sqlalchemy.orm import Session
 
 from ..config import get_settings
 from ..db import get_db
-from ..deps import cuidador_atual, pacientes_do_cuidador
-from ..models import Consentimento, Cuidador, CuidadorPaciente, LogAcesso
+from ..deps import cuidador_atual, pacientes_do_cuidador, papel_sobre
+from ..models import Consentimento, Cuidador, LogAcesso
 from ..schemas import AceiteEntrada
 
 router = APIRouter(prefix="/conta", tags=["conta"])
@@ -30,6 +30,8 @@ def exportar(db: Session = Depends(get_db), c: Cuidador = Depends(cuidador_atual
         "pacientes": [
             {
                 "nome_completo": p.nome_completo,
+                "seu_papel": papel_sobre(db, c, p),
+                "instituicao": p.instituicao.nome if p.instituicao else None,
                 "data_nascimento": p.data_nascimento.isoformat() if p.data_nascimento else None,
                 "condicao": p.condicao,
                 "observacoes": p.observacoes,
@@ -62,13 +64,36 @@ def exportar(db: Session = Depends(get_db), c: Cuidador = Depends(cuidador_atual
 
 @router.delete("", status_code=204)
 def excluir(response: Response, db: Session = Depends(get_db), c: Cuidador = Depends(cuidador_atual)) -> None:
-    """Exclui a conta. Pessoas sem nenhum outro cuidador vinculado são excluídas junto."""
-    for p in pacientes_do_cuidador(db, c):
-        outros = [v for v in p.vinculos if v.cuidador_id != c.id and v.ativo]
+    """Exclui a conta.
+
+    - Pessoas que só esta conta acompanhava são excluídas junto, com todas as sessões.
+    - Se esta conta era a única responsável por uma pessoa que outros acompanham, o cuidador
+      mais antigo (ou, na falta dele, o acompanhante mais antigo) passa a ser o responsável.
+    - Se era o único gestor de uma instituição, o profissional mais antigo vira gestor; sem
+      equipe, a instituição é excluída e as pessoas dela continuam com seus cuidadores.
+    """
+    for v in list(c.vinculos):
+        p = v.paciente
+        outros = sorted((x for x in p.vinculos if x.cuidador_id != c.id and x.ativo), key=lambda x: x.criado_em)
         if not outros:
             db.delete(p)
-    for v in db.query(CuidadorPaciente).filter(CuidadorPaciente.cuidador_id == c.id):
+            continue
+        if v.papel == "responsavel" and not any(x.papel == "responsavel" for x in outros):
+            herdeiro = next((x for x in outros if x.papel == "cuidador"), outros[0])
+            herdeiro.papel = "responsavel"
         db.delete(v)
+
+    m = c.membro
+    if m is not None:
+        inst = m.instituicao
+        equipe = sorted((x for x in inst.membros if x.cuidador_id != c.id), key=lambda x: x.criado_em)
+        if not equipe:
+            db.delete(inst)  # remove também a participação, em cascata
+        else:
+            if m.papel == "gestor" and not any(x.papel == "gestor" for x in equipe):
+                equipe[0].papel = "gestor"
+            db.delete(m)
+
     db.delete(c.usuario)
     db.commit()
     response.delete_cookie("cogni_refresh", path=get_settings().cookie_path)

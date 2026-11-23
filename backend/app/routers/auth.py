@@ -24,6 +24,7 @@ from ..models import (
 )
 from ..schemas import (
     CadastroEntrada,
+    CuidadorAtualizar,
     EsqueciEntrada,
     LoginEntrada,
     RedefinirEntrada,
@@ -39,6 +40,7 @@ from ..security import (
     verificar_senha,
 )
 from ..services import email
+from .equipe import criar_instituicao, instituicao_do_usuario
 
 router = APIRouter(prefix="/auth", tags=["autenticação"])
 
@@ -66,6 +68,7 @@ def _usuario_saida(c: Cuidador, db: Session | None = None) -> UsuarioSaida:
         nome_instituicao=c.nome_instituicao,
         versao_termo=aceite.versao_termo if aceite else None,
         termo_aceito_em=aceite.aceito_em if aceite else None,
+        instituicao=instituicao_do_usuario(c),
     )
 
 
@@ -124,11 +127,15 @@ def cadastro(dados: CadastroEntrada, response: Response, db: Session = Depends(g
     db.add_all([usuario, cuidador])
     db.flush()
     db.add(Consentimento(usuario_id=usuario.id, finalidade="uso_do_servico", versao_termo=dados.versao_termo))
+    # quem se cadastra como instituição cria a instituição e se torna o gestor dela
+    inst_id = None
+    if dados.tipo_vinculo == "Instituição" and (dados.nome_instituicao or "").strip():
+        inst_id = criar_instituicao(db, cuidador, dados.nome_instituicao).id
     if dados.idoso:
-        paciente = Paciente(**dados.idoso.model_dump())
+        paciente = Paciente(**dados.idoso.model_dump(), instituicao_id=inst_id)
         db.add(paciente)
         db.flush()
-        db.add(CuidadorPaciente(cuidador_id=cuidador.id, paciente_id=paciente.id, papel="principal"))
+        db.add(CuidadorPaciente(cuidador_id=cuidador.id, paciente_id=paciente.id, papel="responsavel"))
     db.flush()
     return _emitir(db, response, cuidador)
 
@@ -174,6 +181,18 @@ def logout(request: Request, response: Response, db: Session = Depends(get_db)) 
 
 @router.get("/eu", response_model=UsuarioSaida)
 def eu(cuidador: Cuidador = Depends(cuidador_atual), db: Session = Depends(get_db)) -> UsuarioSaida:
+    return _usuario_saida(cuidador, db)
+
+
+@router.patch("/eu", response_model=UsuarioSaida)
+def atualizar_eu(
+    dados: CuidadorAtualizar, cuidador: Cuidador = Depends(cuidador_atual), db: Session = Depends(get_db)
+) -> UsuarioSaida:
+    for campo, valor in dados.model_dump(exclude_unset=True).items():
+        if campo == "nome_completo" and valor:
+            valor = valor.strip()
+        setattr(cuidador, campo, valor)
+    db.commit()
     return _usuario_saida(cuidador, db)
 
 

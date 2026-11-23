@@ -15,7 +15,17 @@ from datetime import UTC, date, datetime, timedelta
 from sqlalchemy import select
 
 from . import db
-from .models import Consentimento, Cuidador, CuidadorPaciente, Paciente, Sessao, SessaoEvento, Usuario
+from .models import (
+    Consentimento,
+    Cuidador,
+    CuidadorPaciente,
+    Instituicao,
+    MembroInstituicao,
+    Paciente,
+    Sessao,
+    SessaoEvento,
+    Usuario,
+)
 from .security import gerar_hash
 from .services import pontuacao
 
@@ -147,71 +157,136 @@ def _gerar(rng: random.Random, perfil: str, semanas: int = 22):
     return sessoes
 
 
+# Contas da demonstração (todas com a mesma senha) e o que cada uma mostra:
+#   demo@cogni.app     Beatriz, filha: responsável por Maria, José e Antônio
+#   carla@cogni.app    Carla, cuidadora profissional: cuidadora do Antônio, acompanhante da Maria
+#                      e profissional do Residencial Bem Viver, atribuída à Helena
+#   gestor@cogni.app   Lúcia, gestora do Residencial Bem Viver, com Helena e Rubens
+CONTAS = {
+    "demo": (EMAIL, "Beatriz Souza", "Filho(a)", "41999990000"),
+    "carla": ("carla@cogni.app", "Carla Mendes", "Profissional", "41988880000"),
+    "gestor": ("gestor@cogni.app", "Lúcia Ferreira", "Instituição", "4133330000"),
+}
+INSTITUICAO = "Residencial Bem Viver"
+PESSOAS_INSTITUICAO = [
+    {
+        "nome": "Helena Costa",
+        "nasc": date(1941, 7, 2),
+        "cond": "Alzheimer moderado",
+        "perfil": "estavel",
+        "obs": "Gosta de música; prefere atividades pela manhã.",
+    },
+    {
+        "nome": "Rubens Alves",
+        "nasc": date(1946, 11, 18),
+        "cond": "Doença de Parkinson",
+        "perfil": "estavel",
+        "obs": "Tremor nas mãos; usar o nível básico de atenção.",
+    },
+]
+
+
+def _limpar(sessao) -> None:
+    emails = [c[0] for c in CONTAS.values()]
+    for u in sessao.scalars(select(Usuario).where(Usuario.email.in_(emails))):
+        for v in list(u.cuidador.vinculos):
+            sessao.delete(v.paciente)
+        if u.cuidador.membro is not None:
+            inst = u.cuidador.membro.instituicao
+            for pac in list(inst.pacientes):
+                sessao.delete(pac)
+            sessao.delete(inst)
+        sessao.delete(u)
+    sessao.commit()
+
+
+def _conta(sessao, chave: str) -> Cuidador:
+    email, nome, tipo, tel = CONTAS[chave]
+    usuario = Usuario(email=email, senha_hash=gerar_hash(SENHA))
+    cuidador = Cuidador(usuario=usuario, nome_completo=nome, tipo_vinculo=tipo, telefone=tel)
+    sessao.add_all([usuario, cuidador])
+    sessao.flush()
+    sessao.add(Consentimento(usuario_id=usuario.id, finalidade="uso_do_servico", versao_termo="2026-11"))
+    return cuidador
+
+
+def _pessoa(sessao, rng: random.Random, pessoa: dict, quem_joga: Cuidador, instituicao_id=None) -> Paciente:
+    p = Paciente(
+        nome_completo=pessoa["nome"],
+        data_nascimento=pessoa["nasc"],
+        condicao=pessoa["cond"],
+        observacoes=pessoa["obs"],
+        instituicao_id=instituicao_id,
+    )
+    sessao.add(p)
+    sessao.flush()
+    geradas = _gerar(rng, pessoa["perfil"])
+    notas = dict(zip(range(len(geradas) - 1, -1, -3), reversed(NOTAS[pessoa["perfil"]]), strict=False))
+    for k, (jogo, nivel, quando, eventos, contexto) in enumerate(geradas):
+        objs = [pontuacao.Evento(**e) for e in eventos]
+        nota, metricas = pontuacao.calcular(jogo, objs, contexto)
+        fim = quando + timedelta(milliseconds=max((e["t"] for e in eventos), default=0) + 500)
+        s = Sessao(
+            paciente_id=p.id,
+            cuidador_id=quem_joga.id,
+            jogo=jogo,
+            nivel=nivel,
+            iniciada_em=quando,
+            finalizada_em=fim,
+            duracao_ms=int((fim - quando).total_seconds() * 1000),
+            pontuacao=nota,
+            metricas=metricas,
+            versao_pontuacao=pontuacao.VERSAO,
+            contexto=contexto,
+            observacoes=notas.get(k),
+        )
+        s.eventos = [
+            SessaoEvento(
+                ordem=i,
+                t_ms=e["t"],
+                tipo=e["tipo"],
+                alvo=e.get("alvo"),
+                correto=e.get("correto"),
+                reacao_ms=e.get("reacao_ms"),
+                dados=e.get("dados") or {},
+            )
+            for i, e in enumerate(eventos)
+        ]
+        sessao.add(s)
+    return p
+
+
 def popular() -> None:
     db.configurar()
     sessao = next(db.get_db())
     try:
-        existente = sessao.scalar(select(Usuario).where(Usuario.email == EMAIL))
-        if existente:
-            for v in existente.cuidador.vinculos:
-                sessao.delete(v.paciente)
-            sessao.delete(existente)
-            sessao.commit()
-
-        usuario = Usuario(email=EMAIL, senha_hash=gerar_hash(SENHA))
-        cuidador = Cuidador(
-            usuario=usuario, nome_completo="Beatriz Souza", tipo_vinculo="Filho(a)", telefone="41999990000"
-        )
-        sessao.add_all([usuario, cuidador])
-        sessao.flush()
-        sessao.add(Consentimento(usuario_id=usuario.id, finalidade="uso_do_servico", versao_termo="2026-11"))
+        _limpar(sessao)
+        beatriz, carla, lucia = _conta(sessao, "demo"), _conta(sessao, "carla"), _conta(sessao, "gestor")
 
         rng = random.Random(20261123)
+        familia = {}
         for pessoa in PESSOAS:
-            p = Paciente(
-                nome_completo=pessoa["nome"],
-                data_nascimento=pessoa["nasc"],
-                condicao=pessoa["cond"],
-                observacoes=pessoa["obs"],
-            )
-            sessao.add(p)
-            sessao.flush()
-            sessao.add(CuidadorPaciente(cuidador_id=cuidador.id, paciente_id=p.id))
-            geradas = _gerar(rng, pessoa["perfil"])
-            notas = dict(zip(range(len(geradas) - 1, -1, -3), reversed(NOTAS[pessoa["perfil"]]), strict=False))
-            for k, (jogo, nivel, quando, eventos, contexto) in enumerate(geradas):
-                objs = [pontuacao.Evento(**e) for e in eventos]
-                nota, metricas = pontuacao.calcular(jogo, objs, contexto)
-                fim = quando + timedelta(milliseconds=max((e["t"] for e in eventos), default=0) + 500)
-                s = Sessao(
-                    paciente_id=p.id,
-                    cuidador_id=cuidador.id,
-                    jogo=jogo,
-                    nivel=nivel,
-                    iniciada_em=quando,
-                    finalizada_em=fim,
-                    duracao_ms=int((fim - quando).total_seconds() * 1000),
-                    pontuacao=nota,
-                    metricas=metricas,
-                    versao_pontuacao=pontuacao.VERSAO,
-                    contexto=contexto,
-                    observacoes=notas.get(k),
-                )
-                s.eventos = [
-                    SessaoEvento(
-                        ordem=i,
-                        t_ms=e["t"],
-                        tipo=e["tipo"],
-                        alvo=e.get("alvo"),
-                        correto=e.get("correto"),
-                        reacao_ms=e.get("reacao_ms"),
-                        dados=e.get("dados") or {},
-                    )
-                    for i, e in enumerate(eventos)
-                ]
-                sessao.add(s)
+            p = _pessoa(sessao, rng, pessoa, beatriz)
+            sessao.add(CuidadorPaciente(cuidador_id=beatriz.id, paciente_id=p.id, papel="responsavel"))
+            familia[pessoa["nome"]] = p
+        sessao.add(CuidadorPaciente(cuidador_id=carla.id, paciente_id=familia["Antônio Lima"].id, papel="cuidador"))
+        sessao.add(CuidadorPaciente(cuidador_id=carla.id, paciente_id=familia["Maria Silva"].id, papel="acompanhante"))
+
+        inst = Instituicao(nome=INSTITUICAO)
+        sessao.add(inst)
+        sessao.flush()
+        lucia.nome_instituicao = INSTITUICAO
+        sessao.add(MembroInstituicao(instituicao_id=inst.id, cuidador_id=lucia.id, papel="gestor"))
+        sessao.add(MembroInstituicao(instituicao_id=inst.id, cuidador_id=carla.id, papel="profissional"))
+        for pessoa in PESSOAS_INSTITUICAO:
+            p = _pessoa(sessao, rng, pessoa, lucia, instituicao_id=inst.id)
+            sessao.add(CuidadorPaciente(cuidador_id=lucia.id, paciente_id=p.id, papel="responsavel"))
+            if pessoa["nome"] == "Helena Costa":
+                sessao.add(CuidadorPaciente(cuidador_id=carla.id, paciente_id=p.id, papel="cuidador"))
         sessao.commit()
-        print(f"Demonstração criada. Entre com {EMAIL} / {SENHA}")
+        print(f"Demonstração criada. Senha de todas as contas: {SENHA}")
+        for email, nome, _, _ in CONTAS.values():
+            print(f"  {email:<20} {nome}")
     finally:
         sessao.close()
 

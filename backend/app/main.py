@@ -6,7 +6,7 @@ from sqlalchemy import text
 
 from . import db
 from .config import get_settings
-from .routers import auth, conta, pacientes
+from .routers import auth, conta, equipe, pacientes
 
 
 def criar_app() -> FastAPI:
@@ -25,6 +25,7 @@ def criar_app() -> FastAPI:
     app.include_router(auth.router)
     app.include_router(pacientes.router)
     app.include_router(conta.router)
+    app.include_router(equipe.router)
 
     @app.get("/health", tags=["saúde"])
     def health() -> dict:
