@@ -116,6 +116,7 @@ A funcionalidade central é o **painel de métricas do cuidador**, que reúne de
 
 - **Entrar, criar conta, esqueci a senha e redefinir senha**, ligados à API (senha com Argon2id, sessão renovada por cookie seguro).
 - **Painel inicial** com pessoas acompanhadas, sessões do dia, avisos e sessões recentes, tudo vindo do banco.
+- **Perfis e papéis**: em cada pessoa, o usuário é responsável, cuidador ou acompanhante; convites por código; instituições com gestor e profissionais.
 - **Cadastro, lista e perfil** de cada pessoa, com estado em relação ao próprio padrão, sessões que faltam para formar a linha de base, **gráfico radar** dos cinco domínios e evolução de 8 semanas.
 - **Quatro jogos** que gravam os eventos brutos (cada estímulo, toque, omissão e tempo de reação) e salvam a sessão no servidor, que calcula a pontuação.
 - **Relatórios** por pessoa e por período (semana, mês ou 3 meses), com sessões por semana e exportação em CSV.
@@ -227,12 +228,15 @@ pnpm dev
 
 O `docker compose` sobe o PostgreSQL e a API em **http://localhost:8000** (as migrações rodam sozinhas). O seed cria uma conta de demonstração com três pessoas fictícias e meses de sessões simuladas. O front-end fica em **http://localhost:8443**.
 
-### Conta de demonstração
+### Contas de demonstração
 
-| Campo | Valor |
-| --- | --- |
-| E-mail | `demo@cogni.app` |
-| Senha | `cuidar-com-dados` |
+Todas usam a senha `cuidar-com-dados`.
+
+| E-mail | Perfil | O que mostra |
+| --- | --- | --- |
+| `demo@cogni.app` | Beatriz, filha | Responsável por Maria, José e Antônio |
+| `carla@cogni.app` | Carla, cuidadora profissional | Cuidadora do Antônio, acompanhante da Maria e profissional do Residencial Bem Viver, atribuída à Helena |
+| `gestor@cogni.app` | Lúcia, gestora | Gestora do Residencial Bem Viver, com Helena e Rubens |
 
 Os dados de demonstração são **fictícios**. Nenhum dado real de pessoa idosa é usado no projeto.
 

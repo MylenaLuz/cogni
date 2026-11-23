@@ -8,6 +8,9 @@ from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, EmailStr, Field
 
+# versão vigente do termo de uso (igual a src/legal/termo.json; um teste garante)
+VERSAO_TERMO = "2026-11.2"
+
 Jogo = Literal["atencao", "pares", "categorias", "imagens"]
 
 
@@ -27,7 +30,7 @@ class CadastroEntrada(BaseModel):
     tipo_vinculo: str | None = Field(default=None, max_length=40)
     nome_instituicao: str | None = Field(default=None, max_length=120)
     aceite_termo: bool
-    versao_termo: str = "2026-11"
+    versao_termo: str = VERSAO_TERMO
     idoso: IdosoEntrada | None = None
 
 

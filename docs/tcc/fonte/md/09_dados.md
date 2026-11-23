@@ -119,21 +119,24 @@ O princípio da minimização orientou a escolha dos atributos: o esquema não a
 
 ## ADAPTAÇÕES PARA A ARQUITETURA PROPOSTA
 
-A migração para a arquitetura do Capítulo 7 preserva quase todo o modelo, porque ele já foi escrito em PostgreSQL padrão. As adaptações necessárias estão no {{qua:adaptacoes}}.
+A migração para a arquitetura do Capítulo 7 preservou quase todo o modelo, porque ele já foi escrito em PostgreSQL padrão. As adaptações feitas na versão final, aplicadas por duas migrações versionadas com Alembic, estão no {{qua:adaptacoes}}.
 
-@@QUADRO|adaptacoes|Adaptações do modelo de dados para a arquitetura proposta
+@@QUADRO|adaptacoes|Adaptações do modelo de dados na versão final
 
-| Ponto | Situação atual | Adaptação |
+| Ponto | Modelo original | Versão final |
 |---|---|---|
 | Identidade | `cuidador.id` referencia `auth.users`, do BaaS | Nova tabela `usuario`, com e-mail único e *hash* Argon2id, e tabela `refresh_token` |
-| Usuário corrente nas políticas | Função `auth.uid()` do BaaS | Variável de sessão definida pela API a cada transação (`SET LOCAL app.cuidador_id`), mantendo as políticas como **defesa em profundidade** |
+| Controle de acesso | Políticas de segurança em nível de linha com a função `auth.uid()` do BaaS | Autorização na API, por papel, em todas as rotas, coberta por testes automatizados. As políticas no banco, como segunda barreira, ficam para o TCC II |
 | Eventos de sessão | Tabela `sessao_evento` com item, resposta, acerto e tempo | Acrescentar tipo de evento (estímulo, toque, omissão), posição e metadados em JSONB |
 | Versão da pontuação | Inexistente | Coluna `versao_pontuacao` em `sessao`, para recálculo controlado |
 | Consentimento | Inexistente | Tabela `consentimento`, com titular, finalidade, versão do termo e data |
-| Memória afetiva | Inexistente | Tabelas `memoria_afetiva` e `memoria_pessoa`, com referência a arquivos de imagem |
-| Nomes no código | O protótipo grava em `cuidadores` e `idosos` | Alinhar ao modelo (`cuidador` e `paciente`) na migração |
-| Migrações | *Script* SQL único | Migrações versionadas com Alembic |
+| Papéis no acompanhamento | Coluna `papel` em `cuidador_paciente`, sem regras | Papéis `responsavel`, `cuidador` e `acompanhante`, com restrição de valores e data do vínculo; o valor antigo "principal" é convertido em "responsavel" pela migração |
+| Instituições | Inexistente | Tabelas `instituicao` e `membro_instituicao` (papéis `gestor` e `profissional`; cada cuidador em no máximo uma instituição) e coluna `instituicao_id` em `paciente` |
+| Convites | Inexistente | Tabela `convite`, com resumo criptográfico do código, alvo (pessoa ou instituição), papel, validade e uso |
+| Memória afetiva | Inexistente | Prevista para o TCC II |
+| Nomes no código | O protótipo gravava em `cuidadores` e `idosos` | Alinhados ao modelo (`cuidador` e `paciente`) |
+| Migrações | *Script* SQL único | Migrações versionadas com Alembic, testadas na subida e na reversão |
 
 @@FONTE|Elaborado pelos autores (2026).
 
-A manutenção da segurança em nível de linha mesmo após a saída do BaaS é uma escolha deliberada: o filtro por vínculo na API é a primeira barreira, e as políticas no banco são a segunda. Uma falha em uma das camadas não expõe, sozinha, dados de outros cuidadores.
+Na versão final, a barreira de acesso está na API: toda consulta a dados de uma pessoa passa por uma única função que verifica o papel do cuidador, e os testes automatizados cobrem cada papel e o isolamento entre cuidadores e instituições. Reativar as políticas de segurança em nível de linha no PostgreSQL, como segunda barreira independente da API, é um item do roteiro do TCC II: uma falha em uma das camadas deixaria de expor, sozinha, dados de outros cuidadores.

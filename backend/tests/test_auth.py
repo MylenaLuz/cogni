@@ -132,9 +132,11 @@ def test_recuperacao_de_senha(client):
 
 
 def test_versao_do_termo_aceito_e_novo_aceite(client):
+    from app.schemas import VERSAO_TERMO
+
     token = cadastrar(client)
     eu = client.get("/auth/eu", headers={"Authorization": f"Bearer {token}"}).json()
-    assert eu["versao_termo"] == "2026-11"
+    assert eu["versao_termo"] == VERSAO_TERMO
     r = client.post("/conta/aceite", json={"versao_termo": "2027-01"}, headers={"Authorization": f"Bearer {token}"})
     assert r.status_code == 204
     eu = client.get("/auth/eu", headers={"Authorization": f"Bearer {token}"}).json()

@@ -1,11 +1,11 @@
 {
-  "versao": "2026-11",
+  "versao": "2026-11.2",
   "vigencia": "23 de novembro de 2026",
   "titulo": "Termo de Uso e Política de Privacidade do Cogni",
   "resumo": [
     "O Cogni ajuda você, cuidador, a acompanhar o desempenho de uma pessoa em jogos de estimulação cognitiva, sempre em comparação com o padrão dela mesma.",
     "O Cogni não faz diagnóstico, não substitui avaliação profissional e não deve ser usado em situações de urgência.",
-    "Os dados de saúde só são usados para esse acompanhamento. Não vendemos dados, não exibimos anúncios e não usamos os dados para treinar modelos de inteligência artificial.",
+    "Os dados de saúde só são usados para esse acompanhamento e só são vistos por quem você convidar, conforme o papel que você der. Não vendemos dados, não exibimos anúncios e não usamos os dados para treinar modelos de inteligência artificial.",
     "Você pode exportar todos os dados ou excluir a conta a qualquer momento, em Minha conta."
   ],
   "secoes": [
@@ -29,16 +29,17 @@
       "titulo": "3. Quem pode usar",
       "paragrafos": [
         "A conta é pessoal e destinada a maiores de 18 anos.",
-        "Ao cadastrar uma pessoa para acompanhamento, você declara ser responsável legal por ela ou ter a autorização dela, ou de quem a represente legalmente, para registrar os dados e realizar as atividades. Cadastre apenas pessoas com quem você tenha esse vínculo."
+        "Ao cadastrar uma pessoa para acompanhamento, você declara ser responsável legal por ela ou ter a autorização dela, ou de quem a represente legalmente, para registrar os dados e realizar as atividades. Cadastre apenas pessoas com quem você tenha esse vínculo.",
+        "Quem cadastra uma pessoa se torna o responsável por ela e pode convidar outros cuidadores por um código, com um de três papéis: responsável (edita o cadastro e convida), cuidador (joga, registra observações e vê tudo) ou acompanhante (só visualiza). Numa instituição, o gestor vê e administra todas as pessoas da instituição e a equipe; cada profissional vê apenas as pessoas a que o gestor o atribuiu."
       ]
     },
     {
       "titulo": "4. Quais dados tratamos",
       "paragrafos": [
-        "Dados do cuidador: nome, e-mail, telefone, tipo de vínculo (familiar, cuidador profissional ou instituição) e, quando houver, o nome da instituição. A senha nunca é armazenada: guardamos apenas um resumo criptográfico (hash) dela.",
+        "Dados do cuidador: nome, e-mail, telefone, tipo de vínculo (familiar, cuidador profissional ou instituição) e, quando houver, a instituição de que participa e o papel nela. A senha nunca é armazenada: guardamos apenas um resumo criptográfico (hash) dela.",
         "Dados da pessoa acompanhada: nome, data de nascimento, condição informada por você, familiaridade com tecnologia e observações gerais. Somente o nome é obrigatório.",
         "Dados das sessões de jogo: jogo, nível, data e duração; cada evento da partida (estímulo exibido, toque, acerto, erro, omissão e tempo de reação em milissegundos); a pontuação calculada; as observações que você escrever; o tamanho da tela e a hora local da sessão.",
-        "Dados técnicos e de segurança: registro de cada leitura, alteração, inserção, arquivamento e exportação de dados de uma pessoa acompanhada (quem, o quê e quando); registro do seu aceite deste termo, com a versão e a data; e registros técnicos do servidor, como endereço IP e horário das requisições.",
+        "Dados técnicos e de segurança: registro de cada leitura, alteração, inserção, arquivamento e exportação de dados de uma pessoa acompanhada (quem, o quê e quando); registro do seu aceite deste termo, com a versão e a data; quem acompanha cada pessoa e com que papel; os convites gerados e usados; e registros técnicos do servidor, como endereço IP e horário das requisições.",
         "Os dados de saúde da pessoa acompanhada, incluindo a condição informada e o desempenho nos jogos, são dados pessoais sensíveis (LGPD, art. 5º, II) e recebem a proteção descrita neste termo."
       ]
     },
@@ -60,6 +61,7 @@
     {
       "titulo": "7. Com quem os dados podem ser compartilhados",
       "paragrafos": [
+        "Dentro do Cogni, os dados de uma pessoa acompanhada são vistos por quem a acompanha: o responsável, os cuidadores e acompanhantes que ele convidar e, se a pessoa pertencer a uma instituição, o gestor e os profissionais atribuídos. Cada um vê o nome e o papel dos demais. Numa instituição, o gestor vê também o nome e o e-mail dos membros da equipe. Convide apenas pessoas de confiança; o responsável pode remover um convidado a qualquer momento.",
         "Os dados não são compartilhados com terceiros para finalidades próprias deles. Podem ter acesso aos dados, apenas na medida necessária: os provedores que operam a infraestrutura do sistema, como hospedagem e envio de e-mail, que atuam como operadores e seguem nossas instruções; e autoridades públicas, quando houver obrigação legal ou ordem judicial.",
         "Se a hospedagem estiver fora do Brasil, a transferência internacional seguirá as garantias exigidas pelo art. 33 da LGPD.",
         "O sistema não carrega fontes, imagens, ferramentas de análise ou anúncios de outros sites. Nenhum dado é enviado a terceiros pelo seu navegador."
@@ -76,7 +78,7 @@
       "titulo": "9. Por quanto tempo guardamos os dados",
       "paragrafos": [
         "Os dados são mantidos enquanto sua conta estiver ativa.",
-        "Quando você exclui a conta, são apagados imediatamente: seus dados de cuidador, seus vínculos e as pessoas acompanhadas que não tenham outro cuidador vinculado, com todas as sessões e eventos delas. As cópias de segurança do banco são substituídas diariamente e guardam no máximo os últimos 7 dias; depois disso, os dados excluídos deixam de existir também nelas.",
+        "Quando você exclui a conta, são apagados imediatamente: seus dados de cuidador, seus vínculos e as pessoas acompanhadas que não tenham outro cuidador vinculado, com todas as sessões e eventos delas. Se outra pessoa também acompanha alguém de quem você era o único responsável, ela passa a ser a responsável. As cópias de segurança do banco são substituídas diariamente e guardam no máximo os últimos 7 dias; depois disso, os dados excluídos deixam de existir também nelas.",
         "Os registros de acesso são mantidos sem a identificação do cuidador e da pessoa depois da exclusão, apenas para fins de segurança e auditoria."
       ]
     },
@@ -98,7 +100,7 @@
     {
       "titulo": "12. Suas responsabilidades",
       "paragrafos": [
-        "Manter sua senha em sigilo e não compartilhar a conta; informar dados verdadeiros; cadastrar apenas pessoas com quem você tenha o vínculo descrito na seção 3; e não usar os resultados do Cogni como diagnóstico ou para decidir tratamentos sem orientação profissional."
+        "Manter sua senha em sigilo e não compartilhar a conta; informar dados verdadeiros; cadastrar apenas pessoas com quem você tenha o vínculo descrito na seção 3; compartilhar códigos de convite apenas com quem deve acompanhar a pessoa, e remover quem não deve mais ter acesso; e não usar os resultados do Cogni como diagnóstico ou para decidir tratamentos sem orientação profissional."
       ]
     },
     {

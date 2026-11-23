@@ -342,7 +342,7 @@ Cada decisão abaixo vira uma ADR em F1.6.
   - **Front:** telas de cadastro e edição de idoso. Isso cumpre o item "cadastros básicos" do cronograma.
   - **Pronto quando:** o cuidador cadastra, edita e arquiva um idoso pela interface.
 
-- [ ] **F5.3** 🟡 Convidar outro cuidador
+- [x] **F5.3** 🟡 Convidar outro cuidador
   - **Contexto:** em geral há vários familiares envolvidos no cuidado.
   - **Solução:** convite por e-mail com token e escolha de papel.
   - **Pronto quando:** dois cuidadores veem o mesmo idoso.
@@ -690,6 +690,7 @@ Cada decisão abaixo vira uma ADR em F1.6.
 | 22/11/2026 | F2, F3, F5, F6.3, F9 | eb14cc6 | API própria em FastAPI + PostgreSQL, autenticação, cadastros, sessões, pontuação v1 e motor de mudança. 24 testes. |
 | 23/11/2026 | F0, F1.4, F1.5, F4, F6.1, F6.2, F7.2, F7.4, F8.1–F8.5 | — | Front-end ligado à API, Supabase removido, jogos gravam eventos brutos e salvam sessões, cadastro de pessoa, relatórios com CSV, contraste AA, fonte local, testes Vitest e CI. |
 
+| 23/11/2026 | F5.3, cadastros básicos | — | Papéis por pessoa (responsável, cuidador, acompanhante), convites por código, instituições com gestor e profissionais, edição e arquivamento de cadastros, termo de uso 2026-11.2. 41 testes. |
 ---
 
 ## Referências da pesquisa

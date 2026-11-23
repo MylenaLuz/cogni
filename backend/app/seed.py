@@ -26,6 +26,7 @@ from .models import (
     SessaoEvento,
     Usuario,
 )
+from .schemas import VERSAO_TERMO
 from .security import gerar_hash
 from .services import pontuacao
 
@@ -206,7 +207,7 @@ def _conta(sessao, chave: str) -> Cuidador:
     cuidador = Cuidador(usuario=usuario, nome_completo=nome, tipo_vinculo=tipo, telefone=tel)
     sessao.add_all([usuario, cuidador])
     sessao.flush()
-    sessao.add(Consentimento(usuario_id=usuario.id, finalidade="uso_do_servico", versao_termo="2026-11"))
+    sessao.add(Consentimento(usuario_id=usuario.id, finalidade="uso_do_servico", versao_termo=VERSAO_TERMO))
     return cuidador
 
 

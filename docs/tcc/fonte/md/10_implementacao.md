@@ -14,12 +14,12 @@ O {{qua:numeros}} resume a versão final em números.
 
 | Item | Valor |
 |---|---|
-| *Front-end* | React 19, TypeScript, Vite, Tailwind CSS 4, React Router 7; cerca de 4.500 linhas em 15 telas, 3 jogos em telas próprias e 6 componentes |
-| API | FastAPI, SQLAlchemy 2, Alembic, Pydantic; cerca de 1.750 linhas em Python |
+| *Front-end* | React 19, TypeScript, Vite, Tailwind CSS 4, React Router 7; cerca de 5.300 linhas em 17 telas, 3 jogos em telas próprias e 9 componentes |
+| API | FastAPI, SQLAlchemy 2, Alembic, Pydantic; cerca de 2.400 linhas em Python |
 | Banco de dados | PostgreSQL 16, com esquema versionado por migrações |
-| Testes automatizados | 27 testes da API (executados em SQLite e em PostgreSQL) e 6 testes do *front-end* |
+| Testes automatizados | 35 testes da API (executados em SQLite e em PostgreSQL) e 6 testes do *front-end* |
 | Integração contínua | GitHub Actions: verificação de tipos, testes e compilação do *front-end*; análise estática, migrações e testes da API com PostgreSQL |
-| Pacote de produção | 373,1 KB de JavaScript (105,4 KB compactado com gzip) e 38,5 KB de CSS |
+| Pacote de produção | 395,9 KB de JavaScript (110,1 KB compactado com gzip) e 39,4 KB de CSS |
 | Implantação | Docker Compose; em produção, Caddy com HTTPS automático, *scripts* de *backup* e restauração |
 
 @@FONTE|Elaborado pelos autores (2026).
@@ -95,7 +95,7 @@ A {{fig:telas_acesso}} apresenta as telas de entrada e as três etapas do cadast
 | Entrar | E-mail e senha. Em caso de erro, a mensagem é sempre a mesma, sem revelar se o e-mail existe. Após 5 tentativas erradas em 15 minutos, o acesso é bloqueado temporariamente | OWASP ASVS (OWASP FOUNDATION, 2025) |
 | Etapa 1: credenciais | Nome, e-mail, senha e confirmação. A senha precisa ter de 8 a 128 caracteres e não pode estar numa lista de senhas muito comuns. Não há exigência de maiúscula, número ou símbolo | NIST SP 800-63B-4: regras de composição levam a senhas previsíveis; comprimento e bloqueio de senhas comuns são mais eficazes (NATIONAL INSTITUTE OF STANDARDS AND TECHNOLOGY, 2025) |
 | Aceite do termo | Caixa obrigatória com o resumo do tratamento dos dados e *link* para o termo de uso e política de privacidade completo, que abre em outra aba sem perder o que já foi preenchido. O aceite é gravado com data e versão do termo | LGPD, art. 11: dado de saúde exige consentimento específico e destacado (BRASIL, 2018); texto integral no Apêndice D |
-| Etapa 2: perfil do cuidador | Telefone e tipo de vínculo: familiar, cuidador profissional ou instituição de repouso. Para instituição, pede-se também o nome do local | Decisão de projeto. Nesta versão, o tipo de vínculo é apenas informativo: não muda permissões nem telas |
+| Etapa 2: perfil do cuidador | Telefone e tipo de vínculo: familiar, cuidador profissional ou instituição de repouso. Para instituição, pede-se também o nome do local, e o cadastro cria a instituição com o cuidador como gestor | Perfis e papéis descritos na seção "Perfis, papéis e instituições" |
 | Etapa 3: pessoa acompanhada | Nome, data de nascimento, condição informada e familiaridade com tecnologia. A etapa é opcional e pode ser feita depois em "Nova pessoa" | Minimização de dados (LGPD, art. 6º, III): só o nome é obrigatório |
 | Recuperar senha | O cuidador informa o e-mail e recebe um *link* válido por 30 minutos e de uso único. A resposta é sempre a mesma, exista ou não a conta | OWASP ASVS (OWASP FOUNDATION, 2025) |
 
@@ -197,6 +197,63 @@ A tela também explica, em linguagem simples, como o Cogni analisa os dados ("Co
 
 Todos os textos seguem a regra de linguagem do Capítulo 10: descrevem mudança em relação ao padrão da própria pessoa e nunca usam termos como "declínio", "diagnóstico" ou "risco".
 
+### Perfis, papéis e instituições
+
+Um cuidador quase nunca cuida sozinho. A filha que organiza a rotina, a cuidadora contratada que faz as atividades durante a semana e o neto que só quer acompanhar o progresso precisam de acessos diferentes à mesma pessoa. Numa casa de repouso, a situação se repete em escala: um gestor organiza a equipe e cada profissional cuida de algumas pessoas. A versão final trata os dois casos com **papéis**.
+
+O papel não pertence ao usuário, e sim ao **vínculo entre o usuário e cada pessoa acompanhada**. A mesma cuidadora pode ser cuidadora de uma pessoa e acompanhante de outra. O {{qua:permissoes}} apresenta o que cada papel pode fazer.
+
+@@QUADRO|permissoes|Papéis e permissões sobre uma pessoa acompanhada
+
+| Papel | Ver perfil, relatórios e análises | Jogar e registrar observações | Editar e arquivar o cadastro | Convidar, mudar papéis e remover cuidadores |
+|---|---|---|---|---|
+| Responsável | Sim | Sim | Sim | Sim |
+| Cuidador | Sim | Sim | Não | Não |
+| Acompanhante | Sim | Não | Não | Não |
+| Gestor da instituição | Sim, para todas as pessoas da instituição | Sim | Sim | Sim, inclusive atribuir profissionais da equipe |
+
+@@FONTE|Elaborado pelos autores (2026).
+
+A {{fig:telas_papeis}} mostra como os papéis aparecem para uma cuidadora profissional fictícia que acompanha três pessoas com papéis diferentes.
+
+@@FIG|telas_papeis|Papéis no acompanhamento|img/telas_papeis.png|Elaborado pelos autores (2026), captura do sistema com dados fictícios.|15
+
+a) **na lista de pessoas** ({{fig:telas_papeis}}, parte a), cada pessoa mostra o papel do usuário e, quando for o caso, a instituição;
+
+b) **no perfil de quem só acompanha** ({{fig:telas_papeis}}, parte b), os botões de iniciar sessão e de editar não aparecem. Se o acompanhante tentar abrir um jogo para essa pessoa, o sistema pede outra pessoa; e, se tentar pela API, recebe a resposta 403;
+
+c) **no quadro "Quem acompanha"** ({{fig:telas_papeis}}, parte c), todos veem quem mais acompanha a pessoa e com que papel. O responsável muda papéis, remove cuidadores e gera **códigos de convite**. Qualquer cuidador pode deixar de acompanhar.
+
+**Convites por código.** O responsável escolhe o papel e gera um código de oito caracteres, como `7DBA-EB5J`, válido por 7 dias e para um único uso. O convidado cria a própria conta e digita o código em "Minha conta". O código evita depender do envio de e-mail, pode ser passado por mensagem ou pessoalmente, e usa só letras e números que não se confundem ao ler em voz alta (sem 0, O, 1, I e L). No banco, fica apenas o resumo criptográfico do código, como acontece com as senhas.
+
+**Instituições.** A {{fig:telas_instituicao}} mostra a tela de gestão de uma instituição fictícia.
+
+@@FIG|telas_instituicao|Gestão da instituição e uso do código de convite|img/telas_instituicao.png|Elaborado pelos autores (2026), captura do sistema com dados fictícios.|15
+
+Quem se cadastra como instituição, ou cria uma instituição em "Minha conta", torna-se o **gestor**. O gestor convida a equipe por código ({{fig:telas_instituicao}}, parte a), cadastra as pessoas, que passam a pertencer à instituição, e decide quais profissionais acompanham cada pessoa e com que papel ({{fig:telas_instituicao}}, parte b). Cada **profissional** vê no painel apenas as pessoas a que foi atribuído. Quando sai ou é removido da equipe, perde o acesso a todas as pessoas da instituição.
+
+Quatro regras protegem a continuidade do cuidado e foram cobertas por testes automatizados:
+
+a) **toda pessoa tem pelo menos um responsável**: o último responsável não pode sair nem perder o papel sem antes indicar outro;
+
+b) **toda instituição tem pelo menos um gestor**;
+
+c) **ao excluir a conta**, se outro cuidador acompanha uma pessoa de quem a conta era a única responsável, o cuidador mais antigo assume a responsabilidade; se a conta era a única gestora, o profissional mais antigo assume a gestão;
+
+d) **sem acesso, a resposta é sempre "não encontrada" (404)**, para não revelar a existência de pessoas de outras famílias ou instituições; com acesso, mas papel insuficiente, a resposta é "não permitido" (403).
+
+A conta de demonstração foi ampliada para mostrar os perfis. Todas as contas abaixo usam a mesma senha e só têm dados fictícios:
+
+a) **demo@cogni.app**: Beatriz, filha, responsável por Maria, José e Antônio;
+
+b) **carla@cogni.app**: Carla, cuidadora profissional; é cuidadora do Antônio, acompanhante da Maria e profissional da instituição, atribuída à Helena;
+
+c) **gestor@cogni.app**: Lúcia, gestora do Residencial Bem Viver, com Helena e Rubens.
+
+### Edição e arquivamento dos cadastros
+
+O responsável, ou o gestor, edita o cadastro da pessoa pelo botão "Editar" do perfil, no mesmo formulário usado no cadastro, e pode **arquivá-la**. A pessoa arquivada sai das listas de todos, mas o histórico continua guardado. O cuidador edita os próprios dados (nome e telefone) em "Minha conta". Com isso, as entidades principais do sistema (cuidador, pessoa acompanhada, sessão, vínculo e instituição) têm cadastro completo: criar, consultar, editar e excluir ou arquivar.
+
 ## JOGOS COGNITIVOS
 
 O catálogo tem quatro jogos, cada um com três níveis. Os jogos seguem os princípios da terapia de estimulação cognitiva: atividades estruturadas, variadas, que envolvem memória, linguagem e atenção, em clima positivo e sem caráter de prova (SPECTOR *et al.*, 2003; WOODS *et al.*, 2023). As figuras {{fig:telas_jogos1}}, {{fig:telas_jogos2}} e {{fig:telas_jogos3}} apresentam o catálogo, cada jogo e a tela de resultado.
@@ -254,7 +311,7 @@ O {{qua:seguranca}} resume como a versão final trata identidade, acesso e dados
 | Armazenamento da senha | Hash com Argon2id; a senha nunca é gravada | RFC 9106 (BIRYUKOV *et al.*, 2021) |
 | Sessão | *Token* de acesso JWT de 15 minutos, mantido só na memória do navegador; *token* de renovação de 7 dias, opaco, em *cookie* `httpOnly` e `SameSite=Strict`, trocado a cada uso | RFC 7519 (JONES; BRADLEY; SAKIMURA, 2015); OWASP ASVS |
 | Recarregar a página | A sessão é restaurada pelo *cookie* de renovação; as telas internas exigem usuário autenticado | — |
-| Autorização | Toda leitura ou escrita sobre uma pessoa verifica o vínculo com o cuidador. Para quem não tem vínculo, a API responde como se a pessoa não existisse (404) | Evita revelar a existência de registros de terceiros |
+| Autorização | Toda leitura ou escrita sobre uma pessoa verifica o papel do cuidador sobre ela ({{qua:permissoes}}). Para quem não tem acesso, a API responde como se a pessoa não existisse (404); para quem tem acesso, mas papel insuficiente, responde 403 | Evita revelar a existência de registros de terceiros; menor privilégio (OWASP ASVS) |
 | Auditoria | Cada leitura, alteração, inserção, arquivamento e exportação de dados de uma pessoa gera um registro com usuário, pessoa, ação e horário | LGPD, art. 37 (BRASIL, 2018) |
 | Consentimento | Aceite gravado com finalidade, versão do termo e data; novo aceite obrigatório quando o termo muda de versão | LGPD, art. 8º e art. 11 |
 | Direitos do titular | Tela "Minha conta": exportação completa em JSON e exclusão da conta com confirmação; CSV por pessoa nos relatórios | LGPD, art. 18 |
@@ -276,7 +333,8 @@ O documento foi escrito **a partir do comportamento real do sistema**, e não de
 | Cláusula do termo | Implementação no sistema | Verificação |
 |---|---|---|
 | O Cogni não faz diagnóstico (seção 2) | Textos gerados pelo motor em linguagem não diagnóstica | Teste automatizado procura termos diagnósticos nos textos |
-| Dados tratados (seção 4) | Exatamente os campos do modelo de dados: cuidador, pessoa, sessões, eventos, registros de acesso e de aceite | Conferência com o esquema do banco (Capítulo 8) |
+| Dados tratados (seção 4) | Exatamente os campos do modelo de dados: cuidador, pessoa, sessões, eventos, vínculos e papéis, instituição, convites, registros de acesso e de aceite | Conferência com o esquema do banco (Capítulo 8) |
+| Os dados de uma pessoa são vistos só por quem a acompanha, conforme o papel (seções 3 e 7) | Autorização por papel em todas as rotas; profissional de instituição só vê as pessoas atribuídas | Testes automatizados de cada papel; teste no navegador com as três contas de demonstração |
 | Não usamos os dados para outras finalidades nem os enviamos a terceiros pelo navegador (seções 5 e 7) | Nenhuma ferramenta de análise, anúncio, fonte ou imagem de outros domínios | Inspeção das requisições do navegador; CSP no servidor |
 | Medidas de segurança (seção 8) | Argon2id, HTTPS, sessão de 15 minutos, *cookie* protegido, bloqueio de tentativas, autorização por vínculo, registro de acessos | Testes automatizados de senha, bloqueio, *tokens* e isolamento entre cuidadores |
 | Exclusão imediata e cópias de segurança de até 7 dias (seção 9) | Exclusão em cascata no banco; *script* de *backup* mantém as 7 cópias mais recentes | Teste automatizado de exclusão; leitura do *script* de *backup* |
@@ -319,7 +377,7 @@ Antes da migração de arquitetura, o protótipo inicial passou por uma auditori
 | Média | Fonte carregada de serviço externo | Fonte servida pelo próprio aplicativo |
 | Baixa | Sem botão de sair | Botão "Sair" no painel e em "Minha conta" |
 | Baixa | Dois arquivos de bloqueio de dependências | Apenas o do pnpm |
-| Baixa | Sem testes nem integração contínua | 33 testes automatizados e CI |
+| Baixa | Sem testes nem integração contínua | 41 testes automatizados e CI |
 
 @@FONTE|Elaborado pelos autores (2026).
 
@@ -339,6 +397,7 @@ Os testes de uso e os testes automatizados revelaram problemas que não aparecia
 | Teste de uso | "Familiaridade com tecnologia" gravava valores diferentes no cadastro e em "Nova pessoa" | Mesmas opções nas duas telas |
 | Subida do sistema em ambiente limpo | O navegador bloqueava o login quando o *front-end* rodava numa porta diferente da liberada na API | A porta padrão é a mesma em todos os documentos e a regra está explicada no guia de execução |
 | Leitura das telas com dados reais | Rótulos que pressupunham gênero ("padrão dela") ou clínica ("Pacientes", "IA") e textos como "0 sessão(ões)" | Textos neutros: "próprio padrão", "Pessoas", "Análises", "ainda não fez sessões nesta semana" |
+| Implementação dos perfis | O termo de uso dizia que os dados não eram compartilhados; com os convites, passam a ser vistos pelos cuidadores convidados e pela equipe da instituição | Nova versão do termo (2026-11.2), que descreve quem vê o quê. Quem aceitou a versão anterior recebe o pedido de novo aceite antes de continuar, como previsto na seção 14 do termo |
 
 @@FONTE|Elaborado pelos autores (2026).
 
@@ -371,7 +430,7 @@ a) **nenhum número tem validação clínica**. Pontuações, pesos dos domínio
 
 b) **o termo de uso e privacidade ainda não passou por revisão jurídica, e o encarregado pelo tratamento de dados ainda não foi designado**. As duas providências são obrigatórias antes de qualquer uso com pessoas reais. Além disso, a correção de dados já cadastrados ainda não tem tela própria: a API permite editar os dados da pessoa acompanhada, mas o pedido de correção, previsto no termo, é feito pelo canal do encarregado;
 
-c) **o tipo de vínculo do cuidador é só informativo**. Permissões diferentes para instituições e o convite de outros cuidadores para a mesma pessoa estão previstos, mas não implementados;
+c) **os convites não são enviados por e-mail**: o código é passado pelo próprio cuidador, por mensagem ou pessoalmente. E o tipo de vínculo escolhido no cadastro (familiar ou profissional) não muda permissões por si só; o que define o acesso é o papel em cada pessoa e na instituição;
 
 d) **o gráfico de evolução repete o último valor nas semanas sem sessão**, o que pode dar impressão de continuidade que não existe;
 
@@ -379,6 +438,8 @@ e) **"Sessões hoje" e a semana do gráfico usam o fuso horário do servidor**. 
 
 f) **o e-mail de recuperação depende de um servidor SMTP configurado** na implantação;
 
-g) **o efeito de aprendizado no jogo de atenção vai além das 6 sessões descartadas**, o que gera avisos de melhora indevidos em parte das pessoas estáveis simuladas.
+g) **o efeito de aprendizado no jogo de atenção vai além das 6 sessões descartadas**, o que gera avisos de melhora indevidos em parte das pessoas estáveis simuladas;
+
+h) **o controle de acesso está só na API**: as políticas de segurança em nível de linha do PostgreSQL, previstas como segunda barreira (Capítulo 8), ainda não foram implementadas.
 
 Essas limitações estão registradas no plano de execução e alimentam o roteiro do Capítulo 14.
