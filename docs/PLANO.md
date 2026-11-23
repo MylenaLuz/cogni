@@ -96,36 +96,36 @@ Cada decisão abaixo vira uma ADR em F1.6.
 
 > Bugs que podem constranger na demo de M1. Fazer **antes de tudo**, em commits pequenos.
 
-- [ ] **F0.1** 🔴 O botão "Salvar sessão" não salva nada
+- [x] **F0.1** 🔴 O botão "Salvar sessão" não salva nada
   - **Contexto:** `handleSave`/`onSave` só mudam o estado visual e navegam. Na demo, a banca pode perguntar onde o dado foi parar.
   - **Onde:** `src/screens/GameSession.tsx` (`handleSave`), `src/screens/games/MemoryPairs.tsx` (~l.191), `src/screens/games/Categories.tsx` (~l.212), `src/screens/games/AttentionSpeed.tsx`.
   - **Solução até M1:** gravar a sessão numa tabela `sessoes` (Supabase, temporariamente). Isso será substituído pela API em F5.4/F6. Criar `src/services/sessions.ts` com a função `saveSession()`, para que a troca futura aconteça num só lugar.
   - **Pronto quando:** salvar uma sessão e vê-la aparecer na lista de sessões recentes do paciente depois de recarregar a página.
 
-- [ ] **F0.2** 🔴 O nível da Associação de Imagens não muda o jogo
+- [x] **F0.2** 🔴 O nível da Associação de Imagens não muda o jogo
   - **Contexto:** a tela promete 2, 4 ou 6 pares, mas `gamePairs` tem sempre os mesmos 4.
   - **Onde:** `src/screens/GameSession.tsx`.
   - **Solução:** banco de pares maior e `LEVELS = [{pares:2},{pares:4},{pares:6}]`, sorteando os pares de acordo com o nível.
   - **Pronto quando:** cada nível exibe o número de pares descrito.
 
-- [ ] **F0.3** 🔴 Atualizar a página desloga, e não há guarda de rota
+- [x] **F0.3** 🔴 Atualizar a página desloga, e não há guarda de rota
   - **Contexto:** `App.tsx` começa sempre em `"login"` e nunca lê a sessão existente. As telas internas também não verificam se há usuário logado.
   - **Onde:** `src/App.tsx`.
   - **Solução até M1:** no `useEffect` inicial, chamar `supabase.auth.getSession()`. Com sessão, ir para `dashboard`. Sem sessão, permanecer no `login`. `navigate()` deve bloquear telas internas sem sessão. A solução definitiva vem em F4.1 e F4.3.
   - **Pronto quando:** recarregar a página logado mantém o usuário dentro, e não há forma de ver o dashboard sem login.
 
-- [ ] **F0.4** 🔴 Logout
+- [x] **F0.4** 🔴 Logout
   - **Contexto:** não existe botão de sair. Isso é necessário para a demo e para trocar de usuário.
   - **Onde:** `src/components/NavBar.tsx` ou o cabeçalho do `Dashboard`.
   - **Pronto quando:** o botão "Sair" encerra a sessão e volta ao login.
 
-- [ ] **F0.5** 🟡 Embaralhamento enviesado
+- [x] **F0.5** 🟡 Embaralhamento enviesado
   - **Contexto:** `sort(() => Math.random() - 0.5)` não é uniforme. Num jogo que mede cognição, isso é ruído no dado.
   - **Onde:** `MemoryPairs.tsx:28`, `Categories.tsx:128`, `GameSession.tsx:15`.
   - **Solução:** criar `src/lib/shuffle.ts` com Fisher–Yates e usá-lo nos três lugares.
   - **Pronto quando:** não há mais nenhum `sort(() => Math.random()` no código.
 
-- [ ] **F0.6** 🟡 Cadastro não atômico
+- [x] **F0.6** 🟡 Cadastro não atômico
   - **Contexto:** `Signup.tsx` cria o usuário no Auth e depois insere em `cuidadores`. Se o insert falhar, o usuário fica órfão e não consegue se cadastrar de novo ("e-mail já cadastrado").
   - **Solução até M1:** tratar a falha e mostrar uma mensagem clara. A solução definitiva é a transação única no backend (F3.2).
   - **Pronto quando:** está documentado e mitigado. A correção completa fica em F3.2.
@@ -135,17 +135,17 @@ Cada decisão abaixo vira uma ADR em F1.6.
   - **Solução:** se `VITE_SUPABASE_URL` ou a chave faltarem, lançar um erro com mensagem explicativa. Criar `.env.example`.
   - **Pronto quando:** rodar sem `.env` mostra um erro legível, e `.env.example` existe.
 
-- [ ] **F0.8** 🟡 Lockfiles duplicados
+- [x] **F0.8** 🟡 Lockfiles duplicados
   - **Contexto:** `package-lock.json` e `pnpm-lock.yaml` coexistem e divergem. O gerenciador declarado é o pnpm.
   - **Solução:** apagar `package-lock.json`, rodar `pnpm install` e conferir que o build passa.
   - **Pronto quando:** só existe `pnpm-lock.yaml`, e `pnpm build` passa.
 
-- [ ] **F0.9** 🟡 README desatualizado
+- [x] **F0.9** 🟡 README desatualizado
   - **Contexto:** o README cita a credencial mock `cuidador@cogni.app / cogni123`, que não funciona mais com a auth real. Também menciona Supabase e Vercel como "planejados".
   - **Solução:** atualizar as seções "Como executar", "Credenciais" e "Estado atual". As menções à arquitetura nova entram depois de F2.
   - **Pronto quando:** seguir o README do zero resulta num app funcionando.
 
-- [ ] **F0.10** 🟢 Conferir que `pnpm build` e o typecheck passam limpos
+- [x] **F0.10** 🟢 Conferir que `pnpm build` e o typecheck passam limpos
   - **Pronto quando:** `pnpm build` termina sem erros nem avisos de tipo.
 
 ---
@@ -177,11 +177,11 @@ Cada decisão abaixo vira uma ADR em F1.6.
   - **Também:** trocar `catch (err: any)` por `catch (err: unknown)` com narrowing.
   - **Pronto quando:** `pnpm lint` passa sem erros.
 
-- [ ] **F1.4** 🔴 Testes no front
+- [x] **F1.4** 🔴 Testes no front
   - **Solução:** Vitest + Testing Library. Script `pnpm test`. Primeiros testes: `shuffle` (F0.5) e as funções de pontuação.
   - **Pronto quando:** `pnpm test` roda pelo menos 3 testes verdes.
 
-- [ ] **F1.5** 🔴 CI no GitHub Actions
+- [x] **F1.5** 🔴 CI no GitHub Actions
   - **Onde:** `.github/workflows/ci.yml`.
   - **Jobs:** front (install, lint, typecheck, test, build) e back (ruff, mypy, pytest), este último depois de F2.
   - **Pronto quando:** um push no branch mostra os checks verdes no GitHub.
@@ -204,7 +204,7 @@ Cada decisão abaixo vira uma ADR em F1.6.
 
 ## Fase 2: Backend FastAPI + PostgreSQL + Docker 🔴
 
-- [ ] **F2.1** 🔴 Esqueleto do backend
+- [x] **F2.1** 🔴 Esqueleto do backend
   - **Estrutura:**
     ```
     backend/
@@ -225,23 +225,23 @@ Cada decisão abaixo vira uma ADR em F1.6.
   - **Ferramentas:** `uv` para dependências, `ruff` para lint e formatação, `mypy` para tipos, `pytest` + `httpx` para testes.
   - **Pronto quando:** `GET /health` retorna `{"status":"ok"}` e `/docs` mostra o Swagger.
 
-- [ ] **F2.2** 🔴 Docker Compose de desenvolvimento
+- [x] **F2.2** 🔴 Docker Compose de desenvolvimento
   - **Serviços:** `postgres` (16, com volume nomeado), `api` (com hot reload) e, opcionalmente, `frontend`.
   - **Arquivos:** `docker-compose.yml` e `.env.example` com todas as variáveis documentadas.
   - **Pronto quando:** `docker compose up` sobe a API ligada ao Postgres, e `/health` verifica também a conexão com o banco.
 
-- [ ] **F2.3** 🔴 Migrações com Alembic
+- [x] **F2.3** 🔴 Migrações com Alembic
   - **Pronto quando:** `alembic upgrade head` cria o schema do zero num banco vazio, e `alembic downgrade` funciona.
 
 - [ ] **F2.4** 🟡 Tratamento de erros padronizado
   - **Solução:** formato único de erro (`{"error": {"code", "message", "details"}}`), handlers globais, log estruturado em JSON e `request_id` em cada requisição.
   - **Pronto quando:** qualquer erro da API segue o formato, e o log mostra o `request_id`.
 
-- [ ] **F2.5** 🟡 Testes do backend com banco real
+- [x] **F2.5** 🟡 Testes do backend com banco real
   - **Solução:** pytest com fixture de banco temporário. Pode ser Postgres via `testcontainers` ou SQLite em memória para testes unitários (D3).
   - **Pronto quando:** `pytest` roda verde localmente e no CI (F1.5).
 
-- [ ] **F2.6** 🟢 Script de dados de exemplo (`seed`)
+- [x] **F2.6** 🟢 Script de dados de exemplo (`seed`)
   - **Contexto:** a demo precisa de pacientes com histórico plausível. A versão completa vem da coorte sintética (F10).
   - **Pronto quando:** `python -m app.seed` popula 3 pacientes com algumas semanas de sessões.
 
@@ -249,30 +249,30 @@ Cada decisão abaixo vira uma ADR em F1.6.
 
 ## Fase 3: Autenticação própria 🔴
 
-- [ ] **F3.1** 🔴 Modelo de usuário e hash de senha
+- [x] **F3.1** 🔴 Modelo de usuário e hash de senha
   - **Solução:** tabela `usuarios` (id UUID, email único com normalização para minúsculas, `senha_hash`, `criado_em`, `email_verificado_em`). Hash com **Argon2id** via `argon2-cffi`.
   - **Pronto quando:** o teste confirma que a senha nunca é gravada em texto puro e que o hash é verificado corretamente.
 
-- [ ] **F3.2** 🔴 Cadastro em transação única
+- [x] **F3.2** 🔴 Cadastro em transação única
   - **Endpoint:** `POST /auth/cadastro` cria usuário, cuidador e idoso (opcional) **na mesma transação**. Se qualquer parte falhar, nada é gravado. Corrige F0.6 de vez.
   - **Política de senha:** mínimo de 8 caracteres, sem regras de composição obrigatórias (recomendação do NIST SP 800-63B) e bloqueio de senhas comuns (lista local das mais usadas).
   - **Pronto quando:** o teste força uma falha no insert do idoso e confirma que nenhum usuário foi criado.
 
-- [ ] **F3.3** 🔴 Login, refresh e logout
+- [x] **F3.3** 🔴 Login, refresh e logout
   - **Solução:** `POST /auth/login` devolve um access token JWT (15 min) no corpo e o refresh token (7 dias) em **cookie httpOnly, Secure, SameSite=Strict**. `POST /auth/refresh` emite tokens novos e rotaciona o refresh. `POST /auth/logout` revoga.
   - **Refresh tokens:** guardados com hash no banco (tabela `refresh_tokens`) para permitir revogação.
   - **Pronto quando:** os testes cobrem login válido, senha errada, token expirado, refresh e logout.
 
-- [ ] **F3.4** 🔴 Recuperação de senha
+- [x] **F3.4** 🔴 Recuperação de senha
   - **Solução:** `POST /auth/esqueci-senha` sempre responde 200 (não revela se o e-mail existe). Gera um token aleatório de uso único, guardado com hash e válido por 30 min, e envia o link por SMTP (D8). `POST /auth/redefinir-senha` consome o token.
   - **Desenvolvimento:** usar o Mailpit no compose para ver os e-mails sem enviá-los de verdade.
   - **Pronto quando:** o fluxo completo funciona localmente, com o e-mail aparecendo no Mailpit.
 
-- [ ] **F3.5** 🟡 Proteções
+- [x] **F3.5** 🟡 Proteções
   - **Solução:** rate limit no login e na recuperação (por IP e por e-mail), bloqueio temporário após N falhas e mensagem genérica de erro ("e-mail ou senha incorretos").
   - **Pronto quando:** o teste confirma o bloqueio depois de N tentativas.
 
-- [ ] **F3.6** 🟡 Autorização por dono do dado
+- [x] **F3.6** 🟡 Autorização por dono do dado
   - **Contexto:** substitui o Row Level Security do Supabase. **Toda** consulta filtra pelo `cuidador_id` do usuário logado.
   - **Solução:** uma dependência FastAPI `get_current_user` e um helper que carrega um recurso já checando o dono.
   - **Pronto quando:** existe teste em que o cuidador A tenta acessar o paciente do cuidador B e recebe 404.
@@ -286,15 +286,15 @@ Cada decisão abaixo vira uma ADR em F1.6.
 
 ## Fase 4: Front-end conectado à API própria 🔴
 
-- [ ] **F4.1** 🔴 Rotas de verdade
+- [x] **F4.1** 🔴 Rotas de verdade
   - **Solução:** React Router com URLs (`/login`, `/pacientes/:id`, `/jogos/atencao`…). Botão voltar do navegador e deep links funcionando. Substitui o `useState<Screen>` do `App.tsx`.
   - **Pronto quando:** toda tela tem URL própria, e recarregar mantém o usuário na mesma tela.
 
-- [ ] **F4.2** 🔴 Cliente de API tipado
+- [x] **F4.2** 🔴 Cliente de API tipado
   - **Solução:** gerar os tipos TypeScript a partir do OpenAPI do FastAPI (`openapi-typescript`) e criar o cliente em `src/api/`. O access token fica em memória, e o refresh é automático ao receber 401.
   - **Pronto quando:** uma mudança de schema no backend faz o typecheck do front acusar o erro.
 
-- [ ] **F4.3** 🔴 Contexto de autenticação e guarda de rota
+- [x] **F4.3** 🔴 Contexto de autenticação e guarda de rota
   - **Solução:** `AuthProvider` com `user`, `login`, `logout`, e um componente `<RequireAuth>` nas rotas internas.
   - **Depende de:** F3.3, F4.1, F4.2.
   - **Pronto quando:** cobre o critério de F0.3 sem usar Supabase.
@@ -303,7 +303,7 @@ Cada decisão abaixo vira uma ADR em F1.6.
   - **Solução:** hooks por domínio (`usePatients`, `useSessions`…) com cache, recarregamento e estados de carregamento e erro.
   - **Pronto quando:** as telas não importam mais nada de `data.ts`.
 
-- [ ] **F4.5** 🔴 Remover o Supabase
+- [x] **F4.5** 🔴 Remover o Supabase
   - **Solução:** apagar `src/supabase.ts`, remover `@supabase/supabase-js` e as variáveis `VITE_SUPABASE_*`.
   - **Depende de:** F4.3, F4.4 e F0.1 (com `saveSession` já migrado).
   - **Pronto quando:** `grep -ri supabase frontend/src` não encontra nada.
@@ -313,11 +313,11 @@ Cada decisão abaixo vira uma ADR em F1.6.
   - **Solução:** `src/components/ui/` (Button, Input, Card, Logo, EmptyState, Spinner) e `lucide-react` para ícones. `fmt` vai para `src/lib/format.ts`.
   - **Pronto quando:** não há mais SVG de ícone escrito à mão nas telas.
 
-- [ ] **F4.7** 🟡 Error Boundary e estados vazios
+- [x] **F4.7** 🟡 Error Boundary e estados vazios
   - **Solução:** um erro num jogo não derruba o app. Toda lista tem estado vazio ("Nenhum paciente ainda. Cadastre o primeiro.").
   - **Pronto quando:** forçar um erro num componente mostra uma tela amigável.
 
-- [ ] **F4.8** 🟡 Separar tipos de domínio e mocks
+- [x] **F4.8** 🟡 Separar tipos de domínio e mocks
   - **Solução:** os tipos passam a vir do OpenAPI (F4.2). `data.ts` é apagado ou fica só para testes. Isso remove o `mockCaregiver` com senha e as fotos hotlinkadas do Unsplash.
   - **Pronto quando:** `data.ts` não é mais importado pelo app.
 
@@ -325,7 +325,7 @@ Cada decisão abaixo vira uma ADR em F1.6.
 
 ## Fase 5: Modelo de dados do domínio 🔴
 
-- [ ] **F5.1** 🔴 Modelagem
+- [x] **F5.1** 🔴 Modelagem
   - **Tabelas iniciais:**
     - `cuidadores`: perfil, telefone, tipo de vínculo, instituição.
     - `idosos`: nome, nascimento, condição informada pelo cuidador, nível de familiaridade com tecnologia, observações.
@@ -337,7 +337,7 @@ Cada decisão abaixo vira uma ADR em F1.6.
   - **Entregável:** diagrama ER em `docs/arquitetura/` (F1.7) e migração Alembic.
   - **Pronto quando:** a migração aplica sem erros, e o diagrama está no repositório.
 
-- [ ] **F5.2** 🔴 CRUD de idosos
+- [x] **F5.2** 🔴 CRUD de idosos
   - **Endpoints:** listar, criar, ver, editar e arquivar (*soft delete*). Sempre filtrado pelo vínculo (F3.6).
   - **Front:** telas de cadastro e edição de idoso. Isso cumpre o item "cadastros básicos" do cronograma.
   - **Pronto quando:** o cuidador cadastra, edita e arquiva um idoso pela interface.
@@ -347,7 +347,7 @@ Cada decisão abaixo vira uma ADR em F1.6.
   - **Solução:** convite por e-mail com token e escolha de papel.
   - **Pronto quando:** dois cuidadores veem o mesmo idoso.
 
-- [ ] **F5.4** 🔴 Endpoints de sessão
+- [x] **F5.4** 🔴 Endpoints de sessão
   - **Endpoints:** `POST /sessoes` (recebe os eventos brutos, F6), `GET /idosos/:id/sessoes` e `GET /sessoes/:id`.
   - **Pronto quando:** a tela de sessões recentes do paciente mostra dados reais.
 
@@ -357,18 +357,18 @@ Cada decisão abaixo vira uma ADR em F1.6.
 
 > Sem isso, toda a tese (F9–F13) não tem dado.
 
-- [ ] **F6.1** 🔴 Registro de eventos brutos
+- [x] **F6.1** 🔴 Registro de eventos brutos
   - **Contexto:** hoje `AttentionSpeed` só conta acertos e **não grava o tempo de reação** de cada toque nem os toques errados. A variabilidade do tempo de reação é o biomarcador mais promissor, e ela não existe no sistema.
   - **Solução:** um hook `useSessionRecorder()` que registra `{t: performance.now(), tipo, alvo, posicao, correto, meta}` para cada estímulo exibido, toque, acerto, erro e omissão. Ao final, os eventos vão para `POST /sessoes`.
   - **Também:** registrar o contexto da sessão (horário, dispositivo e tamanho de tela), porque o horário influencia o desempenho do idoso.
   - **Pronto quando:** uma sessão de cada jogo gera no banco uma lista de eventos com timestamps em milissegundos.
 
-- [ ] **F6.2** 🔴 Trocar `setInterval` por timestamps
+- [x] **F6.2** 🔴 Trocar `setInterval` por timestamps
   - **Contexto:** a duração é contada com `setInterval` de 1 s, impreciso demais para tempo de reação.
   - **Solução:** calcular durações por diferença de `performance.now()`. O `setInterval` fica só para atualizar o relógio na tela.
   - **Pronto quando:** o tempo de reação é medido com precisão de milissegundos.
 
-- [ ] **F6.3** 🔴 Pontuação padronizada e versionada (`scoring v1`)
+- [x] **F6.3** 🔴 Pontuação padronizada e versionada (`scoring v1`)
   - **Contexto:** cada jogo usa uma fórmula arbitrária própria (`hits / floor(duration/1.8)`, `acertos - erros*0.5`…). Elas não são comparáveis entre jogos nem ao longo do tempo.
   - **Solução:** um módulo no **backend** (`app/services/scoring/`) que calcula a partir dos eventos brutos:
     - **Atenção:** tempo de reação médio e mediano, **variabilidade intra-individual (desvio-padrão e coeficiente de variação)**, omissões e erros de comissão.
@@ -397,7 +397,7 @@ Cada decisão abaixo vira uma ADR em F1.6.
   - **Solução:** o cuidador abre "Iniciar atividades com [nome]", e o app entra num modo de tela cheia, travado, sem navegação. Para sair, é preciso um gesto do cuidador (ex.: segurar um botão por 3 s ou digitar um PIN).
   - **Pronto quando:** o idoso consegue fazer uma sequência de atividades sem ver nenhuma tela do cuidador.
 
-- [ ] **F7.2** 🔴 Contraste WCAG
+- [x] **F7.2** 🔴 Contraste WCAG
   - **Contexto:** `text-light` (#8A9E9E sobre #F7F2E9) provavelmente não passa no nível AA.
   - **Solução:** medir todas as combinações de cor do tema e ajustar os tokens em `index.css`. Mínimo AA no modo cuidador e AAA no Modo Idoso.
   - **Pronto quando:** existe uma tabela de contraste em `docs/` com todas as combinações aprovadas.
@@ -407,7 +407,7 @@ Cada decisão abaixo vira uma ADR em F1.6.
   - **Solução:** rótulos em todos os botões só com ícone, `alt` nas imagens, `aria-live` para os feedbacks de jogo e foco visível.
   - **Pronto quando:** o Lighthouse Accessibility dá ≥ 95 nas telas principais, e `axe` roda no teste E2E (F7.6).
 
-- [ ] **F7.4** 🟡 Barra de rolagem visível
+- [x] **F7.4** 🟡 Barra de rolagem visível
   - **Contexto:** `index.css` esconde a barra de rolagem globalmente, o que atrapalha quem tem pouca habilidade motora.
   - **Pronto quando:** o `scrollbar-width: none` global foi removido.
 
@@ -423,25 +423,25 @@ Cada decisão abaixo vira uma ADR em F1.6.
 
 ## Fase 8: Segurança e LGPD 🟡
 
-- [ ] **F8.1** 🔴 Hospedar a fonte localmente
+- [x] **F8.1** 🔴 Hospedar a fonte localmente
   - **Contexto:** o `@import` do Google Fonts em `index.css` envia o IP de cada usuário ao Google. Isso já gerou condenação na Alemanha com base no GDPR. Hospedar localmente também permite usar o app offline.
   - **Solução:** `@fontsource/nunito` ou os arquivos `.woff2` dentro do projeto.
   - **Pronto quando:** o app não faz nenhuma requisição a domínios externos.
 
-- [ ] **F8.2** 🟡 Cabeçalhos de segurança
+- [x] **F8.2** 🟡 Cabeçalhos de segurança
   - **Solução:** CSP restritiva, HSTS, `X-Content-Type-Options`, `Referrer-Policy` e `Permissions-Policy` no Caddy. CORS restrito ao domínio do front.
   - **Pronto quando:** o securityheaders.com dá nota A ou A+ (depois do deploy, F16).
 
-- [ ] **F8.3** 🔴 Consentimento explícito
+- [x] **F8.3** 🔴 Consentimento explícito
   - **Contexto:** dado de saúde é dado pessoal sensível (LGPD, art. 11).
   - **Solução:** termo de consentimento e política de privacidade em linguagem simples, aceitos no cadastro. Gravar versão, data e hora. Consentimentos separados para cada finalidade opcional (ex.: gravação de voz em F11).
   - **Pronto quando:** não é possível criar conta sem aceitar, e o aceite fica registrado na tabela `consentimentos`.
 
-- [ ] **F8.4** 🟡 Direitos do titular
+- [x] **F8.4** 🟡 Direitos do titular
   - **Solução:** "Exportar meus dados" (JSON completo) e "Excluir minha conta" (com confirmação e remoção real ou anonimização).
   - **Pronto quando:** os dois fluxos funcionam pela interface.
 
-- [ ] **F8.5** 🟡 Log de auditoria
+- [x] **F8.5** 🟡 Log de auditoria
   - **Solução:** registrar quem acessou os dados de qual idoso, quando e qual ação foi feita.
   - **Pronto quando:** o cuidador vê o histórico de acessos ao perfil do idoso.
 
@@ -458,17 +458,17 @@ Cada decisão abaixo vira uma ADR em F1.6.
 
 > O núcleo técnico da tese. Tudo é determinístico, testável e auditável, sem LLM.
 
-- [ ] **F9.1** 🔴 Baseline pessoal
+- [x] **F9.1** 🔴 Baseline pessoal
   - **Solução:** para cada idoso e cada métrica, estimar o padrão pessoal (média e dispersão robustas, como mediana e MAD) a partir das primeiras N sessões válidas, atualizado de forma lenta e controlada.
   - **Atenção:** separar o efeito de aprendizado (melhora natural nas primeiras sessões) do baseline real.
   - **Pronto quando:** existem testes com séries conhecidas.
 
-- [ ] **F9.2** 🔴 Detecção de mudança
+- [x] **F9.2** 🔴 Detecção de mudança
   - **Solução:** CUSUM ou detecção bayesiana de ponto de mudança sobre as métricas normalizadas pelo baseline. A regra precisa distinguir "um dia ruim" de "tendência sustentada", com parâmetros configuráveis e documentados.
   - **Também:** usar o contexto (horário, sono informado pelo cuidador) para não alarmar por motivos óbvios.
   - **Pronto quando:** em séries sintéticas, detecta um declínio inserido e ignora um outlier isolado (testes).
 
-- [ ] **F9.3** 🔴 Alertas para o cuidador
+- [x] **F9.3** 🔴 Alertas para o cuidador
   - **Solução:** os alertas da tela de Insights passam a vir do motor, cada um com explicação ("a variabilidade do tempo de reação da Maria está acima da faixa dela há 3 semanas"), nível de confiança e o que fazer. Os alertas graves sugerem conversar com um profissional de saúde.
   - **Pronto quando:** `AIInsights.tsx` não usa mais `mockInsights`.
 
@@ -687,6 +687,8 @@ Cada decisão abaixo vira uma ADR em F1.6.
 | --- | --- | --- | --- |
 | 19/11/2026 | — | — | Plano criado a partir da análise do repositório e da pesquisa de 2026. |
 | 19/11/2026 | F10.1, F10.2 (antecipados) | — | Documento do TCC I gerado em `docs/tcc/`, incluindo simulação da coorte sintética (`docs/tcc/fonte/simulacao/`). Pesquisa de campo ainda pendente. |
+| 22/11/2026 | F2, F3, F5, F6.3, F9 | eb14cc6 | API própria em FastAPI + PostgreSQL, autenticação, cadastros, sessões, pontuação v1 e motor de mudança. 24 testes. |
+| 23/11/2026 | F0, F1.4, F1.5, F4, F6.1, F6.2, F7.2, F7.4, F8.1–F8.5 | — | Front-end ligado à API, Supabase removido, jogos gravam eventos brutos e salvam sessões, cadastro de pessoa, relatórios com CSV, contraste AA, fonte local, testes Vitest e CI. |
 
 ---
 

@@ -1,0 +1,52 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm typecheck
+      - run: pnpm test
+      - run: pnpm build
+
+  backend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: cogni
+          POSTGRES_PASSWORD: cogni
+          POSTGRES_DB: cogni_teste
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U cogni"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      TEST_DATABASE_URL: postgresql+psycopg://cogni:cogni@localhost:5432/cogni_teste
+      DATABASE_URL: postgresql+psycopg://cogni:cogni@localhost:5432/cogni_teste
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - run: uv sync --locked --python 3.12
+      - run: uv run ruff check .
+      - run: uv run ruff format --check .
+      - name: Migrações sobem e descem
+        run: uv run alembic upgrade head && uv run alembic downgrade base && uv run alembic upgrade head
+      - name: Testes (PostgreSQL)
+        run: uv run pytest -q
