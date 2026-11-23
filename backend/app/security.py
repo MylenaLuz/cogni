@@ -18,9 +18,27 @@ _hasher = PasswordHasher()  # Argon2id com os parâmetros recomendados pela RFC 
 # Lista curta das senhas mais comuns; a política segue o NIST SP 800-63B-4:
 # tamanho mínimo, sem regras de composição e bloqueio de senhas conhecidas.
 SENHAS_COMUNS = {
-    "12345678", "123456789", "1234567890", "password", "password1", "senha123", "senha1234",
-    "qwerty123", "11111111", "00000000", "87654321", "abc12345", "iloveyou", "admin123",
-    "brasil123", "cogni123", "mudar123", "teste123", "12341234", "qwertyui", "aaaaaaaa",
+    "12345678",
+    "123456789",
+    "1234567890",
+    "password",
+    "password1",
+    "senha123",
+    "senha1234",
+    "qwerty123",
+    "11111111",
+    "00000000",
+    "87654321",
+    "abc12345",
+    "iloveyou",
+    "admin123",
+    "brasil123",
+    "cogni123",
+    "mudar123",
+    "teste123",
+    "12341234",
+    "qwertyui",
+    "aaaaaaaa",
 }
 
 

@@ -60,15 +60,22 @@ def _usuario_saida(c: Cuidador) -> UsuarioSaida:
 def _emitir(db: Session, response: Response, cuidador: Cuidador) -> TokenSaida:
     s = get_settings()
     token, hash_ = token_opaco()
-    db.add(RefreshToken(
-        usuario_id=cuidador.id,
-        token_hash=hash_,
-        expira_em=datetime.now(UTC) + timedelta(days=s.refresh_token_dias),
-    ))
+    db.add(
+        RefreshToken(
+            usuario_id=cuidador.id,
+            token_hash=hash_,
+            expira_em=datetime.now(UTC) + timedelta(days=s.refresh_token_dias),
+        )
+    )
     db.commit()
     response.set_cookie(
-        COOKIE, token, httponly=True, secure=s.cookie_seguro, samesite="strict",
-        max_age=s.refresh_token_dias * 86400, path=s.cookie_path,
+        COOKIE,
+        token,
+        httponly=True,
+        secure=s.cookie_seguro,
+        samesite="strict",
+        max_age=s.refresh_token_dias * 86400,
+        path=s.cookie_path,
     )
     return TokenSaida(access_token=criar_access_token(cuidador.id), usuario=_usuario_saida(cuidador))
 
@@ -165,11 +172,13 @@ def esqueci_senha(dados: EsqueciEntrada, db: Session = Depends(get_db)) -> dict:
     usuario = db.scalar(select(Usuario).where(Usuario.email == dados.email.strip().lower()))
     if usuario and usuario.ativo:
         token, hash_ = token_opaco()
-        db.add(TokenRedefinicao(
-            usuario_id=usuario.id,
-            token_hash=hash_,
-            expira_em=datetime.now(UTC) + timedelta(minutes=s.reset_token_minutos),
-        ))
+        db.add(
+            TokenRedefinicao(
+                usuario_id=usuario.id,
+                token_hash=hash_,
+                expira_em=datetime.now(UTC) + timedelta(minutes=s.reset_token_minutos),
+            )
+        )
         db.commit()
         link = f"{s.frontend_url}/redefinir-senha?token={token}"
         email.enviar(

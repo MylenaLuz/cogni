@@ -23,18 +23,33 @@ EMAIL = "demo@cogni.app"
 SENHA = "cuidar-com-dados"
 
 PESSOAS = [
-    {"nome": "Maria Silva", "nasc": date(1948, 5, 12), "cond": "Alzheimer leve", "perfil": "estavel",
-     "obs": "Maior engajamento com jogos visuais. As manhãs são o melhor horário."},
-    {"nome": "José Pereira", "nasc": date(1961, 2, 3), "cond": "Comprometimento cognitivo leve", "perfil": "melhora",
-     "obs": "Gosta das categorias de animais."},
-    {"nome": "Antônio Lima", "nasc": date(1954, 9, 21), "cond": "Demência vascular", "perfil": "declinio",
-     "obs": "Prefere sessões curtas, depois do almoço."},
+    {
+        "nome": "Maria Silva",
+        "nasc": date(1948, 5, 12),
+        "cond": "Alzheimer leve",
+        "perfil": "estavel",
+        "obs": "Maior engajamento com jogos visuais. As manhãs são o melhor horário.",
+    },
+    {
+        "nome": "José Pereira",
+        "nasc": date(1961, 2, 3),
+        "cond": "Comprometimento cognitivo leve",
+        "perfil": "melhora",
+        "obs": "Gosta das categorias de animais.",
+    },
+    {
+        "nome": "Antônio Lima",
+        "nasc": date(1954, 9, 21),
+        "cond": "Demência vascular",
+        "perfil": "declinio",
+        "obs": "Prefere sessões curtas, depois do almoço.",
+    },
 ]
 
 
 def _eventos_atencao(rng: random.Random, base_ms: float, sigma: float, n: int = 12) -> list[dict]:
     ev, t = [], 0.0
-    for i in range(n):
+    for _ in range(n):
         alvo = str(rng.randrange(9))
         ev.append({"t": t, "tipo": "estimulo", "alvo": alvo})
         if rng.random() < 0.05:
@@ -102,16 +117,21 @@ def popular() -> None:
             sessao.commit()
 
         usuario = Usuario(email=EMAIL, senha_hash=gerar_hash(SENHA))
-        cuidador = Cuidador(usuario=usuario, nome_completo="Beatriz Souza", tipo_vinculo="Filho(a)",
-                            telefone="41999990000")
+        cuidador = Cuidador(
+            usuario=usuario, nome_completo="Beatriz Souza", tipo_vinculo="Filho(a)", telefone="41999990000"
+        )
         sessao.add_all([usuario, cuidador])
         sessao.flush()
         sessao.add(Consentimento(usuario_id=usuario.id, finalidade="uso_do_servico", versao_termo="2026-11"))
 
         rng = random.Random(20261123)
         for pessoa in PESSOAS:
-            p = Paciente(nome_completo=pessoa["nome"], data_nascimento=pessoa["nasc"], condicao=pessoa["cond"],
-                         observacoes=pessoa["obs"])
+            p = Paciente(
+                nome_completo=pessoa["nome"],
+                data_nascimento=pessoa["nasc"],
+                condicao=pessoa["cond"],
+                observacoes=pessoa["obs"],
+            )
             sessao.add(p)
             sessao.flush()
             sessao.add(CuidadorPaciente(cuidador_id=cuidador.id, paciente_id=p.id))
@@ -119,12 +139,31 @@ def popular() -> None:
                 objs = [pontuacao.Evento(**e) for e in eventos]
                 nota, metricas = pontuacao.calcular(jogo, objs, contexto)
                 fim = quando + timedelta(milliseconds=max(e["t"] for e in eventos) + 500)
-                s = Sessao(paciente_id=p.id, cuidador_id=cuidador.id, jogo=jogo, nivel=nivel, iniciada_em=quando,
-                           finalizada_em=fim, duracao_ms=int((fim - quando).total_seconds() * 1000),
-                           pontuacao=nota, metricas=metricas, versao_pontuacao=pontuacao.VERSAO, contexto=contexto)
-                s.eventos = [SessaoEvento(ordem=i, t_ms=e["t"], tipo=e["tipo"], alvo=e.get("alvo"),
-                                          correto=e.get("correto"), reacao_ms=e.get("reacao_ms"),
-                                          dados=e.get("dados") or {}) for i, e in enumerate(eventos)]
+                s = Sessao(
+                    paciente_id=p.id,
+                    cuidador_id=cuidador.id,
+                    jogo=jogo,
+                    nivel=nivel,
+                    iniciada_em=quando,
+                    finalizada_em=fim,
+                    duracao_ms=int((fim - quando).total_seconds() * 1000),
+                    pontuacao=nota,
+                    metricas=metricas,
+                    versao_pontuacao=pontuacao.VERSAO,
+                    contexto=contexto,
+                )
+                s.eventos = [
+                    SessaoEvento(
+                        ordem=i,
+                        t_ms=e["t"],
+                        tipo=e["tipo"],
+                        alvo=e.get("alvo"),
+                        correto=e.get("correto"),
+                        reacao_ms=e.get("reacao_ms"),
+                        dados=e.get("dados") or {},
+                    )
+                    for i, e in enumerate(eventos)
+                ]
                 sessao.add(s)
         sessao.commit()
         print(f"Demonstração criada. Entre com {EMAIL} / {SENHA}")

@@ -11,8 +11,10 @@ def _sessao_atencao(inicio: datetime, reacoes: list[float]) -> dict:
         eventos.append({"t": t, "tipo": "toque", "alvo": str(i % 9), "correto": True, "reacao_ms": rt})
         t += 200
     return {
-        "jogo": "atencao", "nivel": 1,
-        "iniciada_em": inicio.isoformat(), "finalizada_em": (inicio + timedelta(milliseconds=t)).isoformat(),
+        "jogo": "atencao",
+        "nivel": 1,
+        "iniciada_em": inicio.isoformat(),
+        "finalizada_em": (inicio + timedelta(milliseconds=t)).isoformat(),
         "eventos": eventos,
     }
 
@@ -87,8 +89,7 @@ def test_painel_e_alerta_nao_diagnostico(client):
 def test_exportar_e_excluir_conta(client):
     token = cadastrar(client)
     pid = client.get("/pacientes", headers=auth(token)).json()[0]["id"]
-    client.post(f"/pacientes/{pid}/sessoes", json=_sessao_atencao(datetime.now(UTC), [700] * 3),
-                headers=auth(token))
+    client.post(f"/pacientes/{pid}/sessoes", json=_sessao_atencao(datetime.now(UTC), [700] * 3), headers=auth(token))
     dados = client.get("/conta/exportar", headers=auth(token)).json()
     assert dados["pacientes"][0]["sessoes"][0]["eventos"]
     assert client.delete("/conta", headers=auth(token)).status_code == 204

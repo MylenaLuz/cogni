@@ -58,8 +58,9 @@ def resumo(p: Paciente) -> PacienteResumo:
         alerta=alerta,
         dominios=analise.dominios,
         historico=analise.historico,
-        por_jogo=[AnaliseJogoSaida(jogo=a.jogo, estado=a.estado, sessoes=a.sessoes, faltam=a.faltam)
-                  for a in analise.por_jogo],
+        por_jogo=[
+            AnaliseJogoSaida(jogo=a.jogo, estado=a.estado, sessoes=a.sessoes, faltam=a.faltam) for a in analise.por_jogo
+        ],
     )
 
 
@@ -87,8 +88,12 @@ def detalhar(paciente_id: uuid.UUID, db: Session = Depends(get_db), c: Cuidador 
 
 
 @router.patch("/pacientes/{paciente_id}", response_model=PacienteResumo)
-def atualizar(paciente_id: uuid.UUID, dados: PacienteAtualizar, db: Session = Depends(get_db),
-              c: Cuidador = Depends(cuidador_atual)) -> PacienteResumo:
+def atualizar(
+    paciente_id: uuid.UUID,
+    dados: PacienteAtualizar,
+    db: Session = Depends(get_db),
+    c: Cuidador = Depends(cuidador_atual),
+) -> PacienteResumo:
     p = carregar_paciente(db, c, paciente_id, acao="alteracao")
     for campo, valor in dados.model_dump(exclude_unset=True).items():
         setattr(p, campo, valor)
@@ -111,8 +116,9 @@ def listar_sessoes(paciente_id: uuid.UUID, db: Session = Depends(get_db), c: Cui
 
 
 @router.post("/pacientes/{paciente_id}/sessoes", response_model=SessaoSaida, status_code=201)
-def registrar_sessao(paciente_id: uuid.UUID, dados: SessaoEntrada, db: Session = Depends(get_db),
-                     c: Cuidador = Depends(cuidador_atual)) -> Sessao:
+def registrar_sessao(
+    paciente_id: uuid.UUID, dados: SessaoEntrada, db: Session = Depends(get_db), c: Cuidador = Depends(cuidador_atual)
+) -> Sessao:
     p = carregar_paciente(db, c, paciente_id, acao="insercao")
     if dados.finalizada_em < dados.iniciada_em:
         raise HTTPException(422, "A sessão termina antes de começar.")
@@ -133,8 +139,9 @@ def registrar_sessao(paciente_id: uuid.UUID, dados: SessaoEntrada, db: Session =
         observacoes=dados.observacoes,
     )
     s.eventos = [
-        SessaoEvento(ordem=i, t_ms=e.t, tipo=e.tipo, alvo=e.alvo, correto=e.correto,
-                     reacao_ms=e.reacao_ms, dados=e.dados or {})
+        SessaoEvento(
+            ordem=i, t_ms=e.t, tipo=e.tipo, alvo=e.alvo, correto=e.correto, reacao_ms=e.reacao_ms, dados=e.dados or {}
+        )
         for i, e in enumerate(dados.eventos)
     ]
     db.add(s)
@@ -152,8 +159,7 @@ def _recentes(db: Session, pacientes: list[Paciente], limite: int = 10) -> list[
         select(Sessao).where(Sessao.paciente_id.in_(ids)).order_by(Sessao.iniciada_em.desc()).limit(limite)
     )
     return [
-        SessaoRecente(**SessaoSaida.model_validate(s).model_dump(), paciente_nome=nomes[s.paciente_id])
-        for s in sessoes
+        SessaoRecente(**SessaoSaida.model_validate(s).model_dump(), paciente_nome=nomes[s.paciente_id]) for s in sessoes
     ]
 
 

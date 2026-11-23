@@ -21,12 +21,12 @@ from statistics import median
 
 from .pontuacao import DOMINIOS, JOGOS
 
-DESCARTE = 6          # sessões iniciais de aprendizado
-N_BASE = 12           # sessões usadas para estimar o padrão
-K = 0.5               # desvio mínimo de interesse, em unidades robustas
-H = 8.0               # limiar do alarme
-Z_MAX = 4.0           # limite do escore de uma sessão
-JANELA_RECENTE = 6    # alarmes nas últimas N sessões contam como "atuais"
+DESCARTE = 6  # sessões iniciais de aprendizado
+N_BASE = 12  # sessões usadas para estimar o padrão
+K = 0.5  # desvio mínimo de interesse, em unidades robustas
+H = 8.0  # limiar do alarme
+Z_MAX = 4.0  # limite do escore de uma sessão
+JANELA_RECENTE = 6  # alarmes nas últimas N sessões contam como "atuais"
 MIN_SESSOES = DESCARTE + N_BASE + 1
 
 
@@ -41,7 +41,7 @@ class Ponto:
 @dataclass
 class AnaliseJogo:
     jogo: str
-    estado: str                      # aprendendo | estavel | piora | melhora
+    estado: str  # aprendendo | estavel | piora | melhora
     sessoes: int
     faltam: int = 0
     mediana: float | None = None
@@ -51,8 +51,8 @@ class AnaliseJogo:
 
 @dataclass
 class AnalisePaciente:
-    tendencia: str                   # up | down | stable
-    estado: str                      # aprendendo | estavel | piora | melhora
+    tendencia: str  # up | down | stable
+    estado: str  # aprendendo | estavel | piora | melhora
     indice: float | None
     dominios: dict[str, float | None]
     historico: list[dict]
@@ -73,16 +73,16 @@ def analisar_jogo(jogo: str, pontos: list[Ponto]) -> AnaliseJogo:
     if len(valores) < MIN_SESSOES:
         return AnaliseJogo(jogo, "aprendendo", len(valores), faltam=MIN_SESSOES - len(valores))
 
-    base = valores[DESCARTE:DESCARTE + N_BASE]
+    base = valores[DESCARTE : DESCARTE + N_BASE]
     med = median(base)
     mad = median(abs(x - med) for x in base) * 1.4826
     if mad < 1e-6:
         mad = max(abs(med) * 0.05, 1.0)
 
     s_piora = s_melhora = 0.0
-    ultimo_piora = ultimo_melhora = -10**9
+    ultimo_piora = ultimo_melhora = -(10**9)
     fora = 0
-    resto = valores[DESCARTE + N_BASE:]
+    resto = valores[DESCARTE + N_BASE :]
     for i, x in enumerate(resto):
         z = max(-Z_MAX, min(Z_MAX, (x - med) / mad))
         if abs(z) > 2:
@@ -101,9 +101,7 @@ def analisar_jogo(jogo: str, pontos: list[Ponto]) -> AnaliseJogo:
         estado = "melhora"
     else:
         estado = "estavel"
-    fora_recentes = sum(
-        1 for x in resto[-JANELA_RECENTE:] if (x - med) / mad > 2
-    )
+    fora_recentes = sum(1 for x in resto[-JANELA_RECENTE:] if (x - med) / mad > 2)
     return AnaliseJogo(jogo, estado, len(valores), mediana=med, mad=mad, sessoes_fora=fora_recentes)
 
 
@@ -147,11 +145,13 @@ def analisar_paciente(pontos: list[Ponto], hoje: datetime | None = None) -> Anal
         ini = inicio_semana - timedelta(weeks=k)
         fim = ini + timedelta(weeks=1)
         vals = [p.pontuacao for p in com_pontuacao if ini <= _aware(p.quando) < fim]
-        historico.append({
-            "semana": ini.date().isoformat(),
-            "media": round(sum(vals) / len(vals), 1) if vals else None,
-            "sessoes": len(vals),
-        })
+        historico.append(
+            {
+                "semana": ini.date().isoformat(),
+                "media": round(sum(vals) / len(vals), 1) if vals else None,
+                "sessoes": len(vals),
+            }
+        )
 
     return AnalisePaciente(tendencia, estado, indice, dominios, historico, analises)
 
@@ -173,43 +173,55 @@ def textos_insight(nome: str, analise: AnalisePaciente) -> list[dict]:
         if a.estado == "piora":
             medida = "o tempo de resposta" if a.jogo == "atencao" else "o desempenho"
             sentido = "acima" if a.jogo == "atencao" else "abaixo"
-            saida.append({
-                "tipo": "alerta",
-                "titulo": f"Mudança sustentada em {jogo}",
-                "mensagem": (
-                    f"Nas últimas sessões, {medida} de {pn} em {jogo} ficou {sentido} da faixa habitual "
-                    f"de forma consistente, e não apenas em um dia. Se você também percebeu mudanças "
-                    f"no dia a dia, pode ser um bom momento para conversar com o profissional de saúde "
-                    f"que acompanha {pn}."
-                ),
-                "jogo": a.jogo,
-            })
+            saida.append(
+                {
+                    "tipo": "alerta",
+                    "titulo": f"Mudança sustentada em {jogo}",
+                    "mensagem": (
+                        f"Nas últimas sessões, {medida} de {pn} em {jogo} ficou {sentido} da faixa habitual "
+                        f"de forma consistente, e não apenas em um dia. Se você também percebeu mudanças "
+                        f"no dia a dia, pode ser um bom momento para conversar com o profissional de saúde "
+                        f"que acompanha {pn}."
+                    ),
+                    "jogo": a.jogo,
+                }
+            )
         elif a.estado == "melhora":
-            saida.append({
-                "tipo": "melhora",
-                "titulo": f"Evolução em {jogo}",
-                "mensagem": f"{pn} vem tendo um desempenho melhor que o habitual em {jogo}. Continue a rotina.",
-                "jogo": a.jogo,
-            })
+            saida.append(
+                {
+                    "tipo": "melhora",
+                    "titulo": f"Evolução em {jogo}",
+                    "mensagem": f"{pn} vem tendo um desempenho melhor que o habitual em {jogo}. Continue a rotina.",
+                    "jogo": a.jogo,
+                }
+            )
         elif a.estado == "aprendendo":
-            saida.append({
-                "tipo": "tendencia",
-                "titulo": f"Conhecendo o padrão em {jogo}",
-                "mensagem": (
-                    f"O Cogni ainda está aprendendo o padrão de {pn} em {jogo}. "
-                    f"Faltam {a.faltam} sessões para comparar com segurança."
-                ),
-                "jogo": a.jogo,
-            })
+            saida.append(
+                {
+                    "tipo": "tendencia",
+                    "titulo": f"Conhecendo o padrão em {jogo}",
+                    "mensagem": (
+                        f"O Cogni ainda está aprendendo o padrão de {pn} em {jogo}. "
+                        f"Faltam {a.faltam} sessões para comparar com segurança."
+                    ),
+                    "jogo": a.jogo,
+                }
+            )
     total_semana = analise.historico[-1]["sessoes"] if analise.historico else 0
     if total_semana < 2:
-        saida.append({
-            "tipo": "recomendacao",
-            "titulo": "Frequência recomendada",
-            "mensagem": (
-                f"{pn} fez {total_semana} sessão(ões) nesta semana. Duas ou mais sessões por semana "
-                f"ajudam o Cogni a perceber mudanças com mais segurança."
-            ),
-            "jogo": None,
-        })
+        saida.append(
+            {
+                "tipo": "recomendacao",
+                "titulo": "Frequência recomendada",
+                "mensagem": (
+                    (
+                        f"{pn} ainda não fez sessões nesta semana. "
+                        if total_semana == 0
+                        else f"{pn} fez 1 sessão nesta semana. "
+                    )
+                    + "Duas ou mais sessões por semana ajudam o Cogni a perceber mudanças com mais segurança."
+                ),
+                "jogo": None,
+            }
+        )
     return saida

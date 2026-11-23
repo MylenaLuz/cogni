@@ -41,8 +41,13 @@ def exportar(db: Session = Depends(get_db), c: Cuidador = Depends(cuidador_atual
                         "metricas": s.metricas,
                         "observacoes": s.observacoes,
                         "eventos": [
-                            {"t": e.t_ms, "tipo": e.tipo, "alvo": e.alvo, "correto": e.correto,
-                             "reacao_ms": e.reacao_ms}
+                            {
+                                "t": e.t_ms,
+                                "tipo": e.tipo,
+                                "alvo": e.alvo,
+                                "correto": e.correto,
+                                "reacao_ms": e.reacao_ms,
+                            }
                             for e in s.eventos
                         ],
                     }

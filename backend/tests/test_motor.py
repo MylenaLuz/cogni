@@ -7,10 +7,7 @@ from app.services.pontuacao import Evento
 
 def _pontos(valores, jogo="atencao"):
     inicio = datetime(2026, 1, 1, tzinfo=UTC)
-    return [
-        motor.Ponto(inicio + timedelta(days=i), jogo, 80.0, {"tr_mediana_ms": v})
-        for i, v in enumerate(valores)
-    ]
+    return [motor.Ponto(inicio + timedelta(days=i), jogo, 80.0, {"tr_mediana_ms": v}) for i, v in enumerate(valores)]
 
 
 def test_aprendendo_com_poucas_sessoes():
