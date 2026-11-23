@@ -1,4 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap');
 @import 'tailwindcss';
 
 @theme {
@@ -9,13 +8,13 @@
   --color-surface: #FFFFFF;
   --color-surface-2: #EDE8DF;
   --color-accent: #52B788;
-  --color-accent-dark: #3D9A6E;
+  --color-accent-dark: #2B7A55;
   --color-text: #1C3333;
-  --color-text-muted: #5C7070;
-  --color-text-light: #8A9E9E;
+  --color-text-muted: #4F6363;
+  --color-text-light: #5F7272;
   --color-border: #D4CFC5;
   --color-success: #52B788;
-  --color-error: #D96B6B;
+  --color-error: #B84444;
   --font-sans: 'Nunito', system-ui, sans-serif;
 }
 
@@ -28,13 +27,18 @@ body,
   color: #1C3333;
 }
 
-* {
-  scrollbar-width: none;
-  -ms-overflow-style: none;
+/* Contraste mínimo de 4,5:1 (WCAG 2.2 AA) para todo texto da paleta. */
+
+:focus-visible {
+  outline: 3px solid #1E5A5A;
+  outline-offset: 2px;
 }
 
-*::-webkit-scrollbar {
-  display: none;
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 @keyframes shake {

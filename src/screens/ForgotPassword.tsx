@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Navigate } from "../App";
-import { supabase } from "../supabase";
+import { api, json } from "../api/client";
 
 interface Props { navigate: Navigate; }
 
@@ -22,17 +22,14 @@ export default function ForgotPassword({ navigate }: Props) {
     
     setLoading(true);
 
-    // O Supabase vai enviar um e-mail com o link de recuperação para o usuário
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: "http://localhost:8443/reset-password",
-    });
-
-    if (error) {
-      setError("Erro ao enviar o e-mail. Verifique se digitou corretamente.");
-    } else {
-      setMessage("Link de recuperação enviado! Verifique a sua caixa de entrada.");
+    try {
+      // A API responde igual para qualquer e-mail, para não revelar quem tem conta
+      await api("/auth/esqueci-senha", json({ email: email.trim() }));
+      setMessage("Se o e-mail estiver cadastrado, você vai receber um link para criar uma nova senha.");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Erro ao enviar o e-mail.");
     }
-    
+
     setLoading(false);
   }
 

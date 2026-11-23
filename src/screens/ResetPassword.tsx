@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { Navigate } from "../App";
-import { supabase } from "../supabase";
+import { api, json } from "../api/client";
 
 interface Props { navigate: Navigate; }
 
 export default function ResetPassword({ navigate }: Props) {
+  const token = new URLSearchParams(window.location.search).get("token") ?? "";
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPass, setShowPass] = useState(false);
@@ -29,21 +30,18 @@ export default function ResetPassword({ navigate }: Props) {
     
     setLoading(true);
 
-    // O Supabase usa a sessão temporária gerada pelo clique no e-mail para atualizar a senha
-    const { error } = await supabase.auth.updateUser({
-      password: password
-    });
-
-    if (error) {
-      setError("Erro ao redefinir a senha. O link pode ter expirado ou ser inválido.");
+    if (password.length < 8) {
+      setError("A senha precisa ter pelo menos 8 caracteres.");
       setLoading(false);
-    } else {
-      setMessage("Senha atualizada com sucesso! Redirecionando...");
-      setTimeout(() => {
-        // Limpa a URL para remover o token de segurança e manda pro dashboard
-        window.history.replaceState(null, "", "/");
-        navigate("dashboard");
-      }, 2000);
+      return;
+    }
+    try {
+      await api("/auth/redefinir-senha", json({ token, nova_senha: password }));
+      setMessage("Senha atualizada! Entre com a nova senha.");
+      setTimeout(() => navigate("login"), 2000);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "O link pode ter expirado. Peça um novo.");
+      setLoading(false);
     }
   }
 

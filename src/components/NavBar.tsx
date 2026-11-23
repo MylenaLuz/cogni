@@ -17,7 +17,7 @@ const tabs: { label: string; screen: Screen; icon: React.ReactNode }[] = [
     ),
   },
   {
-    label: "Pacientes",
+    label: "Pessoas",
     screen: "patients",
     icon: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -48,7 +48,7 @@ const tabs: { label: string; screen: Screen; icon: React.ReactNode }[] = [
     ),
   },
   {
-    label: "IA",
+    label: "Análises",
     screen: "ai-insights",
     icon: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -69,7 +69,7 @@ export default function NavBar({ active, navigate }: Props) {
           <button
             key={tab.screen}
             onClick={() => navigate(tab.screen)}
-            className={`flex-1 flex flex-col items-center justify-center gap-1 py-2.5 text-[11px] font-700 transition-colors ${
+            className={`flex-1 flex flex-col items-center justify-center gap-1 py-2.5 text-xs font-700 transition-colors ${
               isActive ? "text-primary" : "text-text-muted hover:text-text"
             }`}
           >

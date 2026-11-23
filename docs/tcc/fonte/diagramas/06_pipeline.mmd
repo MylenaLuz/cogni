@@ -1,0 +1,9 @@
+flowchart LR
+  J["Jogo no navegador<br/>useSessionRecorder()"] -- "eventos brutos<br/>{t, tipo, alvo, correto}" --> API["POST /sessoes"]
+  API --> EV[("sessao_evento<br/>dado bruto imutável")]
+  EV --> SC["scoring v1<br/>métricas por jogo<br/>(TR mediano, CV, omissões...)"]
+  SC --> SE[("sessao · sessao_dominio<br/>versao_pontuacao")]
+  SE --> MM["Motor de métricas<br/>baseline · CUSUM · domínios"]
+  MM --> IN[("insight · indice_cognitivo")]
+  IN --> UI["Painel do cuidador<br/>gráficos com faixa pessoal"]
+  SC -. "recalcular quando a<br/>fórmula mudar" .-> EV

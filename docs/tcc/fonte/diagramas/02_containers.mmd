@@ -1,0 +1,23 @@
+flowchart TB
+  subgraph Cliente["Dispositivo do usuário (navegador / PWA)"]
+    FE["Front-end React 19 + TypeScript<br/>Vite · Tailwind · TanStack Query<br/><i>modo cuidador e modo idoso</i>"]
+  end
+  subgraph Servidor["Servidor Linux · Docker Compose"]
+    CADDY["Caddy<br/>HTTPS automático · arquivos estáticos<br/>proxy reverso · cabeçalhos de segurança"]
+    API["API FastAPI (Python 3.12)<br/>auth · domínio · pontuação · motor de métricas"]
+    DB[("PostgreSQL 16<br/>dados relacionais + eventos brutos")]
+    W["Worker assíncrono<br/>transcrição e marcadores de fala<br/><i>(TCC2)</i>"]
+    LLM["Ollama · modelo aberto local<br/><i>opcional (TCC2)</i>"]
+    BK["Rotina de backup<br/>pg_dump diário"]
+  end
+  OFF[("Armazenamento externo<br/>cópias de backup")]
+  FE -- "HTTPS / JSON" --> CADDY --> API
+  API -- "SQL (SQLAlchemy)" --> DB
+  API -- "fila de tarefas" --> W --> DB
+  API -. "interface LLMProvider" .-> LLM
+  BK --> DB
+  BK -- "cópia cifrada" --> OFF
+  classDef core fill:#2C7A7A,color:#fff,stroke:#1E5A5A
+  classDef opt fill:#EDE8DF,stroke:#8A9E9E,color:#1C3333,stroke-dasharray: 4 3
+  class FE,CADDY,API,DB core
+  class W,LLM,BK opt

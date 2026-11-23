@@ -1,0 +1,214 @@
+{
+  "semente": 20261119,
+  "n_por_cenario": 400,
+  "cenarios": [
+    {
+      "sessoes_por_semana": 1,
+      "piora_sigma_por_semana": 0.05,
+      "regra_5pct": {
+        "sensibilidade": 1.0,
+        "atraso_mediano_semanas": 1.0,
+        "falsos_alarmes_por_paciente_ano": 16.427249117666644,
+        "precisao_alarmes": 0.22228747614153574
+      },
+      "cusum": {
+        "sensibilidade": 0.36,
+        "atraso_mediano_semanas": 14.0,
+        "falsos_alarmes_por_paciente_ano": 0.13504694679363388,
+        "precisao_alarmes": 0.35664335664335667
+      }
+    },
+    {
+      "sessoes_por_semana": 1,
+      "piora_sigma_por_semana": 0.1,
+      "regra_5pct": {
+        "sensibilidade": 1.0,
+        "atraso_mediano_semanas": 1.0,
+        "falsos_alarmes_por_paciente_ano": 16.878801996672216,
+        "precisao_alarmes": 0.22171165996553704
+      },
+      "cusum": {
+        "sensibilidade": 0.76,
+        "atraso_mediano_semanas": 15.0,
+        "falsos_alarmes_por_paciente_ano": 0.21457570715474214,
+        "precisao_alarmes": 0.4062968515742129
+      }
+    },
+    {
+      "sessoes_por_semana": 1,
+      "piora_sigma_por_semana": 0.2,
+      "regra_5pct": {
+        "sensibilidade": 1.0,
+        "atraso_mediano_semanas": 1.0,
+        "falsos_alarmes_por_paciente_ano": 16.866171003717465,
+        "precisao_alarmes": 0.22344531808434595
+      },
+      "cusum": {
+        "sensibilidade": 0.995,
+        "atraso_mediano_semanas": 10.0,
+        "falsos_alarmes_por_paciente_ano": 0.12772172065852358,
+        "precisao_alarmes": 0.5513146734520781
+      }
+    },
+    {
+      "sessoes_por_semana": 2,
+      "piora_sigma_por_semana": 0.05,
+      "regra_5pct": {
+        "sensibilidade": 1.0,
+        "atraso_mediano_semanas": 1.0,
+        "falsos_alarmes_por_paciente_ano": 14.243688546372564,
+        "precisao_alarmes": 0.21617923721566615
+      },
+      "cusum": {
+        "sensibilidade": 0.515,
+        "atraso_mediano_semanas": 11.0,
+        "falsos_alarmes_por_paciente_ano": 0.4456550624501724,
+        "precisao_alarmes": 0.3611111111111111
+      }
+    },
+    {
+      "sessoes_por_semana": 2,
+      "piora_sigma_por_semana": 0.1,
+      "regra_5pct": {
+        "sensibilidade": 1.0,
+        "atraso_mediano_semanas": 1.0,
+        "falsos_alarmes_por_paciente_ano": 14.28912783751492,
+        "precisao_alarmes": 0.22129755434782608
+      },
+      "cusum": {
+        "sensibilidade": 0.9,
+        "atraso_mediano_semanas": 10.0,
+        "falsos_alarmes_por_paciente_ano": 0.5004646223284211,
+        "precisao_alarmes": 0.44025157232704404
+      }
+    },
+    {
+      "sessoes_por_semana": 2,
+      "piora_sigma_por_semana": 0.2,
+      "regra_5pct": {
+        "sensibilidade": 1.0,
+        "atraso_mediano_semanas": 1.0,
+        "falsos_alarmes_por_paciente_ano": 14.404585749516746,
+        "precisao_alarmes": 0.2323534296628467
+      },
+      "cusum": {
+        "sensibilidade": 1.0,
+        "atraso_mediano_semanas": 8.0,
+        "falsos_alarmes_por_paciente_ano": 0.5025661534359789,
+        "precisao_alarmes": 0.5292456635740218
+      }
+    },
+    {
+      "sessoes_por_semana": 3,
+      "piora_sigma_por_semana": 0.05,
+      "regra_5pct": {
+        "sensibilidade": 1.0,
+        "atraso_mediano_semanas": 2.0,
+        "falsos_alarmes_por_paciente_ano": 12.264971562395456,
+        "precisao_alarmes": 0.21951702296120348
+      },
+      "cusum": {
+        "sensibilidade": 0.7,
+        "atraso_mediano_semanas": 11.0,
+        "falsos_alarmes_por_paciente_ano": 0.751555704248913,
+        "precisao_alarmes": 0.36603088101725706
+      }
+    },
+    {
+      "sessoes_por_semana": 3,
+      "piora_sigma_por_semana": 0.1,
+      "regra_5pct": {
+        "sensibilidade": 1.0,
+        "atraso_mediano_semanas": 1.0,
+        "falsos_alarmes_por_paciente_ano": 12.900406368662987,
+        "precisao_alarmes": 0.21892816419612315
+      },
+      "cusum": {
+        "sensibilidade": 0.96,
+        "atraso_mediano_semanas": 9.5,
+        "falsos_alarmes_por_paciente_ano": 0.8487109453067754,
+        "precisao_alarmes": 0.43125
+      }
+    },
+    {
+      "sessoes_por_semana": 3,
+      "piora_sigma_por_semana": 0.2,
+      "regra_5pct": {
+        "sensibilidade": 1.0,
+        "atraso_mediano_semanas": 1.0,
+        "falsos_alarmes_por_paciente_ano": 12.743055555555555,
+        "precisao_alarmes": 0.24045873284451966
+      },
+      "cusum": {
+        "sensibilidade": 1.0,
+        "atraso_mediano_semanas": 6.0,
+        "falsos_alarmes_por_paciente_ano": 0.8055555555555556,
+        "precisao_alarmes": 0.5376288659793814
+      }
+    }
+  ],
+  "curva_h": [
+    {
+      "h": 3,
+      "sensibilidade": 0.985,
+      "atraso_mediano_semanas": 6.0,
+      "falsos_alarmes_por_paciente_ano": 3.4719638586234374,
+      "precisao_alarmes": 0.38964181994191677
+    },
+    {
+      "h": 4,
+      "sensibilidade": 0.975,
+      "atraso_mediano_semanas": 8.0,
+      "falsos_alarmes_por_paciente_ano": 1.8551687483390904,
+      "precisao_alarmes": 0.4164285714285714
+    },
+    {
+      "h": 5,
+      "sensibilidade": 0.97,
+      "atraso_mediano_semanas": 9.0,
+      "falsos_alarmes_por_paciente_ano": 1.3127823545043844,
+      "precisao_alarmes": 0.41924398625429554
+    },
+    {
+      "h": 6,
+      "sensibilidade": 0.96,
+      "atraso_mediano_semanas": 10.0,
+      "falsos_alarmes_por_paciente_ano": 0.9327664097794309,
+      "precisao_alarmes": 0.41521068859198357
+    },
+    {
+      "h": 8,
+      "sensibilidade": 0.935,
+      "atraso_mediano_semanas": 12.0,
+      "falsos_alarmes_por_paciente_ano": 0.5216582513951632,
+      "precisao_alarmes": 0.4296875
+    },
+    {
+      "h": 10,
+      "sensibilidade": 0.89,
+      "atraso_mediano_semanas": 13.0,
+      "falsos_alarmes_por_paciente_ano": 0.3247408982195056,
+      "precisao_alarmes": 0.4292155094679892
+    },
+    {
+      "h": 12,
+      "sensibilidade": 0.835,
+      "atraso_mediano_semanas": 13.0,
+      "falsos_alarmes_por_paciente_ano": 0.2314642572415625,
+      "precisao_alarmes": 0.4163934426229508
+    },
+    {
+      "h": 15,
+      "sensibilidade": 0.785,
+      "atraso_mediano_semanas": 14.0,
+      "falsos_alarmes_por_paciente_ano": 0.15200637788998134,
+      "precisao_alarmes": 0.4191279887482419
+    }
+  ],
+  "regra_5pct_ref": {
+    "sensibilidade": 1.0,
+    "atraso_mediano_semanas": 1.0,
+    "falsos_alarmes_por_paciente_ano": 14.274780760031884,
+    "precisao_alarmes": 0.22514767932489452
+  }
+}

@@ -15,3 +15,19 @@ logs/
 
 /.plugins/
 /.opencode-skills/
+
+!.env.example
+
+# Python
+.venv/
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+
+# Arquivos gerados do TCC (docx, pdf e imagens) ficam fora do Git; as fontes estão em docs/tcc/fonte/
+docs/tcc/*.docx
+docs/tcc/*.pdf
+docs/tcc/fonte/*.docx
+docs/tcc/fonte/img/
+docs/tcc/fonte/capturas/telas/
+docs/tcc/fonte/out/

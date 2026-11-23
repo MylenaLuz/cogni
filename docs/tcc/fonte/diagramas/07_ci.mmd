@@ -1,0 +1,9 @@
+flowchart LR
+  G["git push"] --> CI{{"GitHub Actions"}}
+  CI --> F1["Front-end<br/>lint · typecheck · Vitest · build"]
+  CI --> B1["Back-end<br/>ruff · mypy · pytest"]
+  CI --> E2E["E2E Playwright<br/>+ axe (acessibilidade)"]
+  CI --> MX["Matriz integrada<br/>gerar_matriz.py (386 referências)"]
+  F1 & B1 & E2E & MX --> OK{"todos verdes?"}
+  OK -- "sim" --> IMG["imagem Docker"] --> DEP["deploy na VPS"]
+  OK -- "não" --> X["bloqueia o merge"]

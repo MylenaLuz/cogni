@@ -1,8 +1,9 @@
-import { useState, useEffect } from "react";
-import { Navigate } from "../../App";
-import { mockPatients } from "../../data";
+import { useEffect, useRef, useState } from "react";
+import type { Navigate } from "../../App";
 import GameHeader from "../../components/GameHeader";
-import GameResult, { fmt } from "../../components/GameResult";
+import GameResult from "../../components/GameResult";
+import SemPessoa, { usePessoaDoJogo } from "../../components/SemPessoa";
+import { useSalvarSessao } from "../../lib/useSalvarSessao";
 
 interface Props { navigate: Navigate; selectedPatientId: string; }
 
@@ -30,63 +31,88 @@ function newTarget(current: number, total: number) {
 }
 
 export default function AttentionSpeed({ navigate, selectedPatientId }: Props) {
-  const patient = mockPatients.find((p) => p.id === selectedPatientId) ?? mockPatients[0];
+  const { pessoa: patient, carregando } = usePessoaDoJogo(selectedPatientId);
+  const sessao = useSalvarSessao("atencao", patient?.id, navigate);
   const [phase, setPhase] = useState<Phase>("instructions");
   const [level, setLevel] = useState(0);
   const cfg = LEVELS[level];
 
   const [targetIdx, setTargetIdx] = useState(0);
   const [hits, setHits] = useState(0);
+  const [errors, setErrors] = useState(0);
+  const [misses, setMisses] = useState(0);
   const [timeLeft, setTimeLeft] = useState(cfg.duration);
   const [elapsed, setElapsed] = useState(0);
   const [flash, setFlash] = useState(false);
-  const [notes, setNotes] = useState("");
-  const [saved, setSaved] = useState(false);
+  // Momento (ms da sessão) em que o alvo atual apareceu, para medir o tempo de reação.
+  const estimuloEm = useRef(0);
 
   const totalCells = cfg.gridSize * cfg.gridSize;
   const interval = Math.max(600, cfg.startInterval - hits * cfg.intervalDecay);
 
-  // Countdown + elapsed
+  function mostrarAlvo(idx: number) {
+    estimuloEm.current = sessao.agora();
+    sessao.registrar({ tipo: "estimulo", alvo: String(idx) });
+    setTargetIdx(idx);
+  }
+
+  // Contagem regressiva
   useEffect(() => {
     if (phase !== "game") return;
     const t = setInterval(() => {
-      setTimeLeft((tl) => {
-        if (tl <= 1) { setPhase("result"); return 0; }
-        return tl - 1;
-      });
+      setTimeLeft((tl) => (tl <= 1 ? 0 : tl - 1));
       setElapsed((e) => e + 1);
     }, 1000);
     return () => clearInterval(t);
   }, [phase]);
 
-  // Auto-move target
+  useEffect(() => {
+    if (phase === "game" && timeLeft === 0) {
+      sessao.encerrar();
+      setPhase("result");
+    }
+  }, [phase, timeLeft, sessao]);
+
+  // O alvo muda de lugar sozinho: conta como omissão.
   useEffect(() => {
     if (phase !== "game") return;
     const t = setTimeout(() => {
-      setTargetIdx((cur) => newTarget(cur, totalCells));
+      sessao.registrar({ tipo: "omissao", alvo: String(targetIdx) });
+      setMisses((m) => m + 1);
+      mostrarAlvo(newTarget(targetIdx, totalCells));
     }, interval);
     return () => clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [phase, targetIdx, hits, totalCells, interval]);
 
   function startGame() {
     const total = LEVELS[level].gridSize ** 2;
-    setTargetIdx(Math.floor(Math.random() * total));
+    sessao.iniciar();
     setHits(0);
+    setErrors(0);
+    setMisses(0);
     setTimeLeft(LEVELS[level].duration);
     setElapsed(0);
     setFlash(false);
+    mostrarAlvo(Math.floor(Math.random() * total));
     setPhase("game");
   }
 
   function handleCellTap(idx: number) {
-    if (idx !== targetIdx) return;
+    if (idx !== targetIdx) {
+      sessao.registrar({ tipo: "toque", alvo: String(idx), correto: false });
+      setErrors((e) => e + 1);
+      return;
+    }
+    const reacao = Math.round(sessao.agora() - estimuloEm.current);
+    sessao.registrar({ tipo: "toque", alvo: String(idx), correto: true, reacao_ms: reacao });
     setHits((h) => h + 1);
     setFlash(true);
     setTimeout(() => setFlash(false), 280);
-    setTargetIdx((cur) => newTarget(cur, totalCells));
+    mostrarAlvo(newTarget(idx, totalCells));
   }
 
-  const score = Math.min(100, Math.round((hits / Math.max(1, Math.floor(cfg.duration / 1.8))) * 100));
+  if (!patient) return <SemPessoa navigate={navigate} carregando={carregando} />;
 
   if (phase === "instructions") {
     return (
@@ -149,18 +175,21 @@ export default function AttentionSpeed({ navigate, selectedPatientId }: Props) {
       <GameResult
         patientName={patient.name}
         gameName="Velocidade de Atenção"
-        score={score}
+        score={sessao.score}
         timeElapsed={elapsed}
-        errors={0}
+        errors={errors}
         extraStats={[
           { label: "Acertos", value: String(hits) },
+          { label: "Não tocadas", value: String(misses) },
           { label: "Nível", value: LEVELS[level].label },
         ]}
-        notes={notes}
-        onNotesChange={setNotes}
-        onSave={() => { setSaved(true); setTimeout(() => navigate("patient-detail", patient.id), 1200); }}
+        notes={sessao.notes}
+        onNotesChange={sessao.setNotes}
+        onSave={() => void sessao.salvar(level + 1, { grade: cfg.gridSize, duracao_s: cfg.duration })}
         onDiscard={() => navigate("patient-detail", patient.id)}
-        saved={saved}
+        saved={sessao.saved}
+        saving={sessao.saving}
+        saveError={sessao.erro}
       />
     );
   }
@@ -190,6 +219,7 @@ export default function AttentionSpeed({ navigate, selectedPatientId }: Props) {
               <button
                 key={i}
                 onClick={() => handleCellTap(i)}
+                aria-label={isTarget ? "Estrela" : `Casa ${i + 1}`}
                 className={`aspect-square rounded-2xl border-2 flex items-center justify-center transition-all duration-100 active:scale-90 ${
                   isTarget
                     ? flash

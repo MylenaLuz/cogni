@@ -1,0 +1,52 @@
+# Produção em qualquer servidor Linux com Docker:
+#
+#   pnpm build                       # gera dist/ com VITE_API_URL=/api
+#   docker compose -f docker-compose.prod.yml up -d
+#
+# O Caddy obtém o certificado HTTPS sozinho para o domínio em DOMINIO.
+
+services:
+  db:
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: cogni
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?defina POSTGRES_PASSWORD no .env}
+      POSTGRES_DB: cogni
+    volumes:
+      - dados:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cogni"]
+      interval: 5s
+      retries: 10
+
+  api:
+    build: ./backend
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql+psycopg://cogni:${POSTGRES_PASSWORD}@db:5432/cogni
+      COOKIE_SEGURO: "true"
+      COOKIE_PATH: /api/auth
+    depends_on:
+      db:
+        condition: service_healthy
+
+  caddy:
+    image: caddy:2
+    restart: unless-stopped
+    environment:
+      DOMINIO: ${DOMINIO:-localhost}
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./infra/Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./dist:/srv:ro
+      - caddy_dados:/data
+    depends_on:
+      - api
+
+volumes:
+  dados:
+  caddy_dados:

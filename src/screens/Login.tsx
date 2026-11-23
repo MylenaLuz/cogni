@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { Navigate } from "../App";
-import { supabase } from "../supabase";
+import { useAuth } from "../state/AuthContext";
 
 interface Props { navigate: Navigate; }
 
 export default function Login({ navigate }: Props) {
+  const { entrar } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPass, setShowPass] = useState(false);
@@ -21,17 +22,12 @@ export default function Login({ navigate }: Props) {
     }
     
     setLoading(true);
-
-    const { error } = await supabase.auth.signInWithPassword({
-      email: email,
-      password: password,
-    });
-
-    if (error) {
-      setError("E-mail ou senha incorretos.");
-      setLoading(false);
-    } else {
+    try {
+      await entrar(email, password);
       navigate("dashboard");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Não foi possível entrar.");
+      setLoading(false);
     }
   }
 
@@ -52,8 +48,9 @@ export default function Login({ navigate }: Props) {
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <div>
-            <label className="block text-sm font-700 text-text mb-1.5">E-mail</label>
+            <label htmlFor="login-email" className="block text-sm font-700 text-text mb-1.5">E-mail</label>
             <input
+              id="login-email"
               type="email"
               value={email}
               onChange={(e) => { setEmail(e.target.value); setError(""); }}
@@ -63,9 +60,10 @@ export default function Login({ navigate }: Props) {
             />
           </div>
           <div>
-            <label className="block text-sm font-700 text-text mb-1.5">Senha</label>
+            <label htmlFor="login-senha" className="block text-sm font-700 text-text mb-1.5">Senha</label>
             <div className="relative">
               <input
+                id="login-senha"
                 type={showPass ? "text" : "password"}
                 value={password}
                 onChange={(e) => { setPassword(e.target.value); setError(""); }}
@@ -73,7 +71,7 @@ export default function Login({ navigate }: Props) {
                 className="w-full h-12 px-4 pr-12 rounded-xl border-2 border-border bg-surface text-text text-sm font-500 focus:outline-none focus:border-primary transition-colors"
                 autoComplete="current-password"
               />
-              <button type="button" onClick={() => setShowPass(!showPass)} className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text">
+              <button type="button" aria-label={showPass ? "Ocultar senha" : "Mostrar senha"} onClick={() => setShowPass(!showPass)} className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   {showPass
                     ? <><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" /><line x1="1" y1="1" x2="23" y2="23" /></>
@@ -107,14 +105,14 @@ export default function Login({ navigate }: Props) {
           <div className="flex items-center justify-between mt-2">
             <button 
               type="button" 
-              onClick={() => navigate("forgot-password" as any)}
+              onClick={() => navigate("forgot-password")}
               className="text-primary text-sm font-600 hover:underline"
             >
               Esqueci minha senha
             </button>
             <button 
               type="button" 
-              onClick={() => navigate("signup" as any)}
+              onClick={() => navigate("signup")}
               className="text-primary text-sm font-600 hover:underline"
             >
               Criar uma conta

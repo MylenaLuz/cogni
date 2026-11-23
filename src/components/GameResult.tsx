@@ -10,6 +10,8 @@ interface Props {
   onSave: () => void;
   onDiscard: () => void;
   saved: boolean;
+  saving?: boolean;
+  saveError?: string | null;
 }
 
 export function fmt(s: number) {
@@ -28,6 +30,8 @@ export default function GameResult({
   onSave,
   onDiscard,
   saved,
+  saving = false,
+  saveError = null,
 }: Props) {
   const isGood = score >= 55;
   const badge = score >= 80 ? "Excelente!" : score >= 55 ? "Muito bem!" : "Continue tentando!";
@@ -60,7 +64,7 @@ export default function GameResult({
             ].map((s) => (
               <div key={s.label} className="bg-background rounded-xl p-3 text-center">
                 <div className={`text-2xl font-800 ${s.color}`}>{s.value}</div>
-                <div className="text-[10px] text-text-muted mt-0.5 font-600">{s.label}</div>
+                <div className="text-xs text-text-muted mt-0.5 font-600">{s.label}</div>
               </div>
             ))}
           </div>
@@ -70,7 +74,7 @@ export default function GameResult({
               {extraStats.map((s) => (
                 <div key={s.label} className="bg-background rounded-xl p-2.5 text-center">
                   <div className="text-base font-800 text-primary">{s.value}</div>
-                  <div className="text-[10px] text-text-muted font-600">{s.label}</div>
+                  <div className="text-xs text-text-muted font-600">{s.label}</div>
                 </div>
               ))}
             </div>
@@ -78,8 +82,9 @@ export default function GameResult({
         </div>
 
         <div className="bg-surface rounded-2xl border border-border shadow-sm p-4">
-          <label className="block text-xs font-700 text-text mb-2">Observações da sessão</label>
+          <label htmlFor="obs-sessao" className="block text-sm font-700 text-text mb-2">Observações da sessão</label>
           <textarea
+            id="obs-sessao"
             rows={3}
             value={notes}
             onChange={(e) => onNotesChange(e.target.value)}
@@ -88,13 +93,17 @@ export default function GameResult({
           />
         </div>
 
+        {saveError && (
+          <p role="alert" className="text-error text-sm font-600 bg-error/8 rounded-xl px-3 py-2.5">{saveError}</p>
+        )}
         <button
           onClick={onSave}
-          className={`w-full h-12 rounded-2xl text-sm font-700 transition-all shadow-md active:scale-[0.98] ${
-            saved ? "bg-accent text-white" : "bg-primary text-white hover:bg-primary-light"
+          disabled={saving || saved}
+          className={`w-full h-12 rounded-2xl text-base font-700 transition-all shadow-md active:scale-[0.98] disabled:opacity-90 ${
+            saved ? "bg-accent-dark text-white" : "bg-primary text-white hover:bg-primary-light"
           }`}
         >
-          {saved ? "✓ Sessão salva!" : "Salvar sessão"}
+          {saved ? "✓ Sessão salva" : saving ? "Salvando…" : "Salvar sessão"}
         </button>
         <button
           onClick={onDiscard}

@@ -12,8 +12,9 @@ Trabalho de Conclusão de Curso · Engenharia de Software · Unicesumar Curitiba
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white)
 ![Vite](https://img.shields.io/badge/Vite-8-646CFF?logo=vite&logoColor=white)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-06B6D4?logo=tailwindcss&logoColor=white)
-![Supabase](https://img.shields.io/badge/Supabase-planejado-3FCF8E?logo=supabase&logoColor=white)
-![Vercel](https://img.shields.io/badge/Vercel-planejado-000000?logo=vercel&logoColor=white)
+![FastAPI](https://img.shields.io/badge/FastAPI-Python_3.12-009688?logo=fastapi&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?logo=postgresql&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker&logoColor=white)
 ![Status](https://img.shields.io/badge/status-em%20desenvolvimento-2C7A7A)
 
 </div>
@@ -99,121 +100,79 @@ A funcionalidade central é o **painel de métricas do cuidador**, que reúne de
 
 | # | Funcionalidade | Descrição | Status |
 | :-: | --- | --- | :-: |
-| ⭐ | **Painel de métricas** | Indicadores, tendências e alertas de cada pessoa acompanhada | 🟢 Interface pronta |
-| 1 | **Jogos de memória** | Atividades com imagens, palavras e sons, alinhadas à Terapia de Estimulação Cognitiva (CST) | 🟢 Interface pronta |
+| ⭐ | **Painel de métricas** | Indicadores, tendências e avisos de cada pessoa, comparada com o próprio padrão | 🟢 Funcionando |
+| 1 | **Jogos cognitivos** | Quatro jogos que gravam cada toque e tempo de reação, alinhados à Terapia de Estimulação Cognitiva (CST) | 🟢 Funcionando |
 | 2 | **Memória afetiva** | Fotos e histórias de pessoas importantes | 🟡 Planejado |
 | 3 | **Lugares familiares** | Fotos e informações de locais conhecidos | 🟡 Planejado |
 | 4 | **Comandos por voz** | Menos navegação por menus para a pessoa idosa | 🟡 Planejado |
 | 5 | **Rotina e lembretes** | Atividades, compromissos e horários | 🟡 Planejado |
 | 6 | **Dificuldade adaptativa** | Nível ajustado ao desempenho do usuário | 🟠 Parcial (seleção manual de nível) |
 | 7 | **Mensagens afetivas** | Estímulos de familiares durante o uso | 🟡 Planejado |
-| 8 | **Relatórios exportáveis** | Métricas para compartilhar com especialistas | 🟠 Parcial (tela pronta, exportação pendente) |
+| 8 | **Relatórios exportáveis** | Métricas para compartilhar com especialistas (CSV por pessoa; exportação completa da conta em JSON) | 🟢 Funcionando |
 
-<sub>🟢 interface implementada · 🟠 parcialmente implementada · 🟡 prevista nas próximas etapas</sub>
+<sub>🟢 implementado com dados reais · 🟠 parcialmente implementado · 🟡 previsto nas próximas etapas</sub>
 
 ### Telas já implementadas
 
-- **Login** do cuidador com validação de campos.
-- **Painel inicial** com número de pessoas acompanhadas, sessões do dia, alertas críticos, tendência de cada pessoa e sessões recentes.
-- **Lista e perfil** de cada pessoa acompanhada, com diagnóstico, observações, histórico e **gráfico radar** dos cinco domínios cognitivos (memória, atenção, linguagem, função executiva e habilidade visuoespacial).
-- **Catálogo de jogos** com quatro atividades jogáveis, escolha de nível e registro de observações ao final de cada sessão.
-- **Relatórios** por pessoa e por período (semana, mês ou 3 meses), com índice geral, duração média e desempenho por domínio.
-- **Insights**: cartões de alerta, melhora, recomendação e tendência, além de um assistente em formato de conversa. Nesta etapa, a tela é uma **exploração de interface** com respostas pré-definidas.
-
----
-
-## 📊 Métricas do painel do cuidador
-
-| Cognitivas | Engajamento | Rotina | Alertas |
-| --- | --- | --- | --- |
-| Acertos e erros por atividade | Frequência e duração de uso | Adesão a lembretes | Configuráveis pelo cuidador |
-| Tempo de resposta | Atividades preferidas | Compromissos cumpridos | Sinalizam desvios relevantes |
-| Tendência ao longo do tempo | Picos e quedas | Horários difíceis | Apoiam, mas não diagnosticam |
-
-> As métricas podem ser exportadas para especialistas e **não substituem avaliação clínica**.
-
----
-
-## 🧩 Jogos cognitivos
-
-| Jogo | Domínio estimulado | Como funciona | Níveis |
-| --- | --- | --- | --- |
-| **Velocidade de Atenção** | Atenção e tempo de reação | Uma estrela aparece em uma grade e deve ser tocada o mais rápido possível. A cada acerto ela muda de lugar e o ritmo aumenta. | Grade 3×3 (30 s, lento) → 3×3 (25 s, médio) → 4×4 (20 s, acelerado) |
-| **Associação de Pares** | Memória de trabalho | Jogo da memória: virar duas cartas por vez e encontrar os pares iguais. | 4, 5 ou 6 pares |
-| **Categorias** | Linguagem semântica | Uma categoria é exibida e é preciso tocar em todas as palavras que pertencem a ela, evitando os distratores, antes que o tempo acabe. | Frutas (30 s) → Animais (25 s) → Objetos de cozinha (20 s) |
-| **Associação de Imagens** | Memória visual | Associar cada imagem à palavra correspondente. | 3 níveis |
-
-A pontuação vai de **0 a 100%** e considera acertos, erros e tentativas. O resultado usa mensagens encorajadoras ("Excelente!", "Muito bem!", "Continue tentando!"), sem caráter punitivo. Jogos de **reconhecimento de sons** estão previstos.
-
----
-
-## 🌎 Mercado e diferenciais
-
-O mercado é **fragmentado no exterior e embrionário no Brasil**.
-
-| No exterior: maduro, mas uma dor por app | No Brasil: acadêmico ou em fase inicial |
-| --- | --- |
-| **Lumosity:** treino cognitivo geral | **MemoryLife (UFPA):** validado clinicamente, sem produto escalado |
-| **GreyMatters:** terapia de reminiscência | **Recordar (IFCE):** projeto de hackathon |
-| **CareZone:** gestão de medicação e sintomas | **Cérebro Ativo:** tração comercial, mas só jogos cognitivos |
-| **Timeless:** reconhecimento facial com IA | **Humanis:** ainda em captação de investimento |
-
-<sub>Fontes: Crippa (2023); IFCE (2022); Sebrae (2023); FEBRAZ (2024).</sub>
-
-### Não é mais um app de jogos de memória
-
-- ✅ **Cuidador como usuário final**, e não como coadjuvante.
-- ✅ **Funcionalidades ancoradas em revisões Cochrane.**
-- ✅ **Métricas que levam à ação**, e não apenas monitoramento passivo.
+- **Entrar, criar conta, esqueci a senha e redefinir senha**, ligados à API (senha com Argon2id, sessão renovada por cookie seguro).
+- **Painel inicial** com pessoas acompanhadas, sessões do dia, avisos e sessões recentes, tudo vindo do banco.
+- **Perfis e papéis**: em cada pessoa, o usuário é responsável, cuidador ou acompanhante; convites por código; instituições com gestor e profissionais.
+- **Cadastro, lista e perfil** de cada pessoa, com estado em relação ao próprio padrão, sessões que faltam para formar a linha de base, **gráfico radar** dos cinco domínios e evolução de 8 semanas.
+- **Quatro jogos** que gravam os eventos brutos (cada estímulo, toque, omissão e tempo de reação) e salvam a sessão no servidor, que calcula a pontuação.
+- **Relatórios** por pessoa e por período (semana, mês ou 3 meses), com sessões por semana e exportação em CSV.
+- **Análises**: avisos, melhoras, sugestões e padrões em formação gerados pelo motor estatístico, com perguntas rápidas respondidas a partir dos dados reais.
 
 ---
 
 ## 🏗 Arquitetura e tecnologias
 
-O Cogni usa uma stack enxuta, pensada para dados de saúde.
+O Cogni roda inteiro em componentes abertos: nenhuma parte depende de um fornecedor específico. Tudo sobe com Docker Compose em qualquer servidor Linux, Windows ou macOS.
 
 ```mermaid
 flowchart LR
     subgraph FE["Front-end"]
-        R["React 19 + TypeScript<br/>Vite · Tailwind CSS"]
+        R["React 19 + TypeScript<br/>Vite · Tailwind CSS 4"]
     end
-    subgraph BE["Backend (BaaS) · Supabase"]
-        AU["Auth"]
-        API["API automática"]
-        DB[("PostgreSQL<br/>+ Row Level Security")]
+    subgraph RP["Caddy"]
+        TLS["HTTPS automático<br/>CSP · HSTS"]
     end
-    subgraph HO["Hospedagem · Vercel"]
-        CDN["Deploy contínuo<br/>Distribuição via CDN"]
+    subgraph BE["API · FastAPI (Python 3.12)"]
+        AU["Autenticação<br/>Argon2id · JWT · refresh"]
+        SC["Pontuação v1<br/>a partir dos eventos"]
+        MO["Motor de mudança<br/>linha de base + CUSUM"]
     end
-    R -- "autenticação" --> AU
-    R -- "dados" --> API --> DB
-    CDN -. "serve" .-> R
+    DB[("PostgreSQL 16")]
+    R --> TLS --> AU
+    TLS --> SC --> DB
+    MO --> DB
 ```
 
 | Camada | Tecnologias | Papel |
 | --- | --- | --- |
-| **Front-end** | React 19, TypeScript, Vite, Tailwind CSS 4 | Interface do cuidador e das atividades |
-| **Backend (BaaS)** | Supabase: PostgreSQL gerenciado, autenticação e API gerada automaticamente | Persistência, login, cadastros e dados para os relatórios |
-| **Hospedagem** | Vercel | Deploy contínuo e distribuição via CDN |
+| **Front-end** | React 19, TypeScript, Vite, Tailwind CSS 4, React Router 7 | Interface do cuidador e dos jogos |
+| **API** | FastAPI, SQLAlchemy 2, Alembic, Pydantic | Autenticação, cadastros, sessões, pontuação e análises |
+| **Banco** | PostgreSQL 16 | Dados das pessoas, sessões e eventos brutos de cada jogo |
+| **Infraestrutura** | Docker Compose, Caddy, scripts de backup e restauração | Implantação em qualquer servidor, HTTPS e cópias de segurança |
+| **Qualidade** | pytest, Vitest, Ruff, GitHub Actions | Testes e verificações a cada envio |
+
+### 📈 Como os dados viram informação
+
+1. Cada jogo grava **eventos brutos**: estímulo, toque, omissão, tentativa e tempo de reação em milissegundos.
+2. O servidor calcula a **pontuação v1** desses eventos e guarda a versão da fórmula, para que dados antigos possam ser recalculados.
+3. O **motor de mudança** compara cada pessoa com ela mesma: descarta as 6 primeiras sessões de cada jogo (aprendizado), forma a linha de base com as 12 seguintes (mediana e MAD) e acompanha as próximas com um **CUSUM** bilateral. Um aviso só aparece quando a mudança se sustenta por várias sessões.
+4. Os textos para o cuidador são **não diagnósticos**: mostram mudança em relação ao padrão da própria pessoa e sugerem conversar com a equipe de saúde.
 
 ### 🔒 LGPD desde o início
 
-Por lidar com **dados sensíveis de saúde**, o projeto usa **Row Level Security (RLS)** do PostgreSQL e a autenticação nativa do Supabase. Assim, cada cuidador enxerga **apenas as pessoas que acompanha**.
+Por lidar com **dados sensíveis de saúde**, cada cuidador só acessa as pessoas a que está vinculado (outros recebem 404), todo acesso a dados de uma pessoa fica registrado em log de auditoria, o aceite do termo é gravado como consentimento e o cuidador pode **exportar** ou **apagar** a própria conta. A interface não carrega nada de terceiros: a fonte é servida pelo próprio app.
 
 ---
 
 ## 🚧 Estado atual do projeto
 
-O Cogni **não é apenas um front-end**. O desenvolvimento segue o cronograma da disciplina e está dividido em etapas.
+**Concluído:** telas, API própria com PostgreSQL, login, cadastro, recuperação de senha, cadastro de pessoas, jogos salvando sessões reais, relatórios, análises do motor estatístico, testes automatizados e CI.
 
-**Etapa concluída: implementação das telas.** Nesta fase foi construída a interface navegável em React. Para validar fluxos e navegabilidade antes do banco de dados, as telas usam **dados de demonstração** (`src/data.ts`), com tipos TypeScript que já servem de base para o modelo de dados:
-
-- `Patient`: pessoa acompanhada, com diagnóstico, histórico e métricas;
-- `Session`: sessão de jogo, com data, jogo, duração, pontuação e nível;
-- `CognitiveMetrics`: pontuação de 0 a 100 nos cinco domínios cognitivos;
-- `AIInsight`: alertas, recomendações e tendências.
-
-**Próximas etapas:** banco de dados no Supabase, autenticação real (login, cadastro e recuperação de senha), relatórios com dados reais, cadastros básicos e deploy na Vercel. Veja o [cronograma](#-cronograma).
+**Próximas etapas:** memória afetiva, rotina e lembretes, comandos por voz e dificuldade adaptativa. O plano detalhado está em [`docs/PLANO.md`](docs/PLANO.md).
 
 ---
 
@@ -236,9 +195,9 @@ Cronograma da disciplina **ESOFT6 – TCC1** (versão atualizada pela instituiç
 | 11 | 14/out | Implementação das telas e do banco (13/out feriado) | ✅ |
 | 12 | 20–21/out | Login, cadastro de usuários e "esqueci minha senha" | ✅ |
 | 13 | 27–28/out | 🎤 Apresentação: fluxo de processos e login funcionando | ✅ |
-| 14 | 03–04/nov | Correções e implementação dos cadastros básicos | 🔄 |
-| 15 | 10–11/nov | Implementação dos cadastros básicos (continuação) | 🔄 |
-| 16 | 17–18/nov | Preparação do documento do TCC1 para entrega | ⏳ |
+| 14 | 03–04/nov | Correções e implementação dos cadastros básicos | ✅ |
+| 15 | 10–11/nov | Implementação dos cadastros básicos (continuação) | ✅ |
+| 16 | 17–18/nov | Preparação do documento do TCC1 para entrega | ✅ |
 | 17 | 24–25/nov | 🎤 Semana de provas: defesa do projeto | ⏳ |
 | 18 | 01–02/dez | Correções e entrega do documento e do código | ⏳ |
 | 19 | 08–09/dez | Reapresentação, caso necessário | ⏳ |
@@ -250,42 +209,54 @@ Cronograma da disciplina **ESOFT6 – TCC1** (versão atualizada pela instituiç
 
 ### Pré-requisitos
 
-- [Node.js](https://nodejs.org/) 22
-- [pnpm](https://pnpm.io/) 10
+- [Docker](https://docs.docker.com/get-docker/) com Docker Compose (para o banco e a API)
+- [Node.js](https://nodejs.org/) 22 e [pnpm](https://pnpm.io/) 10 (para o front-end)
 
-> Se você usa o [mise](https://mise.jdx.dev/), as versões corretas já estão definidas no arquivo `.mise.toml`. Basta rodar `mise install`.
+> Se você usa o [mise](https://mise.jdx.dev/), as versões de Node.js e pnpm estão no arquivo `.mise.toml`. Basta rodar `mise install`.
 
 ### Passo a passo
 
 ```bash
-# 1. Clone o repositório
 git clone https://github.com/MylenaLuz/cogni.git
 cd cogni
-
-# 2. Instale as dependências
+cp .env.example .env
+docker compose up -d --build
+docker compose exec api python -m app.seed
 pnpm install
-
-# 3. Inicie o servidor de desenvolvimento
 pnpm dev
 ```
 
-A aplicação fica disponível em **http://localhost:8443**. Para usar outra porta, defina a variável `PORT` (ex.: `PORT=3000 pnpm dev`).
+O `docker compose` sobe o PostgreSQL e a API em **http://localhost:8000** (as migrações rodam sozinhas). O seed cria uma conta de demonstração com três pessoas fictícias e meses de sessões simuladas. O front-end fica em **http://localhost:8443**.
 
-### Credenciais de teste
+### Contas de demonstração
 
-| Campo | Valor |
-| --- | --- |
-| E-mail | `cuidador@cogni.app` |
-| Senha | `cogni123` |
+Todas usam a senha `cuidar-com-dados`.
+
+| E-mail | Perfil | O que mostra |
+| --- | --- | --- |
+| `demo@cogni.app` | Beatriz, filha | Responsável por Maria, José e Antônio |
+| `carla@cogni.app` | Carla, cuidadora profissional | Cuidadora do Antônio, acompanhante da Maria e profissional do Residencial Bem Viver, atribuída à Helena |
+| `gestor@cogni.app` | Lúcia, gestora | Gestora do Residencial Bem Viver, com Helena e Rubens |
+
+Os dados de demonstração são **fictícios**. Nenhum dado real de pessoa idosa é usado no projeto.
+
+### Produção
+
+```bash
+docker compose -f docker-compose.prod.yml up -d --build
+```
+
+O Caddy serve o front-end (pasta `dist/`, gerada por `pnpm build`) e a API em `/api`, com HTTPS automático. Os scripts `infra/backup.sh` e `infra/restore.sh` fazem e restauram cópias do banco.
 
 ### Scripts disponíveis
 
 | Comando | Descrição |
 | --- | --- |
-| `pnpm dev` | Inicia o servidor de desenvolvimento |
+| `pnpm dev` | Inicia o front-end em modo de desenvolvimento |
 | `pnpm build` | Gera a versão de produção na pasta `dist/` |
-| `pnpm preview` | Visualiza localmente a versão de produção |
-| `pnpm format` | Formata os arquivos do projeto |
+| `pnpm typecheck` | Verifica os tipos do TypeScript |
+| `pnpm test` | Roda os testes do front-end (Vitest) |
+| `cd backend && uv run pytest` | Roda os testes da API |
 
 ---
 
@@ -293,36 +264,29 @@ A aplicação fica disponível em **http://localhost:8443**. Para usar outra por
 
 ```text
 cogni/
-├── index.html
-├── package.json
-├── vite.config.ts
-├── tsconfig.json
-├── .mise.toml                 # Versões de Node.js e pnpm
+├── docker-compose.yml         # Banco e API para desenvolvimento
+├── docker-compose.prod.yml    # Banco, API e Caddy para produção
+├── infra/                     # Caddyfile, backup e restauração
+├── backend/
+│   ├── alembic/               # Migrações do banco
+│   ├── app/
+│   │   ├── main.py            # Aplicação FastAPI
+│   │   ├── models.py          # Tabelas (SQLAlchemy)
+│   │   ├── routers/           # auth, pacientes, conta
+│   │   ├── services/
+│   │   │   ├── pontuacao.py   # Pontuação v1 a partir dos eventos
+│   │   │   └── motor.py       # Linha de base e CUSUM
+│   │   └── seed.py            # Dados fictícios de demonstração
+│   └── tests/
+├── docs/                      # Plano e documento do TCC
 └── src/
-    ├── main.tsx               # Ponto de entrada da aplicação
-    ├── App.tsx                # Controle de navegação entre telas
-    ├── data.ts                # Tipos e dados de demonstração
-    ├── index.css              # Tema (cores e fonte) e animações
+    ├── App.tsx                # Rotas e pessoa ativa
+    ├── api/                   # Cliente HTTP e tipos da API
+    ├── state/                 # Sessão do cuidador e dados do painel
+    ├── lib/                   # Gravação de eventos, pontuação, embaralhamento
     ├── components/
-    │   ├── NavBar.tsx         # Barra de navegação inferior
-    │   ├── GameHeader.tsx     # Cabeçalho usado durante os jogos
-    │   └── GameResult.tsx     # Tela de resultado dos jogos
-    └── screens/
-        ├── Login.tsx
-        ├── Dashboard.tsx      # Painel de métricas do cuidador
-        ├── Patients.tsx       # Pessoas acompanhadas
-        ├── PatientDetail.tsx  # Perfil e gráfico radar
-        ├── Games.tsx          # Catálogo de jogos
-        ├── GameSession.tsx    # Jogo: Associação de Imagens
-        ├── Reports.tsx        # Relatórios de desempenho
-        ├── AIInsights.tsx     # Insights e assistente
-        └── games/
-            ├── AttentionSpeed.tsx  # Jogo: Velocidade de Atenção
-            ├── MemoryPairs.tsx     # Jogo: Associação de Pares
-            └── Categories.tsx      # Jogo: Categorias
+    └── screens/               # Telas e jogos
 ```
-
-A navegação é controlada pelo `App.tsx`, que guarda a tela atual e a pessoa selecionada em estado do React e repassa uma função `navigate` para as telas. As cores e a fonte ficam no bloco `@theme` do Tailwind, em `src/index.css`.
 
 ---
 
