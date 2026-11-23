@@ -38,6 +38,7 @@ export interface Session {
   score: number;
   level: number;
   metrics: Record<string, number | null>;
+  notes: string | null;
 }
 
 export interface AIInsight {
@@ -114,6 +115,7 @@ export function paraSession(s: SessaoSaida, nome = ""): Session {
     score: Math.round(s.pontuacao ?? 0),
     level: s.nivel,
     metrics: s.metricas,
+    notes: s.observacoes,
   };
 }
 

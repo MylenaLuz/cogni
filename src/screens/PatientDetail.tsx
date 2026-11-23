@@ -211,7 +211,7 @@ export default function PatientDetail({ navigate, selectedPatientId }: Props) {
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2C7A7A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" />
                 </svg>
-                <span className="text-sm font-700 text-primary">Observações</span>
+                <span className="text-sm font-700 text-primary">Sobre a pessoa</span>
               </div>
               <p className="text-sm text-text leading-relaxed">{patient.notes}</p>
             </div>
@@ -230,6 +230,7 @@ export default function PatientDetail({ navigate, selectedPatientId }: Props) {
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-700 text-text truncate">{s.game}</p>
                     <p className="text-sm text-text-muted">{s.date} · {s.duration} min · Nível {s.level}</p>
+                    {s.notes && <p className="text-sm text-text mt-1 bg-surface-2 rounded-lg px-2.5 py-1.5 whitespace-pre-line">“{s.notes}”</p>}
                   </div>
                   <div className="text-right flex-shrink-0">
                     <span className={`text-base font-800 ${corIndice(s.score)}`}>{s.score}</span>

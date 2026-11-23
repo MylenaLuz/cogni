@@ -27,8 +27,8 @@ function sessoesPorSemana(sessoes: Session[]) {
 
 function baixarCsv(nome: string, sessoes: Session[]) {
   const linhas = [
-    ["data", "jogo", "nivel", "duracao_min", "pontuacao"],
-    ...sessoes.map((s) => [s.iso, s.game, String(s.level), String(s.duration), String(s.score)]),
+    ["data", "jogo", "nivel", "duracao_min", "pontuacao", "observacoes"],
+    ...sessoes.map((s) => [s.iso, s.game, String(s.level), String(s.duration), String(s.score), s.notes ?? ""]),
   ];
   const csv = linhas.map((l) => l.map((c) => `"${c.replace(/"/g, '""')}"`).join(";")).join("\n");
   const url = URL.createObjectURL(new Blob(["\ufeff" + csv], { type: "text/csv;charset=utf-8" }));
@@ -234,6 +234,7 @@ export default function Reports({ navigate, selectedPatientId }: Props) {
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-700 text-text truncate">{s.game}</p>
                     <p className="text-sm text-text-muted">{s.date} · {s.duration} min · Nível {s.level}</p>
+                    {s.notes && <p className="text-sm text-text mt-1 bg-surface-2 rounded-lg px-2.5 py-1.5 whitespace-pre-line">“{s.notes}”</p>}
                   </div>
                   <span className={`text-base font-800 ${corIndice(s.score)}`}>{s.score}</span>
                 </div>
