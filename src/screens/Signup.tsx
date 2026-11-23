@@ -1,10 +1,12 @@
 import { useState, useMemo } from "react";
 import { Navigate } from "../App";
-import { supabase } from "../supabase";
+import { useAuth } from "../state/AuthContext";
 
 interface Props { navigate: Navigate; }
 
 export default function Signup({ navigate }: Props) {
+  const { cadastrar } = useAuth();
+  const [aceite, setAceite] = useState(false);
   const [step, setStep] = useState(1); 
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -18,11 +20,8 @@ export default function Signup({ navigate }: Props) {
   const [showConfirmPass, setShowConfirmPass] = useState(false);
 
   const passwordCriteria = useMemo(() => {
-    return {
-      minLength: password.length >= 6,
-      hasUpper: /[A-Z]/.test(password),
-      hasNumber: /[0-9]/.test(password),
-    };
+    // NIST SP 800-63B-4: tamanho mínimo, sem regras de composição
+    return { minLength: password.length >= 8 };
   }, [password]);
 
   // Etapa 2: Perfil do Cuidador
@@ -41,52 +40,28 @@ export default function Signup({ navigate }: Props) {
     setError("");
 
     try {
-      // 1. Cria o usuário no Auth
-      const { data: authData, error: signUpError } = await supabase.auth.signUp({
+      // Uma única chamada: a API grava conta, perfil, consentimento e pessoa idosa na mesma transação
+      await cadastrar({
+        nome_completo: name.trim(),
         email: email.trim(),
-        password: password,
+        senha: password,
+        telefone: telefone || null,
+        tipo_vinculo: tipoVinculo || null,
+        nome_instituicao: tipoVinculo === "Instituição" ? nomeInstituicao : null,
+        aceite_termo: aceite,
+        idoso:
+          !skipIdoso && nomeIdoso.trim()
+            ? {
+                nome_completo: nomeIdoso.trim(),
+                data_nascimento: dataNascimentoIdoso || null,
+                condicao: condicaoNeurologica || null,
+                nivel_tecnologia: nivelTecnologia || null,
+              }
+            : null,
       });
-
-      if (signUpError) {
-        if (signUpError.message.includes("already registered")) {
-          throw new Error("Este e-mail já está cadastrado. Tente fazer login ou use outro e-mail.");
-        } else {
-          throw new Error(signUpError.message);
-        }
-      }
-
-      const userId = authData.user?.id;
-      if (!userId) throw new Error("Erro ao obter ID do usuário.");
-
-      // 2. Insere os dados do cuidador
-      const { error: cuidadorError } = await supabase.from('cuidadores').insert([{
-        id: userId,
-        nome_completo: name,
-        telefone: telefone,
-        tipo_vinculo: tipoVinculo,
-        nome_instituicao: tipoVinculo === 'Instituição' ? nomeInstituicao : null
-      }]);
-
-      if (cuidadorError) throw cuidadorError;
-
-      // 3. Insere o idoso SOMENTE SE ele preencheu e não escolheu pular
-      if (!skipIdoso && nomeIdoso.trim()) {
-        const { error: idosoError } = await supabase.from('idosos').insert([{
-          cuidador_id: userId,
-          nome_completo: nomeIdoso,
-          data_nascimento: dataNascimentoIdoso || null,
-          condicao_neurologica: condicaoNeurologica || 'Nenhuma',
-          nivel_tecnologia: nivelTecnologia || 'Média'
-        }]);
-
-        if (idosoError) throw idosoError;
-      }
-
       navigate("dashboard");
-
-    } catch (err: any) {
-      console.error(err);
-      setError(err.message || "Erro ao criar conta. Verifique os dados.");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Erro ao criar conta. Verifique os dados.");
     } finally {
       setLoading(false);
     }
@@ -100,11 +75,14 @@ export default function Signup({ navigate }: Props) {
       if (!name || !email || !password || !confirmPassword) { 
         setError("Preencha todos os campos obrigatórios."); return; 
       }
-      if (!passwordCriteria.minLength || !passwordCriteria.hasUpper || !passwordCriteria.hasNumber) {
-        setError("A senha não atende aos requisitos mínimos de segurança."); return;
+      if (!passwordCriteria.minLength) {
+        setError("A senha precisa ter pelo menos 8 caracteres."); return;
       }
       if (password !== confirmPassword) {
         setError("As senhas não coincidem."); return;
+      }
+      if (!aceite) {
+        setError("Para continuar, aceite o termo de uso e privacidade."); return;
       }
       setStep(2);
       return;
@@ -192,9 +170,8 @@ export default function Signup({ navigate }: Props) {
                 
                 {password.length > 0 && (
                   <div className="flex flex-col gap-1 mt-2 text-xs font-600">
-                    <div className={`flex items-center gap-1.5 ${passwordCriteria.minLength ? "text-emerald-600" : "text-text-muted"}`}><span>{passwordCriteria.minLength ? "✓" : "○"}</span> Mínimo de 6 caracteres</div>
-                    <div className={`flex items-center gap-1.5 ${passwordCriteria.hasUpper ? "text-emerald-600" : "text-text-muted"}`}><span>{passwordCriteria.hasUpper ? "✓" : "○"}</span> Pelo menos uma letra maiúscula</div>
-                    <div className={`flex items-center gap-1.5 ${passwordCriteria.hasNumber ? "text-emerald-600" : "text-text-muted"}`}><span>{passwordCriteria.hasNumber ? "✓" : "○"}</span> Pelo menos um número</div>
+                    <div className={`flex items-center gap-1.5 ${passwordCriteria.minLength ? "text-accent-dark" : "text-text-muted"}`}><span>{passwordCriteria.minLength ? "✓" : "○"}</span> Mínimo de 8 caracteres</div>
+                    <div className="text-text-muted">Dica: uma frase longa é mais segura e mais fácil de lembrar.</div>
                   </div>
                 )}
               </div>
@@ -222,6 +199,18 @@ export default function Signup({ navigate }: Props) {
                   </button>
                 </div>
               </div>
+              <label className="flex items-start gap-3 text-sm text-text-muted leading-snug">
+                <input
+                  type="checkbox"
+                  checked={aceite}
+                  onChange={(e) => { setAceite(e.target.checked); setError(""); }}
+                  className="mt-0.5 w-5 h-5 accent-primary flex-shrink-0"
+                />
+                <span>
+                  Li e aceito o termo de uso e privacidade. Os dados de saúde são tratados como dados sensíveis (LGPD),
+                  usados só para o acompanhamento, e posso exportá-los ou excluí-los quando quiser.
+                </span>
+              </label>
             </>
           )}
 

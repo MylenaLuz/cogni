@@ -1,11 +1,15 @@
-import { useState, useEffect } from "react";
-import { supabase } from "./supabase";
+import { createContext, useCallback, useContext, useState, type ComponentType, type ReactNode } from "react";
+import { BrowserRouter, Navigate as Redirect, Outlet, Route, Routes, useNavigate, useParams } from "react-router-dom";
+import { AuthProvider, useAuth } from "./state/AuthContext";
+import { DataProvider } from "./state/DataContext";
+import ErrorBoundary from "./components/ErrorBoundary";
 import Login from "./screens/Login";
 import Signup from "./screens/Signup";
 import ForgotPassword from "./screens/ForgotPassword";
 import ResetPassword from "./screens/ResetPassword";
 import Dashboard from "./screens/Dashboard";
 import Patients from "./screens/Patients";
+import PatientNew from "./screens/PatientNew";
 import PatientDetail from "./screens/PatientDetail";
 import Games from "./screens/Games";
 import GameSession from "./screens/GameSession";
@@ -22,6 +26,7 @@ export type Screen =
   | "reset-password"
   | "dashboard"
   | "patients"
+  | "patient-new"
   | "patient-detail"
   | "games"
   | "game-session"
@@ -33,56 +38,133 @@ export type Screen =
 
 export type Navigate = (screen: Screen, patientId?: string) => void;
 
-export default function App() {
-  const [screen, setScreen] = useState<Screen>("login");
-  const [selectedPatientId, setSelectedPatientId] = useState<string>("p1");
+const CAMINHOS: Record<Screen, string> = {
+  login: "/entrar",
+  signup: "/cadastro",
+  "forgot-password": "/esqueci-senha",
+  "reset-password": "/redefinir-senha",
+  dashboard: "/",
+  patients: "/pessoas",
+  "patient-new": "/pessoas/nova",
+  "patient-detail": "/pessoas",
+  games: "/jogos",
+  "game-session": "/jogos/imagens",
+  "game-attention": "/jogos/atencao",
+  "game-pairs": "/jogos/pares",
+  "game-categories": "/jogos/categorias",
+  reports: "/relatorios",
+  "ai-insights": "/insights",
+};
 
-  // Este Hook verifica a URL para ver se estamos voltando de um link de e-mail do Supabase
-  useEffect(() => {
-    const hash = window.location.hash;
-    const path = window.location.pathname;
-    
-    if (path === '/reset-password' || hash.includes('type=recovery')) {
-      setScreen("reset-password");
+// Pessoa ativa: escolhida no perfil ou no catálogo de jogos; lembrada neste navegador.
+const CHAVE = "cogni.pessoaAtiva";
+const PessoaCtx = createContext<{ pessoa: string; setPessoa: (id: string) => void }>({ pessoa: "", setPessoa: () => {} });
+
+function lerPessoa(): string {
+  try {
+    return localStorage.getItem(CHAVE) ?? "";
+  } catch {
+    return "";
+  }
+}
+
+function PessoaProvider({ children }: { children: ReactNode }) {
+  const [pessoa, set] = useState(lerPessoa);
+  const setPessoa = useCallback((id: string) => {
+    set(id);
+    try {
+      localStorage.setItem(CHAVE, id);
+    } catch {
+      /* armazenamento indisponível */
     }
-
-    // Escuta eventos automáticos de recuperação disparados pelo Supabase
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
-      if (event === 'PASSWORD_RECOVERY') {
-        setScreen("reset-password");
-      }
-    });
-
-    return () => subscription.unsubscribe();
   }, []);
+  return <PessoaCtx.Provider value={{ pessoa, setPessoa }}>{children}</PessoaCtx.Provider>;
+}
 
-  const navigate: Navigate = (s, patientId) => {
-    if (patientId) setSelectedPatientId(patientId);
-    setScreen(s);
-  };
+function useNavegar(): Navigate {
+  const nav = useNavigate();
+  const { pessoa, setPessoa } = useContext(PessoaCtx);
+  return useCallback(
+    (tela, id) => {
+      if (id) setPessoa(id);
+      if (tela === "patient-detail") nav(`/pessoas/${id ?? pessoa}`);
+      else nav(CAMINHOS[tela]);
+    },
+    [nav, pessoa, setPessoa],
+  );
+}
 
-  const props = { navigate, selectedPatientId };
+interface TelaProps {
+  navigate: Navigate;
+  selectedPatientId: string;
+}
 
-  const screens: Record<Screen, React.ReactNode> = {
-    login: <Login navigate={navigate} />,
-    signup: <Signup navigate={navigate} />,
-    "forgot-password": <ForgotPassword navigate={navigate} />,
-    "reset-password": <ResetPassword navigate={navigate} />,
-    dashboard: <Dashboard {...props} />,
-    patients: <Patients {...props} />,
-    "patient-detail": <PatientDetail {...props} />,
-    games: <Games {...props} />,
-    "game-session": <GameSession {...props} />,
-    "game-attention": <AttentionSpeed {...props} />,
-    "game-pairs": <MemoryPairs {...props} />,
-    "game-categories": <Categories {...props} />,
-    reports: <Reports {...props} />,
-    "ai-insights": <AIInsights {...props} />,
-  };
+function Tela({ C }: { C: ComponentType<TelaProps> }) {
+  const navigate = useNavegar();
+  const { id } = useParams();
+  const { pessoa } = useContext(PessoaCtx);
+  return <C navigate={navigate} selectedPatientId={id ?? pessoa} />;
+}
 
+function Carregando() {
   return (
-    <div className="size-full bg-background">
-      {screens[screen]}
+    <div className="min-h-full flex items-center justify-center bg-background">
+      <p className="text-text-muted text-base" role="status">Carregando…</p>
     </div>
+  );
+}
+
+function Privado() {
+  const { usuario, carregando } = useAuth();
+  if (carregando) return <Carregando />;
+  if (!usuario) return <Redirect to="/entrar" replace />;
+  return (
+    <DataProvider>
+      <Outlet />
+    </DataProvider>
+  );
+}
+
+function Publico() {
+  const { usuario, carregando } = useAuth();
+  if (carregando) return <Carregando />;
+  if (usuario) return <Redirect to="/" replace />;
+  return <Outlet />;
+}
+
+export default function App() {
+  return (
+    <ErrorBoundary>
+      <BrowserRouter>
+        <AuthProvider>
+          <PessoaProvider>
+            <div className="size-full bg-background">
+              <Routes>
+                <Route element={<Publico />}>
+                  <Route path="/entrar" element={<Tela C={Login} />} />
+                  <Route path="/cadastro" element={<Tela C={Signup} />} />
+                  <Route path="/esqueci-senha" element={<Tela C={ForgotPassword} />} />
+                </Route>
+                <Route path="/redefinir-senha" element={<Tela C={ResetPassword} />} />
+                <Route element={<Privado />}>
+                  <Route path="/" element={<Tela C={Dashboard} />} />
+                  <Route path="/pessoas" element={<Tela C={Patients} />} />
+                  <Route path="/pessoas/nova" element={<Tela C={PatientNew} />} />
+                  <Route path="/pessoas/:id" element={<Tela C={PatientDetail} />} />
+                  <Route path="/jogos" element={<Tela C={Games} />} />
+                  <Route path="/jogos/imagens" element={<Tela C={GameSession} />} />
+                  <Route path="/jogos/atencao" element={<Tela C={AttentionSpeed} />} />
+                  <Route path="/jogos/pares" element={<Tela C={MemoryPairs} />} />
+                  <Route path="/jogos/categorias" element={<Tela C={Categories} />} />
+                  <Route path="/relatorios" element={<Tela C={Reports} />} />
+                  <Route path="/insights" element={<Tela C={AIInsights} />} />
+                </Route>
+                <Route path="*" element={<Redirect to="/" replace />} />
+              </Routes>
+            </div>
+          </PessoaProvider>
+        </AuthProvider>
+      </BrowserRouter>
+    </ErrorBoundary>
   );
 }

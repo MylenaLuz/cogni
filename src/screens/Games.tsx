@@ -1,10 +1,12 @@
-import { Navigate, Screen } from "../App";
-import { mockPatients } from "../data";
+import type { ReactNode } from "react";
+import type { Navigate, Screen } from "../App";
+import { useData } from "../state/DataContext";
+import Avatar from "../components/Avatar";
 import NavBar from "../components/NavBar";
 
 interface Props { navigate: Navigate; selectedPatientId: string; }
 
-const games: { id: Screen; name: string; category: string; description: string; levels: number; duration: string; icon: React.ReactNode; color: string; badge?: string }[] = [
+const games: { id: Screen; name: string; category: string; description: string; levels: number; duration: string; icon: ReactNode; color: string; badge?: string }[] = [
   {
     id: "game-attention",
     name: "Velocidade de Atenção",
@@ -12,7 +14,6 @@ const games: { id: Screen; name: string; category: string; description: string; 
     description: "Toque na estrela assim que ela aparecer — ela muda de lugar a cada acerto, ficando mais rápida.",
     levels: 3,
     duration: "20–30 s",
-    badge: "Novo",
     icon: (
       <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
@@ -27,7 +28,6 @@ const games: { id: Screen; name: string; category: string; description: string; 
     description: "Vire duas cartas por vez e encontre os pares iguais. Exercita memória e concentração.",
     levels: 3,
     duration: "2–5 min",
-    badge: "Novo",
     icon: (
       <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <rect x="2" y="3" width="20" height="14" rx="2" /><line x1="8" y1="21" x2="16" y2="21" /><line x1="12" y1="17" x2="12" y2="21" />
@@ -42,7 +42,6 @@ const games: { id: Screen; name: string; category: string; description: string; 
     description: "Categoria exibida na tela — toque em todas as palavras que pertencem a ela antes do tempo acabar.",
     levels: 3,
     duration: "20–30 s",
-    badge: "Novo",
     icon: (
       <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M4 6h16M4 12h16M4 18h7" />
@@ -53,10 +52,10 @@ const games: { id: Screen; name: string; category: string; description: string; 
   {
     id: "game-session",
     name: "Associação de Imagens",
-    category: "Memória visual",
-    description: "Paciente associa pares de imagens com suas palavras correspondentes.",
+    category: "Memória visual e nomeação",
+    description: "Ligue cada imagem à palavra certa. Do nível 1 ao 3: 2, 4 e 6 pares.",
     levels: 3,
-    duration: "15–20 min",
+    duration: "1–3 min",
     icon: (
       <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <rect x="3" y="3" width="18" height="18" rx="2" /><circle cx="8.5" cy="8.5" r="1.5" /><polyline points="21 15 16 10 5 21" />
@@ -67,30 +66,29 @@ const games: { id: Screen; name: string; category: string; description: string; 
 ];
 
 export default function Games({ navigate, selectedPatientId }: Props) {
-  const patient = mockPatients.find((p) => p.id === selectedPatientId) ?? mockPatients[0];
+  const { patients } = useData();
+  const patient = patients.find((p) => p.id === selectedPatientId);
 
   return (
     <div className="min-h-full bg-background flex flex-col">
       <div className="bg-primary px-5 pt-10 pb-5">
         <div className="max-w-2xl mx-auto">
           <h1 className="text-xl font-800 text-white">Jogos cognitivos</h1>
-          <p className="text-white/70 text-sm mt-0.5">Selecione um jogo para iniciar sessão</p>
+          <p className="text-white/80 text-sm mt-0.5">Selecione um jogo para iniciar a sessão</p>
         </div>
 
         <div className="max-w-2xl mx-auto mt-4">
           <div className="flex items-center gap-2 bg-white/15 rounded-xl px-3 py-2.5">
-            <div className="w-8 h-8 rounded-full overflow-hidden bg-white/20 flex-shrink-0">
-              <img src={patient.photo} alt={patient.name} className="w-full h-full object-cover" />
-            </div>
+            {patient && <Avatar name={patient.name} size="sm" light />}
             <div className="flex-1 min-w-0">
-              <p className="text-white/70 text-xs font-500">Paciente selecionado</p>
-              <p className="text-white text-sm font-700 truncate">{patient.name}</p>
+              <p className="text-white/80 text-sm font-500">Sessão para</p>
+              <p className="text-white text-base font-700 truncate">{patient?.name ?? "Nenhuma pessoa escolhida"}</p>
             </div>
             <button
               onClick={() => navigate("patients")}
-              className="text-white/70 text-xs font-600 hover:text-white transition-colors"
+              className="text-white text-sm font-700 underline hover:no-underline"
             >
-              Trocar
+              {patient ? "Trocar" : "Escolher"}
             </button>
           </div>
         </div>
@@ -111,17 +109,17 @@ export default function Games({ navigate, selectedPatientId }: Props) {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-start justify-between gap-2">
                     <div className="flex items-center gap-2 min-w-0">
-                      <h3 className="text-sm font-700 text-text truncate">{game.name}</h3>
+                      <h3 className="text-base font-700 text-text truncate">{game.name}</h3>
                       {game.badge && (
                         <span className="text-[9px] font-800 text-white bg-accent px-1.5 py-0.5 rounded-full flex-shrink-0 tracking-wide">{game.badge}</span>
                       )}
                     </div>
-                    <span className="text-[10px] font-600 text-text-muted bg-surface-2 px-2 py-0.5 rounded-full flex-shrink-0">{game.duration}</span>
+                    <span className="text-xs font-600 text-text-muted bg-surface-2 px-2 py-0.5 rounded-full flex-shrink-0">{game.duration}</span>
                   </div>
-                  <p className="text-[11px] font-600 text-text-muted mt-0.5">{game.category}</p>
-                  <p className="text-xs text-text-muted mt-1.5 leading-relaxed">{game.description}</p>
+                  <p className="text-sm font-600 text-text-muted mt-0.5">{game.category}</p>
+                  <p className="text-sm text-text-muted mt-1.5 leading-relaxed">{game.description}</p>
                   <div className="flex items-center gap-2 mt-2">
-                    <span className="text-[10px] text-text-muted font-600">Níveis:</span>
+                    <span className="text-xs text-text-muted font-600">Níveis:</span>
                     <div className="flex gap-1">
                       {Array.from({ length: 3 }, (_, i) => (
                         <div key={i} className={`w-2 h-2 rounded-full ${i < game.levels ? "bg-accent" : "bg-border"}`} />
@@ -140,8 +138,8 @@ export default function Games({ navigate, selectedPatientId }: Props) {
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8A9E9E" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
               <circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="16" /><line x1="8" y1="12" x2="16" y2="12" />
             </svg>
-            <p className="text-xs text-text-muted font-600">Novos jogos em breve</p>
-            <p className="text-[11px] text-text-light">Atenção visual, coordenação motora e mais</p>
+            <p className="text-sm text-text-muted font-600">Novos jogos em breve</p>
+            <p className="text-sm text-text-light">Atenção visual, coordenação motora e mais</p>
           </div>
         </div>
       </div>

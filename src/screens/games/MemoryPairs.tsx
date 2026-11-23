@@ -1,8 +1,10 @@
 import { useState, useEffect, useRef } from "react";
-import { Navigate } from "../../App";
-import { mockPatients } from "../../data";
+import type { Navigate } from "../../App";
 import GameHeader from "../../components/GameHeader";
 import GameResult, { fmt } from "../../components/GameResult";
+import SemPessoa, { usePessoaDoJogo } from "../../components/SemPessoa";
+import { shuffle } from "../../lib/shuffle";
+import { useSalvarSessao } from "../../lib/useSalvarSessao";
 
 interface Props { navigate: Navigate; selectedPatientId: string; }
 
@@ -20,18 +22,19 @@ const LEVELS = [
 ];
 
 function makeCards(pairs: number): Card[] {
-  return ALL_EMOJIS.slice(0, pairs)
-    .flatMap((emoji, i) => [
+  return shuffle(
+    ALL_EMOJIS.slice(0, pairs).flatMap((emoji, i) => [
       { id: i * 2,     pairId: i, emoji },
       { id: i * 2 + 1, pairId: i, emoji },
-    ])
-    .sort(() => Math.random() - 0.5);
+    ]),
+  );
 }
 
 const CARD_BACK_COLOR = "bg-primary";
 
 export default function MemoryPairs({ navigate, selectedPatientId }: Props) {
-  const patient = mockPatients.find((p) => p.id === selectedPatientId) ?? mockPatients[0];
+  const { pessoa: patient, carregando } = usePessoaDoJogo(selectedPatientId);
+  const sessao = useSalvarSessao("pares", patient?.id, navigate);
   const [phase, setPhase] = useState<Phase>("instructions");
   const [levelIdx, setLevelIdx] = useState(0);
 
@@ -41,9 +44,8 @@ export default function MemoryPairs({ navigate, selectedPatientId }: Props) {
   const [attempts, setAttempts] = useState(0);
   const [errors, setErrors] = useState(0);
   const [elapsed, setElapsed] = useState(0);
-  const [notes, setNotes] = useState("");
-  const [saved, setSaved] = useState(false);
   const checking = useRef(false);
+  const viradaEm = useRef(0);
 
   const cfg = LEVELS[levelIdx];
 
@@ -57,8 +59,11 @@ export default function MemoryPairs({ navigate, selectedPatientId }: Props) {
   // Check completion
   useEffect(() => {
     if (phase === "game" && states.length > 0 && states.every((s) => s.matched)) {
-      setTimeout(() => setPhase("result"), 600);
+      sessao.encerrar();
+      const t = setTimeout(() => setPhase("result"), 600);
+      return () => clearTimeout(t);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [states, phase]);
 
   function startGame() {
@@ -70,6 +75,7 @@ export default function MemoryPairs({ navigate, selectedPatientId }: Props) {
     setErrors(0);
     setElapsed(0);
     checking.current = false;
+    sessao.iniciar();
     setPhase("game");
   }
 
@@ -80,6 +86,8 @@ export default function MemoryPairs({ navigate, selectedPatientId }: Props) {
     if (flipped.length >= 2) return;
 
     const newFlipped = [...flipped, index];
+    if (newFlipped.length === 1) viradaEm.current = sessao.agora();
+    sessao.registrar({ tipo: "virada", alvo: String(cards[index].id) });
     setStates((prev) =>
       prev.map((st, i) => (i === index ? { ...st, flipped: true } : st))
     );
@@ -89,7 +97,15 @@ export default function MemoryPairs({ navigate, selectedPatientId }: Props) {
       checking.current = true;
       setAttempts((a) => a + 1);
       const [a, b] = newFlipped;
-      if (cards[a].pairId === cards[b].pairId) {
+      const acertou = cards[a].pairId === cards[b].pairId;
+      sessao.registrar({
+        tipo: "tentativa",
+        alvo: cards[a].emoji,
+        correto: acertou,
+        reacao_ms: Math.round(sessao.agora() - viradaEm.current),
+        dados: { cartas: [cards[a].id, cards[b].id].sort((x, y) => x - y) },
+      });
+      if (acertou) {
         setTimeout(() => {
           setStates((prev) =>
             prev.map((st, i) => newFlipped.includes(i) ? { ...st, matched: true } : st)
@@ -114,9 +130,8 @@ export default function MemoryPairs({ navigate, selectedPatientId }: Props) {
   }
 
   const matchedPairs = states.filter((s) => s.matched).length / 2;
-  const score = Math.round(
-    (matchedPairs / cfg.pairs) * 100 * Math.max(0.4, 1 - (errors / (cfg.pairs * 3)))
-  );
+
+  if (!patient) return <SemPessoa navigate={navigate} carregando={carregando} />;
 
   if (phase === "instructions") {
     return (
@@ -179,18 +194,20 @@ export default function MemoryPairs({ navigate, selectedPatientId }: Props) {
       <GameResult
         patientName={patient.name}
         gameName="Associação de Pares"
-        score={score}
+        score={sessao.score}
         timeElapsed={elapsed}
         errors={errors}
         extraStats={[
           { label: "Pares encontrados", value: `${Math.round(matchedPairs)}/${cfg.pairs}` },
           { label: "Tentativas", value: String(attempts) },
         ]}
-        notes={notes}
-        onNotesChange={setNotes}
-        onSave={() => { setSaved(true); setTimeout(() => navigate("patient-detail", patient.id), 1200); }}
+        notes={sessao.notes}
+        onNotesChange={sessao.setNotes}
+        onSave={() => void sessao.salvar(levelIdx + 1, { pares: cfg.pairs })}
         onDiscard={() => navigate("patient-detail", patient.id)}
-        saved={saved}
+        saved={sessao.saved}
+        saving={sessao.saving}
+        saveError={sessao.erro}
       />
     );
   }

@@ -17,7 +17,7 @@ const tabs: { label: string; screen: Screen; icon: React.ReactNode }[] = [
     ),
   },
   {
-    label: "Pacientes",
+    label: "Pessoas",
     screen: "patients",
     icon: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -48,7 +48,7 @@ const tabs: { label: string; screen: Screen; icon: React.ReactNode }[] = [
     ),
   },
   {
-    label: "IA",
+    label: "Análises",
     screen: "ai-insights",
     icon: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

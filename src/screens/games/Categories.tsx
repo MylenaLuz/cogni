@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
-import { Navigate } from "../../App";
-import { mockPatients } from "../../data";
+import type { Navigate } from "../../App";
 import GameHeader from "../../components/GameHeader";
 import GameResult from "../../components/GameResult";
+import SemPessoa, { usePessoaDoJogo } from "../../components/SemPessoa";
+import { shuffle } from "../../lib/shuffle";
+import { useSalvarSessao } from "../../lib/useSalvarSessao";
 
 interface Props { navigate: Navigate; selectedPatientId: string; }
 
@@ -74,7 +76,8 @@ const LEVELS: LevelConfig[] = [
 ];
 
 export default function Categories({ navigate, selectedPatientId }: Props) {
-  const patient = mockPatients.find((p) => p.id === selectedPatientId) ?? mockPatients[0];
+  const { pessoa: patient, carregando } = usePessoaDoJogo(selectedPatientId);
+  const sessao = useSalvarSessao("categorias", patient?.id, navigate);
   const [phase, setPhase] = useState<Phase>("instructions");
   const [levelIdx, setLevelIdx] = useState(0);
   const cfg = LEVELS[levelIdx];
@@ -83,25 +86,38 @@ export default function Categories({ navigate, selectedPatientId }: Props) {
   const [shaking, setShaking] = useState<number | null>(null);
   const [timeLeft, setTimeLeft] = useState(cfg.timeLimit);
   const [elapsed, setElapsed] = useState(0);
-  const [notes, setNotes] = useState("");
-  const [saved, setSaved] = useState(false);
+  // Ordem embaralhada fixa durante a partida
+  const [shuffledItems, setShuffledItems] = useState<Item[]>([]);
 
-  // Countdown
+  // Contagem regressiva
   useEffect(() => {
     if (phase !== "game") return;
     const t = setInterval(() => {
-      setTimeLeft((tl) => {
-        if (tl <= 1) { setPhase("result"); return 0; }
-        return tl - 1;
-      });
+      setTimeLeft((tl) => (tl <= 1 ? 0 : tl - 1));
       setElapsed((e) => e + 1);
     }, 1000);
     return () => clearInterval(t);
   }, [phase]);
 
+  const correctItems = (shuffledItems.length ? shuffledItems : cfg.items).filter((i) => i.correct).length;
+  const correctHits = chipStates.filter((s) => s === "correct").length;
+  const wrongHits = chipStates.filter((s) => s === "wrong").length;
+
+  // Termina quando o tempo acaba ou quando todas as palavras certas foram tocadas.
+  useEffect(() => {
+    if (phase !== "game") return;
+    if (timeLeft === 0 || (correctHits > 0 && correctHits === correctItems)) {
+      sessao.encerrar({ total_corretas: correctItems });
+      const t = setTimeout(() => setPhase("result"), timeLeft === 0 ? 0 : 500);
+      return () => clearTimeout(t);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [phase, timeLeft, correctHits, correctItems]);
+
   function handleChipTap(index: number) {
     if (chipStates[index] !== "neutral") return;
     const item = shuffledItems[index];
+    sessao.registrar({ tipo: "toque", alvo: item.word, correto: item.correct });
     if (item.correct) {
       setChipStates((prev) => {
         const next = [...prev];
@@ -122,10 +138,9 @@ export default function Categories({ navigate, selectedPatientId }: Props) {
     }
   }
 
-  // Stable shuffled order per game start
-  const [shuffledItems, setShuffledItems] = useState<Item[]>([]);
   function startGameFull() {
-    const shuffled = [...LEVELS[levelIdx].items].sort(() => Math.random() - 0.5);
+    const shuffled = shuffle(LEVELS[levelIdx].items);
+    sessao.iniciar();
     setShuffledItems(shuffled);
     setChipStates(shuffled.map(() => "neutral"));
     setShaking(null);
@@ -134,10 +149,7 @@ export default function Categories({ navigate, selectedPatientId }: Props) {
     setPhase("game");
   }
 
-  const correctItems = (shuffledItems.length ? shuffledItems : cfg.items).filter((i) => i.correct).length;
-  const correctHits = chipStates.filter((s) => s === "correct").length;
-  const wrongHits = chipStates.filter((s) => s === "wrong").length;
-  const score = Math.min(100, Math.max(0, Math.round(((correctHits - wrongHits * 0.5) / correctItems) * 100)));
+  if (!patient) return <SemPessoa navigate={navigate} carregando={carregando} />;
 
   if (phase === "instructions") {
     return (
@@ -200,18 +212,20 @@ export default function Categories({ navigate, selectedPatientId }: Props) {
       <GameResult
         patientName={patient.name}
         gameName={`Categorias — ${cfg.category}`}
-        score={Math.max(0, score)}
+        score={sessao.score}
         timeElapsed={elapsed}
         errors={wrongHits}
         extraStats={[
           { label: "Acertos", value: `${correctHits}/${correctItems}` },
-          { label: "Erraram",  value: String(wrongHits) },
+          { label: "Fora da categoria", value: String(wrongHits) },
         ]}
-        notes={notes}
-        onNotesChange={setNotes}
-        onSave={() => { setSaved(true); setTimeout(() => navigate("patient-detail", patient.id), 1200); }}
+        notes={sessao.notes}
+        onNotesChange={sessao.setNotes}
+        onSave={() => void sessao.salvar(levelIdx + 1, { total_corretas: correctItems, categoria: cfg.category })}
         onDiscard={() => navigate("patient-detail", patient.id)}
-        saved={saved}
+        saved={sessao.saved}
+        saving={sessao.saving}
+        saveError={sessao.erro}
       />
     );
   }
