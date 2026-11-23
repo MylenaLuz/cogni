@@ -213,9 +213,13 @@ export default function Reports({ navigate, selectedPatientId }: Props) {
                     <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: color }} />
                     <span className="text-sm font-600 text-text-muted w-28 flex-shrink-0">{metricNames[key]}</span>
                     <div className="flex-1 h-2 bg-surface-2 rounded-full overflow-hidden">
-                      <div className="h-full rounded-full" style={{ width: `${v}%`, background: color }} />
+                      {v !== null && <div className="h-full rounded-full" style={{ width: `${v}%`, background: color }} />}
                     </div>
-                    <span className="text-sm font-800 w-7 text-right flex-shrink-0" style={{ color }}>{v}</span>
+                    {v === null ? (
+                      <span className="text-xs text-text-muted w-16 text-right flex-shrink-0">sem dados</span>
+                    ) : (
+                      <span className="text-sm font-800 w-16 text-right flex-shrink-0" style={{ color }}>{v}</span>
+                    )}
                   </div>
                 );
               })}

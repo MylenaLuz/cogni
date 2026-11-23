@@ -2,12 +2,13 @@
 
 import type { Insight, Jogo, PacienteResumo, SessaoSaida } from "./api/tipos";
 
+/** Pontuação de 0 a 100 por domínio; null quando nenhum jogo daquele domínio foi jogado. */
 export interface CognitiveMetrics {
-  memory: number;
-  attention: number;
-  language: number;
-  executive: number;
-  visuospatial: number;
+  memory: number | null;
+  attention: number | null;
+  language: number | null;
+  executive: number | null;
+  visuospatial: number | null;
 }
 
 export interface Patient {
@@ -88,11 +89,11 @@ export function paraPatient(p: PacienteResumo): Patient {
     sessionCount: p.total_sessoes,
     index: p.indice === null ? null : Math.round(p.indice),
     metrics: {
-      memory: Math.round(d.memoria ?? 0),
-      attention: Math.round(d.atencao ?? 0),
-      language: Math.round(d.linguagem ?? 0),
-      executive: Math.round(d.executiva ?? 0),
-      visuospatial: Math.round(d.visuoespacial ?? 0),
+      memory: d.memoria == null ? null : Math.round(d.memoria),
+      attention: d.atencao == null ? null : Math.round(d.atencao),
+      language: d.linguagem == null ? null : Math.round(d.linguagem),
+      executive: d.executiva == null ? null : Math.round(d.executiva),
+      visuospatial: d.visuoespacial == null ? null : Math.round(d.visuoespacial),
     },
     history,
     trend: p.tendencia,

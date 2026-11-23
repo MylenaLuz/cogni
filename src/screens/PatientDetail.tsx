@@ -18,10 +18,10 @@ function RadarChart({ metrics }: { metrics: CognitiveMetrics }) {
   });
   const polygon = (radii: number[]) =>
     radii.map((rad, i) => { const p = pt(i, rad); return `${p.x},${p.y}`; }).join(" ");
-  const dataPoints = values.map((v) => (v / 100) * r);
+  const dataPoints = values.map((v) => ((v ?? 0) / 100) * r);
   const gridLevels = [0.25, 0.5, 0.75, 1];
   return (
-    <svg viewBox="0 0 220 220" width="100%" height="200" role="img" aria-label={labels.map((l, i) => `${l} ${values[i]}`).join(", ")}>
+    <svg viewBox="0 0 220 220" width="100%" height="200" role="img" aria-label={labels.map((l, i) => `${l} ${values[i] ?? "sem dados"}`).join(", ")}>
       {gridLevels.map((pct) => (
         <polygon key={pct} points={polygon(Array(n).fill(r * pct))} fill="none" stroke="#D4CFC5" strokeWidth="0.75" />
       ))}
@@ -30,7 +30,7 @@ function RadarChart({ metrics }: { metrics: CognitiveMetrics }) {
         return <line key={i} x1={cx} y1={cy} x2={outer.x} y2={outer.y} stroke="#D4CFC5" strokeWidth="0.75" />;
       })}
       <polygon points={polygon(dataPoints)} fill="#2C7A7A" fillOpacity="0.18" stroke="#2C7A7A" strokeWidth="2" strokeLinejoin="round" />
-      {values.map((v, i) => { const p = pt(i, (v / 100) * r); return <circle key={i} cx={p.x} cy={p.y} r="4" fill="#2C7A7A" />; })}
+      {values.map((v, i) => { if (v === null) return null; const p = pt(i, (v / 100) * r); return <circle key={i} cx={p.x} cy={p.y} r="4" fill="#2C7A7A" />; })}
       {labels.map((label, i) => {
         const p = pt(i, r + 22);
         return (
@@ -40,6 +40,7 @@ function RadarChart({ metrics }: { metrics: CognitiveMetrics }) {
         );
       })}
       {values.map((v, i) => {
+        if (v === null) return null;
         const p = pt(i, (v / 100) * r);
         return (
           <text key={i} x={p.x} y={p.y - 8} textAnchor="middle" fontSize="8" fill="#2C7A7A" fontFamily="Nunito" fontWeight="800">
@@ -196,9 +197,13 @@ export default function PatientDetail({ navigate, selectedPatientId }: Props) {
                   <div key={key} className="flex items-center gap-3">
                     <span className="text-sm font-600 text-text-muted w-32 flex-shrink-0">{metricLabels[key]}</span>
                     <div className="flex-1 h-2 bg-surface-2 rounded-full overflow-hidden">
-                      <div className={`h-full rounded-full ${metricColor(v)} transition-all duration-500`} style={{ width: `${v}%` }} />
+                      {v !== null && <div className={`h-full rounded-full ${metricColor(v)} transition-all duration-500`} style={{ width: `${v}%` }} />}
                     </div>
-                    <span className={`text-sm font-800 w-8 text-right flex-shrink-0 ${metricTextColor(v)}`}>{v}</span>
+                    {v === null ? (
+                      <span className="text-xs text-text-muted w-16 text-right flex-shrink-0">sem dados</span>
+                    ) : (
+                      <span className={`text-sm font-800 w-16 text-right flex-shrink-0 ${metricTextColor(v)}`}>{v}</span>
+                    )}
                   </div>
                 );
               })}

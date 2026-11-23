@@ -70,9 +70,9 @@ export default function PatientNew({ navigate }: Props) {
             <label htmlFor="tecnologia" className="block text-sm font-700 text-text mb-1.5">Familiaridade com celular ou tablet</label>
             <select id="tecnologia" className={campo} value={tecnologia} onChange={(e) => setTecnologia(e.target.value)}>
               <option value="">Não informado</option>
-              <option value="baixo">Pouca</option>
-              <option value="medio">Alguma</option>
-              <option value="alto">Muita</option>
+              <option value="Alta">Usa smartphone sozinho</option>
+              <option value="Média">Precisa de ajuda ocasional</option>
+              <option value="Baixa">Dificuldade motora ou visual</option>
             </select>
           </div>
           <div>

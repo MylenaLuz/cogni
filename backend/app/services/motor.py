@@ -27,6 +27,9 @@ K = 0.5  # desvio mínimo de interesse, em unidades robustas
 H = 8.0  # limiar do alarme
 Z_MAX = 4.0  # limite do escore de uma sessão
 JANELA_RECENTE = 6  # alarmes nas últimas N sessões contam como "atuais"
+# Pontuações de 0 a 100 assumem poucos valores (ex.: 100, 80, 67), e a MAD da linha de base
+# pode sair perto de zero; um piso evita que poucas notas diferentes pareçam um desvio enorme.
+MAD_MIN_PONTUACAO = 10.0
 MIN_SESSOES = DESCARTE + N_BASE + 1
 
 
@@ -78,6 +81,8 @@ def analisar_jogo(jogo: str, pontos: list[Ponto]) -> AnaliseJogo:
     mad = median(abs(x - med) for x in base) * 1.4826
     if mad < 1e-6:
         mad = max(abs(med) * 0.05, 1.0)
+    if JOGOS[jogo]["metrica_chave"] == "pontuacao":
+        mad = max(mad, MAD_MIN_PONTUACAO)
 
     s_piora = s_melhora = 0.0
     ultimo_piora = ultimo_melhora = -(10**9)

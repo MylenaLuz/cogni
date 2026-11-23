@@ -76,3 +76,10 @@ def test_textos_nao_diagnosticos():
     assert "helena" in textos
     for proibida in ("diagnóstic", "detectado", "medicament", "alzheimer", "demência"):
         assert proibida not in textos
+
+
+def test_nota_discreta_nao_dispara_com_poucas_notas_um_pouco_menores():
+    inicio = datetime(2026, 1, 1, tzinfo=UTC)
+    notas = [100.0] * 24 + [80.0] * 3
+    pontos = [motor.Ponto(inicio + timedelta(days=i), "imagens", n, {}) for i, n in enumerate(notas)]
+    assert motor.analisar_jogo("imagens", pontos).estado == "estavel"

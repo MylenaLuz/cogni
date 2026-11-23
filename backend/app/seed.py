@@ -77,6 +77,30 @@ def _eventos_pares(rng: random.Random, habilidade: float, pares: int = 5) -> lis
     return ev
 
 
+def _eventos_categorias(rng: random.Random, acerto: float, corretas: int = 5, distratores: int = 4) -> list[dict]:
+    ev, t = [], 0.0
+    for i in range(corretas):
+        if rng.random() < acerto:
+            t += rng.uniform(1200, 2600)
+            ev.append({"t": t, "tipo": "toque", "alvo": f"c{i}", "correto": True})
+    for i in range(distratores):
+        if rng.random() < (1 - acerto) * 0.5:
+            t += rng.uniform(800, 1600)
+            ev.append({"t": t, "tipo": "toque", "alvo": f"d{i}", "correto": False})
+    return ev
+
+
+def _eventos_imagens(rng: random.Random, habilidade: float, pares: int = 4) -> list[dict]:
+    ev, t, achados = [], 0.0, 0
+    while achados < pares:
+        rt = rng.uniform(1500, 3200)
+        t += rt
+        ok = rng.random() < habilidade
+        ev.append({"t": t, "tipo": "tentativa", "alvo": str(achados), "correto": ok, "reacao_ms": round(rt, 1)})
+        achados += ok
+    return ev
+
+
 def _gerar(rng: random.Random, perfil: str, semanas: int = 22):
     hoje = datetime.now(UTC).replace(hour=10, minute=0, second=0, microsecond=0)
     inicio = hoje - timedelta(weeks=semanas)
@@ -101,6 +125,17 @@ def _gerar(rng: random.Random, perfil: str, semanas: int = 22):
             if n % 2 == 0:
                 hab = habilidade - (0.012 * max(0, semana - (semanas - 9)) if perfil == "declinio" else 0)
                 sessoes.append(("pares", 2, quando + timedelta(minutes=12), _eventos_pares(rng, hab), {}))
+                sessoes.append(
+                    (
+                        "categorias",
+                        2,
+                        quando + timedelta(minutes=20),
+                        _eventos_categorias(rng, 0.85),
+                        {"total_corretas": 5},
+                    )
+                )
+            else:
+                sessoes.append(("imagens", 2, quando + timedelta(minutes=12), _eventos_imagens(rng, 0.8), {"pares": 4}))
             n += 1
     return sessoes
 
