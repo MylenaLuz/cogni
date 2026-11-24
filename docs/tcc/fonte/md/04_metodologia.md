@@ -33,8 +33,9 @@ A pesquisa foi conduzida em etapas alinhadas ao cronograma da disciplina de TCC 
 | 7. Modelagem de dados | out. | Modelos conceitual, lógico e físico | DER, dicionário de dados e *script* SQL |
 | 8. Matriz integrada | out.–nov. | Matriz de processos, dados e IA, com automação em Python | Planilha validada, JSON e *script* |
 | 9. Autenticação e cadastros | out.–nov. | Login, cadastro em etapas e recuperação de senha | Integração com o banco de dados |
-| 10. Revisão arquitetural | nov. | Auditoria do código, análise de dependência de fornecedor, proposta de arquitetura | ADR, plano de execução, simulação |
-| 11. Documento final do TCC I | nov. | Consolidação e redação | Este documento |
+| 10. Revisão arquitetural | nov. | Auditoria do código, análise de dependência de fornecedor, nova arquitetura | ADR, plano de execução, simulação |
+| 11. Implementação da versão final | nov. | API própria, migração da interface, registro de eventos, motor de métricas, perfis, termo de uso, testes e integração contínua | Sistema em funcionamento e 41 testes automatizados |
+| 12. Documento final do TCC I | nov. | Consolidação e redação | Este documento |
 
 @@FONTE|Elaborado pelos autores (2026).
 
@@ -83,8 +84,9 @@ O {{qua:ferramentas}} apresenta as ferramentas utilizadas e sua finalidade.
 | Modelagem | Miro | Diagramas UML colaborativos (casos de uso, atividades, sequência e processos) |
 | Prototipação | Figma Make | Geração inicial do protótipo navegável de alta fidelidade |
 | Front-end | React 19, TypeScript 5, Vite 8, Tailwind CSS 4 | Implementação da interface |
-| Backend atual | Supabase (PostgreSQL, Auth) | Autenticação e persistência na versão atual do protótipo |
-| Backend proposto | Python 3.12, FastAPI, SQLAlchemy 2, Alembic, PostgreSQL 16 | Arquitetura soberana proposta (Capítulo 7) |
+| Backend | Python 3.12, FastAPI, SQLAlchemy 2, Alembic, PostgreSQL 16 | API, autenticação e persistência da versão final (Capítulo 7) |
+| Backend da versão intermediária | Supabase (PostgreSQL, Auth) | Substituído na versão final (Capítulo 7) |
+| Testes e qualidade | pytest, Vitest, Ruff, Playwright, GitHub Actions | Testes automatizados, análise estática, testes no navegador e integração contínua |
 | Infraestrutura | Docker, Docker Compose, Caddy | Empacotamento e implantação portável |
 | Automação | Python, openpyxl | Geração e validação da matriz integrada |
 | Análise | Python, NumPy, Matplotlib | Simulação da coorte sintética e gráficos |
@@ -96,8 +98,8 @@ O {{qua:ferramentas}} apresenta as ferramentas utilizadas e sua finalidade.
 
 ## USO DE INTELIGÊNCIA ARTIFICIAL GENERATIVA NO PROCESSO
 
-Por transparência, registra-se que ferramentas de IA generativa foram usadas como apoio em tarefas de engenharia e de pesquisa: revisão do código do protótipo, sugestão de estrutura para documentos, busca e conferência de referências e revisão textual. Três regras foram observadas, as mesmas definidas na aba de *prompts* da matriz integrada (Capítulo 6): a IA responde apenas com base nos registros fornecidos; toda resposta é tratada como sugestão e conferida por uma pessoa antes de qualquer decisão; e nenhum dado real de pessoa foi fornecido a essas ferramentas. A responsabilidade pelo conteúdo, pelas decisões e pelas referências é integralmente dos autores.
+Por transparência, registra-se que ferramentas de IA generativa foram usadas como apoio em tarefas de engenharia e de pesquisa: apoio à implementação, aos testes e à revisão do código, sugestão de estrutura para documentos, busca e conferência de referências e revisão textual. Três regras foram observadas, as mesmas definidas na aba de *prompts* da matriz integrada (Capítulo 6): a IA responde apenas com base nos registros fornecidos; toda resposta é tratada como sugestão e conferida por uma pessoa antes de qualquer decisão; e nenhum dado real de pessoa foi fornecido a essas ferramentas. A responsabilidade pelo conteúdo, pelas decisões e pelas referências é integralmente dos autores.
 
 ## ASPECTOS ÉTICOS
 
-Nenhum dado de pessoa real foi coletado ou utilizado nas análises deste documento. As telas do protótipo utilizam pessoas fictícias. A avaliação quantitativa utiliza dados sintéticos. Os estudos com participantes humanos previstos para a segunda etapa (questionário com cuidadores, entrevistas com profissionais e teste de usabilidade) só ocorrerão após a confirmação do enquadramento ético pelo Comitê de Ética em Pesquisa da instituição, segundo as Resoluções CNS nº 466/2012 e nº 510/2016 (BRASIL, 2012; BRASIL, 2016), e, quando exigido, após aprovação do protocolo.
+Nenhum dado de pessoa real foi coletado ou utilizado nas análises deste documento. As telas do sistema e as contas de demonstração utilizam apenas pessoas fictícias. A avaliação quantitativa utiliza dados sintéticos. Os estudos com participantes humanos previstos para a segunda etapa (questionário com cuidadores, entrevistas com profissionais e teste de usabilidade) só ocorrerão após a confirmação do enquadramento ético pelo Comitê de Ética em Pesquisa da instituição, segundo as Resoluções CNS nº 466/2012 e nº 510/2016 (BRASIL, 2012; BRASIL, 2016), e, quando exigido, após aprovação do protocolo.

@@ -48,9 +48,9 @@ e) modelar o banco de dados relacional do sistema, contemplando integridade, aud
 
 f) projetar uma arquitetura portável, sem dependência de serviços proprietários, e registrar as decisões arquiteturais com suas alternativas;
 
-g) implementar um protótipo funcional da interface do cuidador, dos jogos cognitivos e da autenticação;
+g) implementar o sistema sobre essa arquitetura: interface do cuidador, jogos cognitivos com registro de eventos, API própria, banco de dados, autenticação, perfis de acesso e direitos do titular dos dados;
 
-h) propor e avaliar, em coorte sintética, um motor de métricas baseado em baseline pessoal e detecção de mudança;
+h) propor, implementar e avaliar, em coorte sintética, um motor de métricas baseado em baseline pessoal e detecção de mudança;
 
 i) planejar a verificação, a validação com usuários e a evolução do sistema na segunda etapa do trabalho.
 
@@ -70,7 +70,7 @@ Na **dimensão econômica**, o envelhecimento populacional movimenta a chamada e
 
 O Cogni é uma ferramenta de **apoio ao cuidado**. Ele não diagnostica doenças, não indica tratamentos e não substitui a avaliação de profissionais de saúde. Essa delimitação não é apenas uma cautela retórica: ela orienta a linguagem da interface, o desenho dos alertas, a escolha das métricas e a análise regulatória apresentada no Capítulo 2.
 
-O trabalho está dividido em duas etapas, conforme a estrutura das disciplinas de Trabalho de Conclusão de Curso. A primeira etapa (TCC I), objeto principal deste documento, abrange a fundamentação, a especificação de requisitos, a matriz integrada, a modelagem de dados, o protótipo funcional, a proposta arquitetural e a avaliação do motor de métricas em dados simulados. A segunda etapa (TCC II) prevê a migração completa para a arquitetura proposta, o modo dedicado à pessoa idosa, a análise de fala, a reminiscência conversacional e a validação com usuários, conforme o planejamento apresentado no Capítulo 14.
+O trabalho está dividido em duas etapas, conforme a estrutura das disciplinas de Trabalho de Conclusão de Curso. A primeira etapa (TCC I), objeto principal deste documento, abrange a fundamentação, a especificação de requisitos, a matriz integrada, a modelagem de dados, a arquitetura, o sistema implementado sobre ela e a avaliação do motor de métricas em dados simulados. A segunda etapa (TCC II) prevê o modo dedicado à pessoa idosa, a dificuldade adaptativa, a análise de fala, a reminiscência conversacional, a implantação em servidor público e a validação com usuários, conforme o planejamento apresentado no Capítulo 14.
 
 Nenhum dado de pessoa real foi utilizado nas avaliações deste trabalho. Todas as análises quantitativas foram feitas com dados sintéticos. Os estudos com cuidadores e profissionais de saúde estão previstos para a segunda etapa, condicionados aos trâmites éticos aplicáveis.
 

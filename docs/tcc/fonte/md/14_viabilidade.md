@@ -4,7 +4,7 @@ Este capítulo analisa se o Cogni é viável técnica, econômica e organizacion
 
 ## VIABILIDADE TÉCNICA
 
-A viabilidade técnica foi demonstrada em três níveis. O protótipo funcional implementa as telas, os jogos e a autenticação real. O modelo de dados foi executado e validado em PostgreSQL 16. O motor de métricas foi implementado e avaliado em simulação, com resultados quantitativos favoráveis. Todas as tecnologias da arquitetura proposta são de código aberto, maduras e amplamente documentadas. Os componentes de maior risco técnico (transcrição de fala e modelos de linguagem locais) foram isolados como opcionais, de modo que sua eventual inviabilidade não compromete o núcleo do sistema.
+A viabilidade técnica foi demonstrada na prática. O sistema completo (interface, API, banco de dados, motor de métricas, perfis de acesso e direitos do titular) funciona sobre a arquitetura própria, sobe com um único comando em qualquer máquina com Docker e é verificado por 41 testes automatizados a cada alteração. O motor de métricas foi avaliado em simulação, com resultados quantitativos favoráveis. Todas as tecnologias usadas são de código aberto, maduras e amplamente documentadas. Os componentes de maior risco técnico (transcrição de fala e modelos de linguagem locais) foram isolados como opcionais, de modo que sua eventual inviabilidade não compromete o núcleo do sistema.
 
 ## VIABILIDADE ECONÔMICA
 
@@ -82,7 +82,7 @@ O {{qua:riscos}} apresenta os principais riscos do projeto e as respectivas miti
 |---|---|---|---|
 | Pesquisa com seres humanos sem aprovação ética | Baixa | Alto | Dados sintéticos; protocolo submetido ao CEP antes da coleta |
 | Enquadramento como dispositivo médico | Média | Alto | Linguagem não diagnóstica (RNF31); revisão com orientador e assessoria |
-| Alegações exageradas na apresentação | Média | Alto | Declaração explícita de protótipo não validado clinicamente |
+| Alegações exageradas na apresentação | Média | Alto | Declaração explícita de sistema não validado clinicamente |
 | Baixa adesão das famílias | Alta | Alto | Atividades curtas, lembretes, valor percebido pelo cuidador, memória afetiva |
 | Falsos alarmes gerando ansiedade | Média | Alto | Detector avaliado; limiar conservador; linguagem acolhedora |
 | Perda de dados | Baixa | Alto | Backup diário externo; restauração testada |

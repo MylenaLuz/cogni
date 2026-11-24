@@ -488,12 +488,12 @@ Cada decisão abaixo vira uma ADR em F1.6.
 
 > Transforma "funciona" em "funciona com X% de sensibilidade". É o que faz o trabalho parecer pesquisa, não só um app.
 
-- [ ] **F10.1** 🔴 Gerador de pacientes sintéticos
+- [x] **F10.1** 🔴 Gerador de pacientes sintéticos
   - **Solução:** simular idosos com habilidade inicial, ruído diário, efeito de aprendizado, efeito de horário e, em uma parte deles, **declínio de intensidade e início conhecidos**. Gerar eventos brutos no formato de F6.1, para que passem pelo mesmo pipeline real.
   - **Onde:** `backend/app/simulation/` ou `research/`.
   - **Pronto quando:** gera uma coorte de N pacientes com sementes reproduzíveis.
 
-- [ ] **F10.2** 🔴 Avaliação do detector
+- [x] **F10.2** 🔴 Avaliação do detector
   - **Métricas:** sensibilidade, taxa de falsos alarmes por paciente-ano e tempo até a detecção, em função da intensidade do declínio e da frequência de uso.
   - **Entregável:** notebook ou relatório em `research/` com tabelas e gráficos. Os resultados entram no documento do TCC.
   - **Pronto quando:** há uma tabela com intervalos de confiança.

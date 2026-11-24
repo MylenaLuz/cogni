@@ -124,7 +124,7 @@ A evolução do projeto tornou parte dos requisitos originais obsoleta e revelou
 
 **Requisitos que restringem a evolução.** O RNF14 e o RNF15 proíbem bibliotecas de ícones e de gráficos. A restrição reduziu o tamanho do pacote, mas produziu código duplicado e gráficos sem representação de incerteza, necessária para mostrar a faixa pessoal de cada paciente. Os dois requisitos foram flexibilizados, mantendo o RNF01 (tamanho do pacote) como limite verificável.
 
-Além disso, o desenvolvimento do motor de métricas, da arquitetura proposta e da análise de conformidade gerou novos requisitos. O {{qua:rf_novos}} apresenta os requisitos funcionais acrescentados e o {{qua:rnf_revistos}}, os requisitos não funcionais revistos ou acrescentados.
+Além disso, o desenvolvimento do motor de métricas, da nova arquitetura e da análise de conformidade gerou novos requisitos. O {{qua:rf_novos}} apresenta os requisitos funcionais acrescentados e o {{qua:rnf_revistos}}, os requisitos não funcionais revistos ou acrescentados.
 
 @@QUADRO|rf_novos|Requisitos funcionais acrescentados
 

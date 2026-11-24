@@ -117,7 +117,7 @@ O modelo aplica o controle de acesso no próprio banco, e não apenas na interfa
 
 O princípio da minimização orientou a escolha dos atributos: o esquema não armazena documento de identificação, endereço, dado financeiro nem prontuário completo. A tabela `log_acesso` registra as operações sobre dados pessoais, atendendo ao dever de registro do art. 37 da LGPD.
 
-## ADAPTAÇÕES PARA A ARQUITETURA PROPOSTA
+## ADAPTAÇÕES NA VERSÃO FINAL
 
 A migração para a arquitetura do Capítulo 7 preservou quase todo o modelo, porque ele já foi escrito em PostgreSQL padrão. As adaptações feitas na versão final, aplicadas por duas migrações versionadas com Alembic, estão no {{qua:adaptacoes}}.
 

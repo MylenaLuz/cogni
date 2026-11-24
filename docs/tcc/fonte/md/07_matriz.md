@@ -97,7 +97,7 @@ Preencher uma estrutura com relações obrigatórias funcionou como uma revisão
 | DEC-003 | Catálogo de jogos divergente | Unificar a documentação e a carga da tabela de jogos | Catálogo do protótipo adotado como oficial; jogos dos casos de uso mantidos como planejados |
 | DEC-004 | LGPD: consentimento, retenção, exclusão e multicuidador | Definir antes dos cadastros básicos | Tabela de vínculos N:N com papéis, consentimento versionado, exportação e exclusão (Capítulo 8) |
 | DEC-005 | *Insights* por regras fixas ou por LLM | Regras determinísticas no TCC I; LLM depois | Mantido: regras determinísticas; LLM opcional apenas para redação (Capítulo 10) |
-| DEC-006 | Exportar relatório sem bibliotecas pesadas | Impressão nativa do navegador | PDF gerado no servidor na arquitetura proposta |
+| DEC-006 | Exportar relatório sem bibliotecas pesadas | Impressão nativa do navegador | PDF gerado no servidor, previsto para o TCC II; na versão final, exportação em CSV e JSON |
 | DEC-007 | Fuso horário de sessões e semanas | Guardar em UTC e exibir no fuso de São Paulo | Mantido; campos `TIMESTAMPTZ` no banco |
 
 @@FONTE|Elaborado pelos autores (2026), com base em Valle, Vaz e Alves (2026c).

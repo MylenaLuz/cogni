@@ -12,7 +12,7 @@ A **primeira versão** foi um protótipo navegável em React, com todos os dados
 
 A **segunda versão** integrou o protótipo a um provedor de *backend* como serviço (*Backend as a Service*, BaaS), o Supabase, que oferece PostgreSQL gerenciado, autenticação e uma API gerada automaticamente a partir do esquema, com controle de acesso por segurança em nível de linha (*Row Level Security*, RLS). Essa escolha, registrada no documento de definição de tecnologias (VALLE; VAZ; ALVES, 2026f), acelerou a implementação de login, cadastro em etapas e recuperação de senha.
 
-A **terceira versão**, proposta neste trabalho, substitui o BaaS por uma arquitetura própria e portável. A seção seguinte explica por quê.
+A **terceira versão**, implementada neste trabalho e descrita no restante deste capítulo, substitui o BaaS por uma arquitetura própria e portável. É sobre ela que funciona a versão final do sistema, apresentada no Capítulo 9. A seção seguinte explica por que a troca foi feita.
 
 ## O DESAFIO DA DEPENDÊNCIA DE FORNECEDOR
 
@@ -50,7 +50,7 @@ O único sistema externo obrigatório é um servidor de e-mail, acessado pelo pr
 
 A {{fig:containers}} apresenta o diagrama de contêineres (nível 2 do modelo C4). Os elementos com borda tracejada são opcionais ou previstos para a segunda etapa.
 
-@@FIG|containers|Diagrama de contêineres da arquitetura proposta (C4, nível 2)|img/02_containers.png|Elaborado pelos autores (2026).|16
+@@FIG|containers|Diagrama de contêineres da arquitetura do sistema (C4, nível 2)|img/02_containers.png|Elaborado pelos autores (2026).|16
 
 A arquitetura adota o **monólito modular** como ponto de partida (FOWLER, 2015; NEWMAN, 2021). Uma única API concentra os módulos de domínio, organizados internamente por responsabilidade. Essa escolha evita a complexidade operacional de microsserviços em uma equipe de três pessoas, sem impedir a separação futura de módulos quando os limites do domínio estiverem consolidados. A única separação prevista desde já é a do *worker* assíncrono, porque a transcrição de áudio é uma tarefa demorada que não deve bloquear as requisições da interface.
 
