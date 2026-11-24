@@ -34,7 +34,7 @@ CIDADE_ANO = ["CURITIBA – PR", "2026"]
 NATUREZA = ("Trabalho de Conclusão de Curso apresentado ao Curso de Engenharia de Software da "
             "UniCesumar – Centro Universitário de Maringá, como requisito parcial para aprovação "
             "na disciplina de Trabalho de Conclusão de Curso I.")
-ORIENTADOR = "Orientador: Prof. Dr. Silvio Bortoleto"
+ORIENTADOR = "Orientador: Prof. Dr. Luiz Fernando Corcini"
 
 
 # ----------------------------------------------------------------------------- 1. pre-processamento
@@ -375,7 +375,7 @@ def posprocessar(entrada: Path, saida: Path, ordem_tabelas: list[str]):
     for tabela, tipo in zip(doc.tables, ordem_tabelas):
         bordas_tabela(tabela, tipo)
 
-    # ---- elementos pre-textuais construidos aqui: capa, folha de rosto, folha de aprovacao
+    # ---- elementos pre-textuais construidos aqui: capa e folha de rosto
     primeiro = doc.paragraphs[0]  # RESUMO
     primeiro.paragraph_format.page_break_before = False
 
@@ -412,28 +412,6 @@ def posprocessar(entrada: Path, saida: Path, ordem_tabelas: list[str]):
         par_antes(primeiro)
     par_antes(primeiro, CIDADE_ANO[0], negrito=True)
     p = par_antes(primeiro, CIDADE_ANO[1], negrito=True)
-    p.add_run().add_break(WD_BREAK.PAGE)
-
-    # FOLHA DE APROVACAO
-    for a in AUTORES:
-        par_antes(primeiro, a, negrito=True)
-    par_antes(primeiro)
-    par_antes(primeiro, TITULO, negrito=True)
-    par_antes(primeiro)
-    nat2 = par_antes(primeiro, NATUREZA, alinhamento=WD_ALIGN_PARAGRAPH.JUSTIFY, espaco=1.0, tamanho=10)
-    nat2.paragraph_format.left_indent = Cm(8)
-    par_antes(primeiro)
-    par_antes(primeiro, "Aprovado em: ____ de ______________ de 2026.", alinhamento=WD_ALIGN_PARAGRAPH.LEFT)
-    par_antes(primeiro)
-    par_antes(primeiro, "BANCA EXAMINADORA", negrito=True)
-    for nome in ("Prof. Dr. Silvio Bortoleto (Orientador)\nUniCesumar",
-                 "Prof.(a) ______________________________\nUniCesumar",
-                 "Prof.(a) ______________________________\nUniCesumar"):
-        par_antes(primeiro)
-        par_antes(primeiro, "_____________________________________________", espaco=1.0)
-        for parte in nome.split("\n"):
-            par_antes(primeiro, parte, espaco=1.0)
-    p = par_antes(primeiro)
     p.add_run().add_break(WD_BREAK.PAGE)
 
     # ---- secao textual: comeca em "1 INTRODUCAO"
